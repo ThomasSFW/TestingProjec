@@ -1,0 +1,471 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">街道管理</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+.phone-input-container {
+  display: flex;
+  align-items: center;
+}
+
+.phone-input-container input:first-child {
+  margin-right: 10px;
+}
+</style>
+<section class="content">
+    <div class="row">
+        <!-- Zero Configuration  Starts-->
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label" for="searchinput">關鍵字</label>
+                            <div class="input-group">
+                                <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                                    <span class="input-group-btn">
+                                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                    </span>
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="display:none">
+                            <label class="form-label" for="cboTeam">分類</label>
+                            <select id="cboCode" class="form-select"{% if not 1426 in request.session.accessright %} disabled{% endif %}>
+                            <option value="" {% if user_code_id == codes.code_id %}selected{% endif %}>- 所有分類 -</option>
+                            {% for codes in codelist %}
+                                <option value="{{codes.code_id}}" {% if user_code_id == codes.code_id %}selected{% endif %}>{{codes.code_name}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="code_detail_id">
+                <input type="hidden" class="form-control" id="code_id">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group">
+					<label>主分類</label>
+					<select id="TxtParent" class="form-control">
+                        <!--<option value="0" {% if user_code_parent_id == 0 %}selected{% endif %}>不適用</option>-->
+                    {% for code in code_detail_parent_list %}
+                        <option value="{{code.code_detail_id}}" {% if user_code_parent_id == code.code_detail_id %}selected{% endif %}>{{code.code_detail_name}}</option>
+                    {% endfor %}
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="TxtCodeKey">編碼</label>
+						<input type="text" class="form-control" id="TxtCodeKey" placeholder="輸入編碼" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtCodeDetailName">名稱</label>
+						<input type="text" class="form-control" id="TxtCodeDetailName" placeholder="輸入名稱" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtCodeDetailNameE">名稱(英)</label>
+						<input type="text" class="form-control" id="TxtCodeDetailNameE" placeholder="輸入名稱(英)" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtSequence">次序</label>
+						<input type="number" class="form-control" id="TxtSequence" placeholder="輸入次序，例如1,2,3,..." value="">
+			    </div>
+				<div class="form-group">
+					<label>狀態</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioActive" name="r1">
+								<label for="radioActive" value="1">正常</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioInActive" name="r1">
+								<label for="radioInActive" value="1">失效</label>
+							</div>
+						</div>
+                </div>
+				<div class="form-group dropzone" style="display:none">
+                    <table border="2" cellpadding="3" class="table" bordercolor="grey">
+                       <tbody><tr><td bgcolor="#FFFFEE">
+                            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tbody><tr><td><label for="TxtCodeDetailPhoto">相片</label></td></tr>
+                                <tr><td>
+                                    {% csrf_token %}
+                                     <div style="float:left"><input type="file" class="" id="TxtCodeDetailPhoto" placeholder="請選擇圖片" value="" width="200"></div>&nbsp;&nbsp;&nbsp;<div style="float:right"><button type="submit" class="btn btn-xs btn-warning" id="upload_button" action="upload"><i class="fa fa-upload"></i>&nbsp;&nbsp;上傳</button></div>
+                                </td></tr>
+                                <tr><td style="padding-top:10px">
+                                    <img src="/static/dist/img/male-160x160.jpg" class="img-circle" width="80" id="preview_icon">
+                                </td></tr>
+                            </tbody></table>
+                       </td></tr>
+                    </tbody></table>
+			    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="add_button" action="add"><i class="fa fa-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="submit" class="btn btn-warning" id="edit_button" action="edit"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                {% if 236 in request.session.accessright %}
+                <button type="submit" class="btn btn-danger" id="remove_button"><i class="fa fa-trash"></i>&nbsp;&nbsp;刪除</button>
+                {% endif %}
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        var table;
+
+        $("#searchinput").on("keyup", function() {
+			var oTable = $('#contentTable').dataTable();
+			oTable.fnFilter($(this).val());
+        });
+
+        $("#cboTeam, #cboCode").on('change', function(){
+            load_table();
+        });
+
+        function load_table() {
+            $("#contentTable").html('<br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>');
+            var team = $("#cboTeam").val();
+            var code_id = $("#cboCode").val();
+            $.ajax({
+                url:'{% url 'street_response' %}',
+                type:'POST',
+                data:{action:'code_detail_list', team:team, code_id:code_id},
+            })
+
+            .done(function(response){
+                $("#contentBody").html(response);
+                refresh_table();
+            })
+
+            .fail(function(xhr, status, error){
+                $("#contentBody").html(xhr.responseText);
+            })
+        }
+
+        function refresh_table() {
+            table = $('#contentTable').DataTable({
+                "paging": true,
+                "dom": '<"toolbar">fBrtip',
+                "order": [[ 5, "asc" ]],
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                   language: {
+                       "sProcessing": "處理中...",
+                       "sLengthMenu": "顯示 _MENU_ 項結果",
+                       "sZeroRecords": "沒有匹配結果",
+                       "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                       "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                       "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                       "sInfoPostFix": "",
+                       "sSearch": "搜索：",
+                       "sUrl": "",
+                       "oPaginate": {
+                           "sFirst": "首頁",
+                           "sPrevious": "上一頁",
+                           "sNext": "下一頁",
+                           "sLast": "末頁"
+                       },
+                       buttons: {
+                           copy: "複製到剪貼簿"
+                       }
+                   },
+                buttons: [
+                    {   extend: "copy",
+                        text: '<i class="fa fa-copy"></i>&nbsp;&nbsp;複製',
+                        className: 'btn-warning'
+                    },
+                    {
+                        extend: "print",
+                        text: '<i class="fa fa-print"></i>&nbsp;&nbsp;列印',
+                        customize: function(win)
+                        {
+                            var last = null;
+                            var current = null;
+                            var bod = [];
+
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+
+                            style.type = 'text/css';
+                            style.media = 'print';
+
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+                            head.appendChild(style);
+                        },
+                        className: 'btn-primary'
+                    },
+                    {% if 1309 in request.session.accessright %}
+                    {
+                        text: '<i class="fa fa-plus"></i>&nbsp;&nbsp;新增街道',
+                        action: function(e, dt, node, config) {
+                            $('#EditModal').modal('show');
+                            $("#FunctionTitle").html("<i class='fa fa-plus'></i>&nbsp;&nbsp;<b>新增街道</b>");
+                            $(".modal-header").css('background-color', '#DD4B39');
+            				$(".modal-header").css('color', '#FFFFFF');
+                            $("#add_button").show();
+                            $("#edit_button").hide();
+                            $("#remove_button").hide();
+                            $("#print_button").hide();
+                            $("#action").val($(this).attr("action"));
+                            $("#code_detail_id").val($(this).attr("code_detail_id"));
+                            $("#code_id").val({{user_code_id}});
+                            $("#TxtCodeKey").val($(this).attr("code_key"));
+                            $("#TxtCodeDetailName").val($(this).attr("code_detail_name"));
+                            $("#TxtCodeDetailNameE").val($(this).attr("code_detail_name_e"));
+                            $("#TxtSequence").val($(this).attr("sequence"));
+                            $("#TxtCodeDetailPhoto").html($(this).attr("code_detail_photo"));
+                            $("#TxtCodeDetailIcon").html($(this).attr("code_detail_icon"));
+                            $("#radioActive").prop("checked", true);
+                        },
+                        className: 'btn-danger'
+                    },
+                    {% endif %}
+                ],
+            });
+            $("div.toolbar").html('<b><font size=3>街道列表</font></b>&nbsp;&nbsp;<a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="add" formtype="code_info" formname="Code Information" shop="{{ displaydata.shop }}" code_detail_id="{{ displaydata.code_detail_id }}" code_id="{{ displaydata.code_id }}" code_parent_id="{{ displaydata.code_parent_id }}" code_key="{{ displaydata.code_key }}" code_detail_name="{{ displaydata.code_detail_name }}" code_detail_name_e="{{ displaydata.code_detail_name_e }}" sequence="{{ displaydata.sequence }}" code_detail_photo="{{ displaydata.code_detail_photo }}" code_detail_icon="{{ displaydata.code_detail_icon }}" status="{{ displaydata.status }}"><i class="icon-plus text-white"></i></a>');
+        }
+
+        $("#upload_button").click(function(){
+            $("#action").val($("#upload_button").attr("action"));
+        });
+
+        $("#add_button").click(function(){
+            $("#action").val("add");
+        });
+
+        $("#edit_button").click(function(){
+            $("#action").val("edit");
+        });
+
+        $("#remove_button").click(function(){
+            $("#action").val("delete");
+        });
+
+        document.getElementById("upload-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var fileInput = document.getElementById("TxtCodeDetailPhoto");
+            var file = fileInput.files[0];
+            var code_detail_id = $("#code_detail_id").val();
+            var action = $("#action").val();
+            var shop = $("#SelectTeam").val();
+            var code_id = $("#code_id").val();
+            var code_parent_id = $("#TxtParent").val();
+            var code_key = $("#TxtCodeKey").val();
+            var code_detail_name = $("#TxtCodeDetailName").val();
+            var code_detail_name_e = $("#TxtCodeDetailNameE").val();
+            var code_detail_photo = $("#TxtCodeDetailPhoto").val();
+            var code_detail_icon = $("#TxtCodeDetailIcon").val();
+            var sequence = $("#TxtSequence").val();
+            if ($("#radioActive").is(':checked')) status = 1;
+            if ($("#radioInActive").is(':checked')) status = 0;
+            if ((action == "add") || (action == "edit")) {
+                if (fileInput.files.length == 0) {
+                    //alert("Please browse relevant inspection report file to upload")
+                    //return false;
+                }
+                if (code_key == '') {
+                    alert('請輸入編碼');
+                    return false;
+                }
+                if (code_parent_id == '0') {
+                    alert('請輸入主分類');
+                    return false;
+                }
+                if (code_detail_name == '') {
+                    alert('請輸入街道名稱');
+                    return false;
+                }
+                if (sequence == '') {
+                    alert('請輸入次序');
+                    return false;
+                }
+
+                if (action == "add") {
+                    if (!(window.confirm("新增街道記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                } else {
+                    if (!(window.confirm("更新街道記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("shop", shop);
+                formData.append("code_detail_id", code_detail_id);
+                formData.append("code_id", code_id);
+                formData.append("code_parent_id", code_parent_id);
+                formData.append("code_key", code_key);
+                formData.append("code_detail_name", code_detail_name);
+                formData.append("code_detail_name_e", code_detail_name_e);
+                formData.append("code_detail_photo", code_detail_photo);
+                formData.append("code_detail_icon", code_detail_icon);
+                formData.append("sequence", sequence);
+                formData.append("status", status);
+                formData.append("file", file);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'street_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功更新"
+                            },{
+                                type: 'success',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "delete") {
+                if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("code_detail_id", code_detail_id);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'street_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功刪除"
+                            },{
+                                type: 'danger',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "upload") {
+                if (fileInput.files.length == 0) {
+                    alert("Please browse relevant inspection report file to upload")
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("code_detail_id", code_detail_id);
+                formData.append("code_id", {{user_code_id}});
+                formData.append("code_key", code_key);
+                formData.append("code_detail_name", code_detail_name);
+                formData.append("code_detail_name_e", code_detail_name_e);
+                formData.append("code_detail_photo", code_detail_photo);
+                formData.append("code_detail_icon", code_detail_icon);
+                formData.append("sequence", sequence);
+                formData.append("status", status);
+                formData.append("file", file);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'street_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        alert("File was uploaded successfully")
+                        //load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+        });
+
+        load_table()
+
+    })
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

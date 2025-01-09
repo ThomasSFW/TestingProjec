@@ -1,0 +1,298 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+<link rel="stylesheet" href="{% static 'common/formCommon.css' %}">
+	{% if action == "menutab" %}
+		<div class="col-md-12">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs nav-primary">
+				  <!--<li class="active"><a href="#overview" data-toggle="tabajax" action="overview" year="{{year}}" start_date="{{start_date}}" end_date="{{end_date}}"><b>Overview</b></a></li>-->
+				  <li class="nav-item active"><a class="nav-link active" href="#contact_list" data-toggle="tabajax" action="contact_list" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1400 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>網上物業查詢記錄</b></a></li>
+				  <!--<li class="nav-item"><a class="nav-link" href="#member_active" data-toggle="tabajax" action="member_active" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1401 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>活躍會員</b></a></li>-->
+				</ul>
+				<div class="tab-content">
+					<div class="active tab-pane" id="contact_list"></div>
+					<div class="tab-pane" id="member_active"></div>
+				</div>
+				<div id="errormessage"></div>
+			</div>
+		</div>
+	{% endif %}
+	{% if action == "contact_list" %}
+        <div class="table-responsive">
+            <table id="contentTable-{{action}}" class="display" id="contentTable" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th style="text-align:center;" width="120">建立時間</th>
+                        <th style="text-align:center;" width="40">類別</th>
+                        <th width="100">聯絡人姓名</th>
+                        <th style="text-align:center;" width="150">電郵地址</th>
+                        <th style="text-align:center;" width="100">電話</th>
+                        <th style="text-align:center;">物業地址</th>
+                        <th style="text-align:center;" width="60">定期通訊</th>
+                        <th style="text-align:center;" width="80">跟進同事</th>
+                        <th style="text-align:center;" width="60">狀態</th>
+                        <th style="text-align:center;" width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in contact_list %}
+                        {% setvar displaydata.followup_user|default_if_none:"" as followup_user_split_list %}
+                        {% setvar followup_user_split_list|split:"," as followup_user_list %}
+                        <tr>
+                            <td style="text-align:center;">{{displaydata.create_date|date:'Y-m-d H:i'}}</td>
+                            <td align="center">
+                                {% if displaydata.property_id == 0 %}
+                                    按揭
+                                {% else %}
+                                    物業
+                                {% endif %}
+                            </td>
+                            <td>{{displaydata.contact_name}}</td>
+                            <td>{{displaydata.email}}</td>
+                            <td align="center">{{displaydata.phone_area_code}} {{displaydata.phone_number}}</td>
+                            <td>
+                                {% if displaydata.property_name|default_if_none:"" == "" %}
+                                    {{displaydata.PropertyName}}
+                                {% else %}
+                                    {{displaydata.property_name}}
+                                {% endif %}
+                            </td>
+                            <td align="center">
+                                {% if displaydata.newsletter == 1 %}
+                                    <span class="badge badge-success text-md">是</span>
+                                {% else %}
+                                    <span class="badge badge-danger text-md">否</span>
+                                {% endif %}
+                            </td>
+                            <td>{{displaydata.followup_user|default_if_none:""|getLoginName|safe}}</td>
+                            <td style="text-align:center;">
+                                {% if displaydata.status == 0 %}
+                                <span class="badge badge-danger text-md">新查詢</span>
+                                {% endif %}
+                                {% if displaydata.status == 1 %}
+                                <span class="badge badge-warning text-md">進行中</span>
+                                {% endif %}
+                                {% if displaydata.status == 2 %}
+                                <span class="badge badge-primary text-md">暫緩</span>
+                                {% endif %}
+                                {% if displaydata.status == 3 %}
+                                <span class="badge badge-success text-md">完成</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align:center;">
+                                <a href="#" class="open_modal_info" data-bs-toggle="modal" data-bs-target="#InfoModal" action="edit" formtype="contact_info" formname="Information" followup_user="{{displaydata.followup_user}}" contact_id="{{ displaydata.contact_id }}" status="{{ displaydata.status }}"><i class="icon-eye"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+	{% if action == "contact_info" %}
+        {% if contact_list %}
+        <table border="2" class="table table-striped" bordercolor="grey">
+            <colgroup>
+                <col style="width:25%;background-color: #f2f2f2;">
+                <col style="width:25%;">
+                <col style="width:20%;background-color: #e6e6e6;">
+                <col style="width:30%;">
+            </colgroup>
+            <thead>
+                <td align="center" class="bg-success" colspan="4"><b>網上物業查詢</b></td>
+            </thead>
+            <tr>
+                <td width="220"><b>姓名：</b></td>
+                <td colspan="3">{{contact_list.0.contact_name|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>電郵地址：</b></td>
+                <td colspan="3">{{contact_list.0.email|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>電話號碼：</b></td>
+                <td colspan="3">{{contact_list.0.phone_area_code}}{{contact_list.0.phone_number|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td bgcolor="#FFFFCC"><b>查詢物業地址：</b></td>
+                <td colspan="3">
+                    {% if contact_list.0.property_name|default_if_none:"" == "" %}
+                        {{contact_list.0.PropertyName|default_if_none:""}}
+                    {% else %}
+                        {{contact_list.0.property_name|default_if_none:""}}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><b>訊息：</b></td>
+                <td colspan="3">{{contact_list.0.message|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>收取本公司物業資訊：</b></td>
+                <td colspan="3">{% if contact_list.0.newsletter|default_if_none:"" == "1" %}是{% else %}否{% endif %}</td>
+            </tr>
+            <tr>
+                <td><b>建立日期：</b></td>
+                <td colspan="3">{{contact_list.0.create_date|date:'Y-m-d H:i'}}</td>
+            </tr>
+            <tr>
+                <td><b>更新日期：</b></td>
+                <td colspan="3">{{contact_list.0.modify_date|date:'Y-m-d H:i'}}</td>
+            </tr>
+        </table>
+        {% endif %}
+    {% endif %}
+	{% if action == "team_list" %}
+        {% setvar "" as tmpTeam %}
+        {% for displayuser in userlist|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displayuser.Team %}{% if tmpTeam == "" %}<optgroup label="{{displayuser.teamFullDesc}}">{% else %}</optgroup><optgroup label="{{displayuser.teamFullDesc}}">{% endif %}{% endif %}
+            {% if displayuser.Rank != "SA" and displayuser.Rank != "AR" %}
+                <option value="{{displayuser.LoginID}}" {% if user_loginid == displayuser.LoginID %} selected {% endif %}>{{displayuser.LoginNameDesc}} ({{displayuser.rankDesc}})</option>
+            {% endif %}
+            {% setvar displayuser.Team as tmpTeam %}
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+{% if action == "contact_list" %}
+    $(".open_modal_info").click(function(){
+        // Adding the Value from Table to Modal form
+        $(".modal-header").css('color', '#FFFFFF');
+        $("#contact_id").val($(this).attr("contact_id"));
+        $("#action").val($(this).attr("action"));
+        if (($(this).attr("status") == "0") || ($(this).attr("status") == "")) $("#radioNew").prop("checked", true);
+        if ($(this).attr("status") == "1") $("#radioInProgress").prop("checked", true);
+        if ($(this).attr("status") == "2") $("#radioPending").prop("checked", true);
+        if ($(this).attr("status") == "3") $("#radioCompleted").prop("checked", true);
+        var selectedOptions = $(this).attr("followup_user").split(',');
+        var selectElement = $("#cboUser");
+          // Clear all selected options
+          selectElement.find("option").prop("selected", false);
+
+          // Set the selected options
+          $.each(selectedOptions, function(index, optionValue) {
+            selectElement.find("option[value='" + optionValue + "']").prop("selected", true);
+          });
+          selectElement.trigger("change");
+
+        var contact_id = $(this).attr("contact_id");
+        var action = $(this).attr("action");
+        var formtype = $(this).attr("formtype");
+        if (action == 'add') {
+            $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增網上查詢物業內容</b>");
+            $(".modal-header").css('background-color', '#DD4B39');
+            $("#add_button").show();
+            $("#edit_button").hide();
+            $("#remove_button").hide();
+        } else {
+            $("#FunctionTitle").html("<i class='icon-eye'></i>&nbsp;&nbsp;<b>網上查詢物業內容</b>");
+            $(".modal-header").css('background-color', '#F39C12');
+            $("#add_button").hide();
+            $("#edit_button").show();
+            $("#remove_button").show();
+        }
+        if (formtype == "contact_info") {
+            $.ajax({
+                url:'{% url 'onlineEnquiry_response' %}',
+                type:'POST',
+                data:{action:'contact_info', contact_id:contact_id},
+            })
+            .done(function(response){
+                $("#InfoModal #contact_info").html(response);
+            })
+            .fail(function(xhr, status, error){
+                $('#InfoModal .modal-message').html(xhr.responseText);
+                //alert(xhr.responseText);
+            })
+        }
+    });
+
+{% endif %}
+{% if action == "menutab" %}
+    action = "contact_list";
+    $.ajax({
+        url:'{% url 'onlineEnquiry_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, start_date:start_date, end_date:end_date},
+        beforeSend: function(){
+            // Display the loading message with the current time
+            var startTime = new Date().getTime();
+            $('#'+action).html('<br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-2\"></div></div><br/><span id="loadingTime"></span><br/><br/><br/><br/><br/></center></p>');
+            loadingInterval = setInterval(function() {
+              // Update the loading time every second
+              var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+              $('#loadingTime').html('讀取時間: ' + elapsedTime + ' 秒');
+            }, 1000);
+        },
+    })
+    .done(function(response){
+        $('#contact_list').html(response);
+        refresh_table(action);
+        table.page(currentPage).draw(false);
+        $("div.toolbar").html('<b><font size=3>委託列表</font></b>&nbsp;&nbsp;&nbsp;');
+    })
+    .fail(function(xhr, status, error){
+        $('#contact_list').html(xhr.responseText);
+        //alert(xhr.responseText);
+    })
+    var selectTab
+    $('[data-toggle="tabajax"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+        $this.attr('start_date',start.format('YYYY-MM-DD'));
+        $this.attr('end_date',end.format('YYYY-MM-DD'));
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-target'),
+            action = $this.attr('action');
+            start_date = $this.attr('start_date');
+            end_date = $this.attr('end_date');
+            lock = $this.attr('lock');
+            if (lock == 1) {
+                alert("\u26A0 沒有存取此頁面的存取權限！欲了解更多信息，請聯絡系統管理員。");
+                return false;
+            }
+
+            $.ajax({
+                url:'{% url 'onlineEnquiry_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, start_date:start_date, end_date:end_date},
+                beforeSend: function(){
+                    // Display the loading message with the current time
+                    var startTime = new Date().getTime();
+                    $('#'+action).html('<br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-7\"></div></div></center></p>');
+                    loadingInterval = setInterval(function() {
+                      // Update the loading time every second
+                      var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+                      $('#loadingTime').html('Elapsed time: ' + elapsedTime + ' seconds');
+                    }, 1000);
+                },
+            })
+            .done(function(response){
+                // Calculate the loading time and append it to the response message
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#'+action).html(response);
+                refresh_table(action);
+                table.page(currentPage).draw(false);
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            //$(loadurl).html(loadurl);
+            $this.tab('show');
+        return false;
+    });
+{% endif %}
+</script>
+{% endblock custom_js %}

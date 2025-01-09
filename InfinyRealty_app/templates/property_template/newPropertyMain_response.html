@@ -1,0 +1,1519 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+
+	{% if action == "menutab" %}
+        <style>
+            .element-class {
+              cursor: pointer;
+            }
+        </style>
+		<div class="col-md-12">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs nav-primary">
+				  <!--<li class="active"><a href="#overview" data-toggle="tabajax" action="overview" year="{{year}}" start_date="{{start_date}}" end_date="{{end_date}}"><b>Overview</b></a></li>-->
+				  <li class="nav-item active"><a class="nav-link active" href="#area_view" data-toggle="tabajax" action="area_view" area="{{area}}" loginid="{{user_loginid}}" propertyid="{{user_propertyid|default_if_none:"0"}}" lock="0"><b>地區列表</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#property_view" id="property_views" data-toggle="tabajax" action="property_view" searchtext="" area="{{area}}" loginid="{{user_loginid}} propertyid="{{user_propertyid|default_if_none:"0"}}" propertyid_list=""{% if 2484 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>新盤列表</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#property_edit" id="property_edits" data-toggle="tabajax" action="property_edit" area="{{area}}" loginid="{{user_loginid}}" propertyid="{{user_propertyid|default_if_none:"0"}}" propertyid_list=""{% if 2484 not in request.session.accessright and 2485 not in request.session.accessright and 2486 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>新增/編輯新盤</b></a></li>
+                  <!--<li class="nav-item">
+                        <div class="input-group">
+                            <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                                <span class="input-group-btn">
+									<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                </span>
+						</div>
+                  </li>-->
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane fade show active" id="area_view"></div>
+					<div class="tab-pane fade" id="property_view"></div>
+					<div class="tab-pane fade" id="property_edit"></div>
+				</div>
+				<div id="errormessage"></div>
+			</div>
+		</div>
+	{% endif %}
+
+	{% if action == "area_view" %}
+        <br>
+		<div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <h4>選擇一手新盤地區</h4>
+    		</div>
+		</div>
+		<div class="row">
+
+          <div class="col-lg-2 col-md-6 col-sm-6">
+            <div class="card sale-chart">
+              <div class="card-body">
+                <div class="d-flex">
+                  <div class="flex-shrink-0">
+                    <div class="sale-detail">
+                      <div class="icon">
+                          <a href="#" class="open_view"><h3>#</h3></a>
+                      </div>
+                      <div class="sale-content">
+                        <h3>
+                            <a href="#" class="open_view">物業編號</a>
+                        </h3>
+                        <input type="text" name="sq" id="searchpropertyno" class="form-control" placeholder="D0001" maxlength="10" size="6">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="small-chart-view sales-chart" id="sales-chart"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        {% for displaydata in area_view_list %}
+          <div class="col-lg-2 col-md-6 col-sm-6">
+            <div class="card sale-chart">
+              <div class="card-body">
+                <div class="d-flex">
+                  <div class="flex-shrink-0">
+                    <div class="sale-detail">
+                      <div class="icon">
+                          {% if displaydata.area == "港島" %}
+                            <a href="#" class="open_view" area="香港及離島"><i class="icofont icofont-building-alt fa-2x"></i></a>
+                          {% elif displaydata.area == "九龍" %}
+                            <a href="#" class="open_view" area="九龍"><i class="icofont icofont-bank-alt fa-2x"></i></a>
+                          {% elif displaydata.area == "新界" %}
+                            <a href="#" class="open_view" area="新界"><i class="icofont icofont-briefcase-alt-2 fa-2x"></i></a>
+                          {% else %}
+                            <a href="#" class="open_view" area="全部"><i class="icon-face-smile fa-2x"></i></a>
+                          {% endif %}
+                      </div>
+                      <div class="sale-content">
+                        <h3>
+                            {% if displaydata.Area is None %}
+                                <a href="#" class="open_view" area="全部">全部</a>
+                            {% else %}
+                                {% if displaydata.area == "港島" %}
+                                <a href="#" class="open_view" area="{{displaydata.area}}">香港及離島</a>
+                                {% else %}
+                                <a href="#" class="open_view" area="{{displaydata.area}}">{{displaydata.area}}</a>
+                                {% endif %}
+                            {% endif %}
+                        </h3>
+                        <h2>{{displaydata.AreaCount}}</h2>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+		</div>
+        {% if 2499 in request.session.accessright %}
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <h4>匯出一手新盤列表</h4>
+                </div>
+            </div>
+            <div class="row">
+            {% for displaydata in area_view_list %}
+              <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card sale-chart">
+                  <div class="card-body">
+                    <div class="s-flex">
+                      <div class="flex-shrink-0">
+                        <div class="sale-detail">
+                          <div class="icon">
+                              {% if displaydata.area == "港島" %}
+                                <a href="#" class="open_view" area="香港及離島"><i class="icofont icofont-building-alt fa-2x"></i></a>
+                              {% elif displaydata.area == "九龍" %}
+                                <a href="#" class="open_view" area="九龍"><i class="icofont icofont-bank-alt fa-2x"></i></a>
+                              {% elif displaydata.area == "新界" %}
+                                <a href="#" class="open_view" area="新界"><i class="icofont icofont-briefcase-alt-2 fa-2x"></i></a>
+                              {% else %}
+                                <a href="#" class="open_view" area="全部"><i class="icon-face-smile fa-2x"></i></a>
+                              {% endif %}
+                          </div>
+                          <div class="sale-content">
+                            <button type="button" class="btn btn-primary me-3 export_excel" id="export_excel_button" action="export_excel" area="{{displaydata.area}}" buttontype="excel">下載{% if displaydata.area is None %}全部{% else %}{{displaydata.area}}{% endif %}清單</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% if 2500 in request.session.accessright %}
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <h4>匯入一手新盤列表</h4>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="card sale-chart">
+                  <div class="card-body">
+                    <div class="d-flex">
+                      <div class="flex-shrink-0">
+                        <div class="sale-detail">
+                          <div class="icon">
+                            <i class="icon-face-smile fa-2x"></i>
+                          </div>
+                          <div class="sale-content">
+                              <form id="upload-form" method="post" enctype="multipart/form-data">
+                                 {% csrf_token %}
+                                 <input type="file" class="btn btn-default me-3" id="import_file_button" name="file" area="全部" buttontype="excel" class="d-none" accept=".xlsx, .xls" required/>
+                                 <button type="button" class="btn btn-secondary me-3 import_excel" id="import_excel_button" action="import_excel" area="全部" buttontype="excel">匯入物業數據</button>
+                              </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        {% endif %}
+
+    {% endif %}
+
+	{% if action == "property_view" %}
+        <div class="row g-3">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <select id="cboArea" class="form-select">
+                <option value="" {% if user_area == "" %}selected{% endif %}>- 所有地區 -</option>
+                {% for area in area_list %}
+                    {% if area.area %}
+                        {% if area.area == "港島" %}
+                        <option value="{{area.area}}" {% if user_area == area.area %}selected{% endif %}>香港及離島</option>
+                        {% else %}
+                        <option value="{{area.area}}" {% if user_area == area.area %}selected{% endif %}>{{area.area}}</option>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="cboDistrict" class="form-select">
+                <option value="" {% if user_district == "" %}selected{% endif %}>- 所有區域 -</option>
+                {% for district in district_list|dictsort:"district"|dictsort:"area" %}
+                    <option value="{{district.district}}" {% if user_district == district.district %}selected{% endif %} area="{{district.area}}">{{district.area}} - {{district.district}}</option>
+                {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="display" id="contentTable" data-page-length="15">
+                <thead>
+                    <tr style="text-align:center;" class="bg-success">
+                        <th width="60">物業編號</th>
+                        <th width="50">發展商</th>
+                        <th width="200">地址</th>
+                        <th width="60">開發商</th>
+                        <th width="60">發展類型</th>
+                        <th width="60">最低售價</th>
+                        <th style="text-align:center;" width="80">首次銷售日期</th>
+                        <th style="text-align:center;" width="80">預計完成日期</th>
+                        <th style="text-align:center;" width="50">階段</th>
+                        <th style="text-align:center;" width="50">區域</th>
+                        <th style="text-align:center;" width="60">區</th>
+                        <th style="text-align:center;" width="40">圖</th>
+                        <th style="text-align:center;" width="110">創建日期</th>
+                        <th width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in property_view_list %}
+                    <tr valign="top">
+                        <td align="center" data-filter="{{ displaydata.property_number }}">{{ displaydata.property_number }}</td>
+                        <td data-filter="{{ displaydata.development_name }}">{{ displaydata.development_name }}</td>
+                        <td data-filter="{{ displaydata.address }}">{{ displaydata.address }}</td>
+                        <td data-filter="{{ displaydata.developer }}">{{ displaydata.developer }}</td>
+                        <td align="center" data-filter="{{ displaydata.development_type }}">{{ displaydata.development_type }}</td>
+                        <td align="right" data-filter="{{ displaydata.min_selling_price }}">{{ displaydata.min_selling_price }}</td>
+                        <td align="center" data-filter="{{ displaydata.first_sale_date|date:'Y-m-d' }}">{{ displaydata.first_sale_date|date:'Y-m-d' }}</td>
+                        <td align="center" data-filter="{{ displaydata.estimated_completion_date|date:'Y-m-d' }}">{{ displaydata.estimated_completion_date|date:'Y-m-d' }}</td>
+                        <td align="center" data-filter="{{ displaydata.phase }}">{{ displaydata.phase }}</td>
+                        <td align="center" data-filter="{{ displaydata.area }}">{{ displaydata.area }}</td>
+                        <td align="center" data-filter="{{ displaydata.district }}">{{ displaydata.district }}</td>
+                        <td style="text-align:center;">
+                           {% if displaydata.FileName is not NULL %}
+                                <img src="/static/dist/img-web/propertynew-cms/{{displaydata.listing_id}}/{{displaydata.FileName}}" width="80">
+                           {% endif %}
+                        </td>
+                        <td style="text-align:center;">{{ displaydata.create_date|date:'Y/m/d H:i' }}</td>
+                        <td style="text-align:center;">
+                            <ul class="action">
+                                {% if 2485 in request.session.accessright or 2486 in request.session.accessright %}<li class="edit"> <a href="#" class="open_edit" action="edit" formtype="property_info" formname="Property Information" propertyid="{{ displaydata.listing_id }}" propertyno="{{ displaydata.property_number }}" development_name="{{ displaydata.development_name }}" area="{{ displaydata.area }}" address="{{ displaydata.address }}" developer="{{ displaydata.developer }}" development_type="{{ displaydata.development_type }}" min_selling_price="{{ displaydata.min_selling_price }}" first_sale_date="{{ displaydata.first_sale_date }}" estimated_completion_date="{{ displaydata.estimated_completion_date }}" phase="{{ displaydata.phase }}" district="{{ displaydata.district }}" num_unit="{{ displaydata.num_unit }}" management_company="{{ displaydata.management_company }}" vendor_holding_company="{{ displaydata.vendor_holding_company }}" title="編輯物業"><i class="icofont icofont-ui-edit"></i></a></li>{% endif %}
+                                {% if 2487 in request.session.accessright %}<li class="edit"> <a href="#" class="open_modal_picture" action="upload" data-bs-toggle="modal" data-original-title="test" data-bs-target="#PictureModal" formtype="property_info" formname="Property Information" propertyid="{{ displaydata.listing_id }}" propertyno="{{ displaydata.property_number }}" propertyname="{{ displaydata.development_name }}" area="{{ displaydata.area }}" address="{{ displaydata.address }}" developer="{{ displaydata.developer }}" development_type="{{ displaydata.development_type }}" min_selling_price="{{ displaydata.min_selling_price }}" first_sale_date="{{ displaydata.first_sale_date }}" estimated_completion_date="{{ displaydata.estimated_completion_date }}" phase="{{ displaydata.phase }}" district="{{ displaydata.district }}" num_unit="{{ displaydata.num_unit }}" management_company="{{ displaydata.management_company }}" vendor_holding_company="{{ displaydata.vendor_holding_company }}" filetype="newphoto" title="上載圖片"><i class="icofont icofont-upload-alt"></i></a></li>{% endif %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+	{% if action == "property_edit" %}
+        <p style="padding-left:160px">
+        {% if propertyid != 0 and propertyid != "0" %}
+            <h3 class="mt-4" style="font-weight:600;padding-left:20px">編輯新盤 - {{property_list.0.development_name}}{{propertyid}}</h3>
+        {% else %}
+            <h3 class="mt-4" style="font-weight:600;padding-left:20px">新增新盤</h3>
+        {% endif %}
+        </p>
+      <!-- Container-fluid starts-->
+
+      <div class="container-fluid add-product" id="editTable">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-body">
+                <div class="product-info">
+                  <h3 class="mt-4" style="font-weight:600">物業資料</h3>
+                  <form>
+                    <input type="hidden" id="property_id" value="{{property_list.0.listing_id}}">
+                    <input type="hidden" id="listing_id" value="{{property_list.0.listing_id}}">
+                    <div class="product-group">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="mb-3">
+                            <label class="form-label">物業編號 <font color="red"></font></label>
+                            <input class="form-control" placeholder="物業編號必須填寫" type="text" id="property_number" value="{{property_list.0.property_number}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">發展商</label>
+                            <input class="form-control" placeholder="發展商必須填寫" type="text" id="developer" value="{{property_list.0.developer}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">發展商(簡)</label>
+                            <input class="form-control" placeholder="發展商(簡)必須填寫" type="text" id="developer_s" value="{{property_list.0.developer_s}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">發展商(英)</label>
+                            <input class="form-control" placeholder="發展商(英)必須填寫" type="text" id="developer_e" value="{{property_list.0.developer_e}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">樓盤名稱</label>
+                            <input class="form-control" placeholder="樓盤名稱必須填寫" type="text" id="development_name" value="{{property_list.0.development_name}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">樓盤名稱(簡)</label>
+                            <input class="form-control" placeholder="樓盤名稱(簡)必須填寫" type="text" id="development_name_s" value="{{property_list.0.development_name_s}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">樓盤名稱(英)</label>
+                            <input class="form-control" placeholder="樓盤名稱(英)必須填寫" type="text" id="development_name_e" value="{{property_list.0.development_name_e}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">期數</label>
+                            <input class="form-control" placeholder="" type="text" id="phase" value="{{property_list.0.phase}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">期數(簡)</label>
+                            <input class="form-control" placeholder="" type="text" id="phase_s" value="{{property_list.0.phase_s}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">期數(英)</label>
+                            <input class="form-control" placeholder="" type="text" id="phase_e" value="{{property_list.0.phase_e}}">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+                  <h3 class="mt-4" style="font-weight:600">地址</h3>
+                  <form>
+                    <div class="product-group">
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">地址</label>
+                            <input class="form-control" placeholder="地址必須填寫" type="text" id="address" value="{{property_list.0.address}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">地址(簡)</label>
+                            <input class="form-control" placeholder="地址(簡)必須填寫" type="text" id="address_s" value="{{property_list.0.address_s}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">地址(英)</label>
+                            <input class="form-control" placeholder="地址(英)必須填寫" type="text" id="address_e" value="{{property_list.0.address_e}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">地區</label>
+                            <input class="form-control" placeholder="" type="text" id="area" list="areas" value="{{property_list.0.area}}">
+                            <datalist id="areas">
+                            {% for area in area_list %}
+                                <option value="{{area.code_detail_name}}"{%if area.code_detail_name == property_list.0.area %} selected{% endif %}>{{area.code_detail_name}}</option>
+                            {% endfor %}
+                            </datalist>
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">地區(簡)</label>
+                            <input class="form-control" placeholder="" type="text" id="area_s" list="areas" value="{{property_list.0.area_s}}">
+                            <datalist id="areas">
+                            {% for area in area_list %}
+                                <option value="{{area.code_detail_name}}"{%if area.code_detail_name == property_list.0.area %} selected{% endif %}>{{area.code_detail_name}}</option>
+                            {% endfor %}
+                            </datalist>
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">地區(英)</label>
+                            <input class="form-control" placeholder="" type="text" id="area_e" list="areas" value="{{property_list.0.area_e}}">
+                            <datalist id="areas">
+                            {% for area in area_list %}
+                                <option value="{{area.code_detail_name}}"{%if area.code_detail_name == property_list.0.area %} selected{% endif %}>{{area.code_detail_name}}</option>
+                            {% endfor %}
+                            </datalist>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">分區</label>
+                            <input class="form-control" placeholder="" type="text" id="district" list="districts" value="{{property_list.0.district}}">
+                            <datalist id="districts">
+                            {% for district in district_list %}
+                                <option value="{{district.district}}"{%if district.district == property_list.0.district %} selected{% endif %}>{{district.district}}</option>
+                            {% endfor %}
+                            </datalist>
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">分區(簡)</label>
+                            <input class="form-control" placeholder="" type="text" id="district_s" list="districts" value="{{property_list.0.district_s}}">
+                            <datalist id="districts">
+                            {% for district in district_list %}
+                                <option value="{{district.district}}"{%if district.district == property_list.0.district %} selected{% endif %}>{{district.district}}</option>
+                            {% endfor %}
+                            </datalist>
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">分區(英)</label>
+                            <input class="form-control" placeholder="" type="text" id="district_e" list="districts" value="{{property_list.0.district_e}}">
+                            <datalist id="districts">
+                            {% for district in district_list %}
+                                <option value="{{district.district}}"{%if district.district == property_list.0.district %} selected{% endif %}>{{district.district}}</option>
+                            {% endfor %}
+                            </datalist>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+                  <h3 class="mt-4" style="font-weight:600">圖片({{property_file_list|length}}) {% if 1464 in request.session.accessright %}<button type="button" class="btn btn-xs btn-success me-3 open_modal_picture" id="add_picture_button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#PictureModal" action="upload" filetype="newphoto" formtype="property_info" formname="Property Information" propertyid="{{property_list.0.listing_id}}" propertyno="{{property_list.0.property_number}}" propertyname="{{property_list.0.development_name}}" address="{{ property_list.0.address }}" district="{{ displaydata.District }}" subdistrict="{{ displaydata.SubDistrict }}" street="{{ displaydata.Street }}" streetno="{{ displaydata.StreetNo }}" building="{{ displaydata.Building }}" floor="{{ displaydata.Floor }}" unit="{{ displaydata.Unit }}" yield_field="{{ displaydata.Yield }}"><i class="fa fa-plus"></i> 加入</button>{% endif %}</h3>
+                  <form>
+                    <div class="product-group">
+                      <ul id="imageContainer" style="display: flex; flex-wrap: wrap; list-style-type: none; padding: 0;">
+                      <!--<div class="gallery my-gallery card-body row" itemscope="">-->
+                        {% for displayfile in property_file_list %}
+                            <li class="col-xl-6 col-md-6 col-sm-6" data-id="{{forloop.counter}}" data-fileid="{{displayfile.fileid}}"  itemprop="associatedMedia" itemscope="">
+                              {% setvar "/static/dist/img-web/propertynew-cms/"|addtext:displayfile.propertyid|addtext:"/"|addtext:displayfile.filename as property_image %}
+                                <a href="{{property_image}}" itemprop="contentUrl" data-size="1600x950">
+                                  {% if ".mp4" in displayfile.filename %}
+                                      <video width="100%" height="100%" controls>
+                                        <source src="{{property_image}}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                      </video>
+                                  {% else %}
+                                    <img class="img-thumbnail" src="{{property_image}}" itemprop="thumbnail" alt="Image description">
+                                  {% endif %}
+                                </a>
+                                {% if displayfile.isapprove == 1 %}
+                                <button type="button" class="btn btn-xs btn-primary approve_picture" id="approve_picture_button" action="approve_picture" approve="0" formtype="property_info" formname="Property Information" propertyid="{{property_list.0.listing_id}}" pictureid="{{forloop.counter}}" fileid="{{displayfile.fileid}}">圖片#{{forloop.counter}}</button>&nbsp;
+                                {% else %}
+                                <button type="button" class="btn btn-xs btn-light approve_picture" id="main_picture_button" action="approve_picture" approve="1" formtype="property_info" formname="Property Information" propertyid="{{property_list.0.listing_id}}" pictureid="{{forloop.counter}}" fileid="{{displayfile.fileid}}">圖片#{{forloop.counter}}</button>
+                                {% endif %}
+                                <button type="button" class="btn btn-xs btn-danger delete_picture" id="delete_picture_button" action="delete_picture" formtype="property_info" formname="Property Information" pictureid="{{forloop.counter}}" fileid="{{displayfile.fileid}}"><i class="fa fa-close"></i> 刪除</button>&nbsp;
+                                {% if displayfile.ismain == 1 %}
+                                <button type="button" class="btn btn-xs btn-success main_picture" id="main_picture_button" action="main_picture" formtype="property_info" formname="Property Information" propertyid="{{property_list.0.listing_id}}" pictureid="{{forloop.counter}}" fileid="{{displayfile.fileid}}"><i class="fa fa-home"></i> 封面</button>
+                                {% else %}
+                                <button type="button" class="btn btn-xs btn-light main_picture" id="main_picture_button" action="main_picture" formtype="property_info" formname="Property Information" propertyid="{{property_list.0.listing_id}}" pictureid="{{forloop.counter}}" fileid="{{displayfile.fileid}}"><i class="fa fa-home"></i> 封面</button>
+                                {% endif %}
+                                <button type="button" class="btn btn-xs btn-success move-up">上</button>
+                                <button type="button" class="btn btn-xs btn-success move-down">落</button>
+                              <!--<figcaption itemprop="caption description">圖片#{{forloop.counter}}</figcaption>-->
+                            </li>
+                        {% empty %}
+                            <center>暫時未有圖片</center>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </form>
+
+                  <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/photoswipe.css' %}">
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-body">
+                <div class="product-info">
+                  <h3 class="mt-4" style="font-weight:600">樓盤</h3>
+                  <form>
+                    <div class="product-group">
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <div class="mb-3">
+                            <label class="form-label">樓盤類別</label>
+                            <select class="form-select" id="development_type">
+                            {% for development_type in development_type_list %}
+                                <option value="{{development_type.code_detail_name}}">{{development_type.code_detail_name}}</option>
+                            {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="mb-3">
+                            <label class="form-label">廣告日期</label>
+                            <input class="form-control" placeholder="" type="date" id="advertisement_date" value="{{property_list.0.advertisement_date|date:'Y-m-d'}}">
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="row">
+
+                        <div class="col-sm-6">
+                          <div class="mb-3">
+                            <label class="form-label">首次出售日期</label>
+                            <input class="form-control" placeholder="" type="date" id="first_sale_date" value="{{property_list.0.first_sale_date|date:'Y-m-d'}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="mb-3">
+                            <label class="form-label">預計關鍵日期</label>
+                            <input class="form-control" placeholder="" type="date" id="estimated_completion_date" value="{{property_list.0.estimated_completion_date|date:'Y-m-d'}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">管理公司</label>
+                            <input class="form-control" placeholder="管理公司必須填寫" type="text" id="management_company" value="{{property_list.0.management_company}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">管理公司(簡)</label>
+                            <input class="form-control" placeholder="管理公司(簡)必須填寫" type="text" id="management_company_s" value="{{property_list.0.management_company_s}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">管理公司(英)</label>
+                            <input class="form-control" placeholder="管理公司(英)必須填寫" type="text" id="management_company_e" value="{{property_list.0.management_company_e}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">賣方/賣方的控權公司</label>
+                            <input class="form-control" placeholder="賣方/賣方的控權公司必須填寫" type="text" id="vendor_holding_company" value="{{property_list.0.vendor_holding_company}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">賣方/賣方的控權公司(簡)</label>
+                            <input class="form-control" placeholder="賣方/賣方的控權公司(簡)必須填寫" type="text" id="vendor_holding_company_s" value="{{property_list.0.vendor_holding_company_s}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <div class="mb-3">
+                            <label class="form-label">賣方/賣方的控權公司(英)</label>
+                            <input class="form-control" placeholder="賣方/賣方的控權公司(英)必須填寫" type="text" id="vendor_holding_company_e" value="{{property_list.0.vendor_holding_company_e}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="mb-3">
+                            <label class="form-label">單位數量</label>
+                            <input class="form-control" placeholder="" type="text" id="num_units" value="{{property_list.0.num_units}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="mb-3">
+                            <label class="form-label">校網</label>
+                            <input class="form-control" placeholder="校網必須填寫" type="text" id="school_net" value="{{property_list.0.school_net}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="mb-3">
+                            <label class="form-label">校網(簡)</label>
+                            <input class="form-control" placeholder="校網(簡)必須填寫" type="text" id="school_net_s" value="{{property_list.0.school_net_s}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="mb-3">
+                            <label class="form-label">校網(英)</label>
+                            <input class="form-control" placeholder="校網(英)必須填寫" type="text" id="school_net_e" value="{{property_list.0.school_net_e}}">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="mb-3">
+                            <label class="form-label">項目資料</label>
+                            <input class="form-control" placeholder="項目資料必須填寫" type="text" id="project_details" value="{{property_list.0.project_details}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="mb-3">
+                            <label class="form-label">項目資料(簡)</label>
+                            <input class="form-control" placeholder="項目資料(簡)必須填寫" type="text" id="project_details_s" value="{{property_list.0.project_details_s}}">
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="mb-3">
+                            <label class="form-label">項目資料(英)</label>
+                            <input class="form-control" placeholder="項目資料(英)必須填寫" type="text" id="project_details_e" value="{{property_list.0.project_details_e}}">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                  <h3 class="mt-4" style="font-weight:600">價錢</h3>
+                  <form>
+                    <div class="product-group">
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <div class="mb-3">
+                            <label class="form-label">最低售價</label>
+                            <input class="form-control" placeholder="" type="number" id="min_selling_price" value="{{property_list.0.min_selling_price}}">
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+                  <h3 class="mt-4" style="font-weight:600">位置圖</h3>
+                  <form>
+                    <div class="product-group">
+                      <div class="gallery my-gallery card-body row" itemscope="">
+                        <figure class="col-xl-12 col-md-12 col-sm-12" itemprop="associatedMedia" itemscope="">
+                            <a href="/static/dist/img-web/propertynew-cms/{{property_list.0.listing_id}}/location_map.png" itemprop="contentUrl" data-size="1600x950"><img class="img-thumbnail" src="/static/dist/img-web/propertynew-cms/{{property_list.0.listing_id}}/location_map.png" itemprop="thumbnail" alt="位置圖">
+                            </a>
+                          <figcaption itemprop="caption description">位置圖</figcaption>
+                        </figure>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="mt-4">
+                  <div class="row">
+                    <div class="col-sm-12 text-end">
+                    {% if propertyid != 0 %}
+                        {% if 1461 in request.session.accessright or 2476 in request.session.accessright or 2477 in request.session.accessright or 2478 in request.session.accessright %}<button type="button" class="btn btn-success me-3" id="edit_button" action="edit">更改</button>{% endif %}
+                        {% if 1477 in request.session.accessright %}<button type="button" class="btn btn-danger me-3" id="delete_button" action="delete">刪除</button>{% endif %}
+                        <button type="button" class="btn btn-warning me-3" id="reset_button" action="reset">內容重設及新增物業</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary me-3" id="save_button" action="add">新增</button>
+                    {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    {% endif %}
+
+	{% if action == "team_list" %}
+        {% setvar "" as tmpTeam %}
+            <option value="">- 所有用戶 -</option>
+        {% for displayuser in userlist|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displayuser.Team %}{% if tmpTeam == "" %}<optgroup label="{{displayuser.teamFullDesc}}">{% else %}</optgroup><optgroup label="{{displayuser.teamFullDesc}}">{% endif %}{% endif %}
+            <option value="{{displayuser.LoginID}}" {% if user_loginid == displayuser.LoginID %} selected {% endif %}>{{displayuser.LoginNameDesc}} ({{displayuser.rankDesc}})</option>
+            {% setvar displayuser.Team as tmpTeam %}
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script src="{% static 'Koho/assets/js/photoswipe/photoswipe.min.js' %}"></script>
+<script src="{% static 'Koho/assets/js/photoswipe/photoswipe-ui-default.min.js' %}"></script>
+<script src="{% static 'Koho/assets/js/photoswipe/photoswipe.js' %}"></script>
+<script>
+    document.querySelectorAll('.move-up').forEach(button => {
+        button.addEventListener('click', () => {
+            const li = button.parentElement;
+            if (li.previousElementSibling) {
+                li.parentElement.insertBefore(li, li.previousElementSibling);
+                updateAllOrder();
+            }
+        });
+    });
+
+    document.querySelectorAll('.move-down').forEach(button => {
+        button.addEventListener('click', () => {
+            const li = button.parentElement;
+            if (li.nextElementSibling) {
+                li.parentElement.insertBefore(li.nextElementSibling, li);
+                updateAllOrder();
+            }
+        });
+    });
+
+    function updateAllOrder() {
+        const order = [...document.querySelectorAll('#imageContainer li')]
+            .map(li => ({
+                fileid: li.getAttribute('data-fileid'), // Get the file ID
+                order: li.getAttribute('data-id') // Get the display order
+            }));
+        // Send the updated order to the server via AJAX
+        var i = 0;
+        order.forEach(item => {
+            i = i + 1;
+            //alert("fileid: " + item.fileid + ", order: " + item.order + ", neworder: " + i);
+            $.ajax({
+                url: '{% url 'newPropertyMain_response' %}',
+                type: 'POST',
+                data: { action: "save_file_order", fileid: item.fileid, order: i },
+                success: function(response) {
+                    //alert(response)
+                    console.log('Order updated successfully!', response);
+                },
+                error: function(xhr, status, error) {
+                    //alert(error)
+                    console.error('Failed to update order:', error);
+                }
+            });
+        });
+    }
+
+    function setItemContent(img) {
+        var itemcontent = document.getElementById('itemcontent');
+        itemcontent.value = img.src.split('/').pop();
+    }
+    function hideRow(row) {
+        if (!(window.confirm("刪除此物業在盤紙上，你確定嗎？"))) {
+            return false;
+        }
+        row.parentNode.removeChild(row);
+        //row.style.display = "none";
+    }
+
+    $(".show_contact").off("click").on("click", function() {
+        document.getElementById('contentTable-contact').style.display = '';
+        document.getElementById('contact_detail_button').style.display = 'none';
+        propertyid = $(this).attr("propertyid");
+        $.ajax({
+            url:'{% url 'property_save' %}',
+            type:'POST',
+            data:{action:"add_contact_log", accessid:"5158", propertyid:propertyid},
+        })
+
+        .done(function(response){
+            /*
+            messagetext = "狀況資料已成功更新"
+            $.notify({
+                message: messagetext
+                },{
+                    type: 'success',
+                    allow_dismiss: true,
+                    positon: 'top right',
+                    offset: 20,
+                    spacing: 10,
+                    z_index: 1031,
+            });
+            */
+
+        })
+
+        .fail(function(xhr, status, error){
+            // alert the error if any error occured
+            $('#contentTable-contact').html(xhr.responseText);
+            alert(xhr.responseText);
+        })
+    });
+
+    $(".show_related_property").off("click").on("click", function() {
+        contact_type = $(this).attr("contact_type");
+        contact_data = $(this).attr("contact_data");
+        $.ajax({
+            url:'{% url 'newPropertyMain_response' %}',
+            type:'POST',
+            data:{action:"property_contact_property", contact_type:contact_type, contact_data:contact_data},
+            beforeSend: function(){
+                $('#related-property').html('<br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-2\"></div></div><br/></center></p>');
+            },
+        })
+
+        .done(function(response){
+            $('#related-property').html(response);
+            /*
+            messagetext = "狀況資料已成功更新"
+            $.notify({
+                message: messagetext
+                },{
+                    type: 'success',
+                    allow_dismiss: true,
+                    positon: 'top right',
+                    offset: 20,
+                    spacing: 10,
+                    z_index: 1031,
+            });
+            */
+
+        })
+
+        .fail(function(xhr, status, error){
+            // alert the error if any error occured
+            $('#contentTable-contact').html(xhr.responseText);
+            alert(xhr.responseText);
+        })
+    });
+
+    $(".open_view").off("click").on("click", function() {
+        area = $(this).attr("area");
+        district = $(this).attr("district");
+        var propertyElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        if (area == "全部") area = "";
+        $('#property_view').html("");
+        propertyElement.setAttribute('area', area);
+        $('a[href="#property_view"]').trigger('click');
+    });
+
+    $(".open_modal_picture").off("click").on("click", function() {
+        $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增圖片</b>");
+        $(".modal-header").css('background-color', '#DD4B39');
+        //$("#action").val($(this).attr("action"));
+        $("#filetype").val($(this).attr("filetype"));
+        $("#propertyid").val($(this).attr("propertyid"));
+        $("#propertyno_picture").html($(this).attr("propertyno"));
+        $("#propertyname_picture").html($(this).attr("propertyname"));
+        $("#address_picture").html($(this).attr("address"));
+        property_id = $(this).attr("propertyid");
+        myDropzone.options.params.property_id = $(this).attr("propertyid");
+        myDropzone.options.params.filetype = $(this).attr("filetype");
+    });
+
+    $(".delete_picture").off("click").on("click", function() {
+        $("#action").val($(this).attr("action"));
+        action = $(this).attr("action");
+        pictureid = $(this).attr("pictureid");
+        fileid = $(this).attr("fileid");
+        //myDropzone.options.params.property_id = $(this).attr("propertyid");
+        if (!(window.confirm("刪除圖片#"+pictureid+"，你確定嗎？"))) {
+            return false;
+        }
+        if (action == "delete_picture") {
+            $.ajax({
+                url:'{% url 'newPropertyMain_response' %}',
+                type:'POST',
+                data:{action:"delete_picture", fileid:fileid},
+            })
+            .done(function(response){
+                $.notify({
+                    message: "圖片已成功刪除"
+                    },{
+                        type: 'success',
+                        allow_dismiss: true,
+                        positon: 'top right',
+                        offset: 20,
+                        spacing: 10,
+                        z_index: 1031,
+                });
+                var tabContent = document.querySelector('.tab-content');
+                var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+                $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+            })
+            .fail(function(xhr, status, error){
+                $('.modal-message').html(xhr.responseText);
+                alert(xhr.responseText);
+            })
+        }
+    });
+
+    $(".main_picture").off("click").on("click", function() {
+        $("#action").val($(this).attr("action"));
+        action = $(this).attr("action");
+        propertyid = $(this).attr("propertyid");
+        pictureid = $(this).attr("pictureid");
+        fileid = $(this).attr("fileid");
+        //myDropzone.options.params.property_id = $(this).attr("propertyid");
+        if (!(window.confirm("圖片#"+pictureid+"設定為封面圖片，你確定嗎？"))) {
+            return false;
+        }
+        if (action == "main_picture") {
+            $.ajax({
+                url:'{% url 'newPropertyMain_response' %}',
+                type:'POST',
+                data:{action:"main_picture", propertyid:propertyid, fileid:fileid},
+            })
+            .done(function(response){
+                $.notify({
+                    message: "圖片#"+pictureid+"已設定為封面圖片"
+                    },{
+                        type: 'success',
+                        allow_dismiss: true,
+                        positon: 'top right',
+                        offset: 20,
+                        spacing: 10,
+                        z_index: 1031,
+                });
+                var tabContent = document.querySelector('.tab-content');
+                var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+                $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+            })
+            .fail(function(xhr, status, error){
+                $('.modal-message').html(xhr.responseText);
+                //alert("xx"+xhr.responseText);
+            })
+        }
+    });
+
+    $(".approve_picture").off("click").on("click", function() {
+        $("#action").val($(this).attr("action"));
+        action = $(this).attr("action");
+        propertyid = $(this).attr("propertyid");
+        pictureid = $(this).attr("pictureid");
+        fileid = $(this).attr("fileid");
+        approve = $(this).attr("approve");
+        //myDropzone.options.params.property_id = $(this).attr("propertyid");
+        if (approve == 1) {
+            if (!(window.confirm("圖片/平面圖#"+pictureid+"可以在網頁顯示，你確定嗎？"))) {
+                return false;
+            }
+        } else {
+            if (!(window.confirm("圖片/平面圖#"+pictureid+"取消在網頁顯示，你確定嗎？"))) {
+                return false;
+            }
+        }
+        if (action == "approve_picture") {
+            $.ajax({
+                url:'{% url 'newPropertyMain_response' %}',
+                type:'POST',
+                data:{action:"approve_picture", propertyid:propertyid, fileid:fileid, approve:approve},
+            })
+            .done(function(response){
+                $.notify({
+                    message: "圖片#"+pictureid+"已設定為封面圖片"
+                    },{
+                        type: 'success',
+                        allow_dismiss: true,
+                        positon: 'top right',
+                        offset: 20,
+                        spacing: 10,
+                        z_index: 1031,
+                });
+                var tabContent = document.querySelector('.tab-content');
+                var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+                $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+            })
+            .fail(function(xhr, status, error){
+                $('.modal-message').html(xhr.responseText);
+                //alert("xx"+xhr.responseText);
+            })
+        }
+    });
+
+    document.addEventListener('modalClosed', function() {
+      // Refresh the page or perform any other refresh logic
+      location.reload();
+    });
+
+{% if action == "area_view" %}
+    document.getElementById('searchpropertyno').addEventListener('keypress', function(event) {
+        // Check if the key pressed is 'Enter' (key code 13)
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent the default form submission
+            var propertyElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+            propertyElement.setAttribute('searchtext', $("#searchpropertyno").val());
+            var tabContent = document.querySelector('.tab-content');
+            var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+            $('#property_view').html("")
+            $('a[href="#property_view"]').trigger('click');
+        }
+    });
+{% endif %}
+{% if action == "property_view" %}
+    $("#searchinput").on("keyup change", function() {
+        var oTable = $('#contentTable').dataTable();
+        oTable.fnFilter($(this).val());
+    });
+
+    $("#cboArea").on('change', function(){
+        var val = $(this).val();
+        if (val == "香港及離島") val = "港島";
+        table.column( 9 )
+            .search(val, true, false)
+            .draw();
+    });
+
+    $("#cboDistrict").on('change', function(){
+        var val = $(this).val();
+        table.column( 10 )
+            .search(val, true, false)
+            .draw();
+    });
+
+    $("#searchinput").val($("#property_views").attr("searchtext"));
+
+    $(".open_edit").click(function(){
+        // Adding the Value from Table to Modal form
+        $("#action").val($(this).attr("action"));
+        //$("#propertyid").val($(this).attr("propertyid"));
+        $("#propertyid").val($(this).attr("listing_id"));
+        $("#area").val($(this).attr("area"));
+        $("#district").val($(this).attr("district"));
+
+
+        var value = $(this).attr("propertyid"); // Set the lock value to the desired value
+        var propertyElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_edits'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        //var propertyElement = document.getElementById('property_infos'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', value);
+        //var propertyElement = document.getElementById('property_oddsheets'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', value);
+        //var propertyElement = document.getElementById('property_offers'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', value);
+        //var propertyElement = document.getElementById('property_contacts'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', value);
+        //var propertyElement = document.getElementById('property_follows'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', value);
+        $("#propertyid").val(value);
+
+        $('a[href="#property_edit"]').trigger('click');
+    });
+
+    $(".open_oddsheet").off("click").on("click", function() {
+        // Adding the Value from Table to Modal form
+        $("#action").val($(this).attr("action"));
+        $("#propertyid").val($(this).attr("propertyid"));
+        $("#usage").val($(this).attr("usage"));
+        $("#district").val($(this).attr("district"));
+        $("#subdistrict").val($(this).attr("subdistrict"));
+
+        var value = $(this).attr("propertyid"); // Set the lock value to the desired value
+        var propertyElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_edits'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_infos'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_oddsheets'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_offers'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_oddsheets_multi'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', value);
+        var selectedValues = table.column(0).checkboxes.selected();
+        // Display the selected values
+        if (selectedValues.length > 0) {
+          var message = "Selected values:\n";
+          var listvalue = "";
+          for (var i = 0; i < selectedValues.length; i++) {
+            message += selectedValues[i] + "\n";
+            listvalue += selectedValues[i] + ","
+          }
+          listvalue = listvalue.slice(0, -1);
+          propertyElement.setAttribute('propertyid_list', listvalue);
+          $('a[href="#property_oddsheet_multi"]').trigger('click');
+        } else {
+          $('a[href="#property_oddsheet"]').trigger('click');
+        }
+    });
+
+    $(".open_offer").off("click").on("click", function() {
+        // Adding the Value from Table to Modal form
+        $("#action").val($(this).attr("action"));
+        $("#propertyid").val($(this).attr("propertyid"));
+        $("#usage").val($(this).attr("usage"));
+        $("#district").val($(this).attr("district"));
+        $("#subdistrict").val($(this).attr("subdistrict"));
+
+        var value = $(this).attr("propertyid"); // Set the lock value to the desired value
+        var propertyElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_edits'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_infos'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_oddsheets'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_offers'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        //var propertyElement = document.getElementById('property_contacts'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', value);
+        //var propertyElement = document.getElementById('property_follows'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', value);
+
+        $('a[href="#property_offer"]').trigger('click');
+    });
+    refresh_table();
+{% endif %}
+
+{% if action == "request_review" %}
+    $(document).ready(function(){
+        $(".quick_approval").click(function(){
+            action = $(this).attr("action");
+            propertyid = $(this).attr("propertyid");
+            approve = $(this).attr("approve");
+
+            if (action == "approve") {
+                $.ajax({
+                    url:'{% url 'newPropertyMain_response' %}',
+                    type:'POST',
+                    data:{action:"request_review_update", propertyid:propertyid, approve:approve},
+                })
+                .done(function(response){
+                    $.notify({
+                        message: "申請已獲批准."
+                        },{
+                            type: 'success',
+                            allow_dismiss: true,
+                            positon: 'top right',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    var tabContent = document.querySelector('.tab-content');
+                    var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+                    $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+                })
+                .fail(function(xhr, status, error){
+                    $('.modal-message').html(xhr.responseText);
+                    alert(xhr.responseText);
+                })
+            }
+
+        });
+    })
+{% endif %}
+{% if action == "menutab" %}
+    action = "area_view";
+    team = $("#cboTeam").val();
+    loginid = $("#cboUser").val();
+    $.ajax({
+        url:'{% url 'newPropertyMain_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, team:team, loginid:loginid},
+        beforeSend: function(){
+            $('#area_view').html('<br/><br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-2\"></div></div><br/><b>輸入中</b></center></p>');
+        },
+    })
+    .done(function(response){
+        $('#area_view').html(response);
+        refresh_table(action);
+    })
+    .fail(function(xhr, status, error){
+        $('#area_view').html(xhr.responseText);
+        //alert(xhr.responseText);
+    })
+    var selectTab
+    $('[data-toggle="tabajax"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-target'),
+            action = $this.attr('action');
+            area = $this.attr('area');
+            propertyid = $this.attr('propertyid');
+            propertyid_list = $this.attr('propertyid_list');
+
+            if (action == "property_view") {
+                if ($('#property_view').html() != "") {
+                    $this.tab('show');
+                    return false;
+                }
+            }
+
+            lock = $this.attr('lock');
+            if (lock == 1) {
+                alert("\u26A0 沒有存取此頁面的存取權限！欲了解更多信息，請聯絡系統管理員。");
+                return false;
+            }
+
+            $.ajax({
+                url:'{% url 'newPropertyMain_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, area:area, propertyid:propertyid, propertyid_list:propertyid_list},
+                beforeSend: function(){
+                    // Display the loading message with the current time
+                    var startTime = new Date().getTime();
+                    $('#'+action).html('<br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-2\"></div></div><br/><span id="loadingTime"></span><br/><br/><br/><br/><br/></center></p>');
+                    loadingInterval = setInterval(function() {
+                      // Update the loading time every second
+                      var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+                      $('#loadingTime').html('讀取時間: ' + elapsedTime + ' 秒');
+                    }, 1000);
+                },
+            })
+            .done(function(response){
+                // Calculate the loading time and append it to the response message
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#'+action).html(response);
+                $("#cboArea").val(area);
+                var typeElement = document.getElementById('cboArea');
+                if (area == "")
+                    typeElement.disabled = false;
+                else
+                    typeElement.disabled = true;
+                if (action == "property_view") {
+                    var oTable = $('#contentTable').dataTable();
+                    oTable.fnFilter($("#searchinput").val());
+                }
+            })
+            .fail(function(xhr, status, error){
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#errormessage').html(xhr.responseText);
+            })
+            //$(loadurl).html(loadurl);
+            $this.tab('show');
+        return false;
+    });
+
+    $(document).on("click", "#reset_button", function(){
+        var propertyEditElement = document.getElementById('property_edits'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('propertyid', '');
+        //var propertyElement = document.getElementById('property_infos'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', '');
+        //var propertyElement = document.getElementById('property_oddsheets'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', '');
+        //var propertyElement = document.getElementById('property_offers'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', '');
+        //var propertyElement = document.getElementById('property_contacts'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', '');
+        //var propertyElement = document.getElementById('property_follows'); // Get the element with ID "property_edit"
+        //propertyElement.setAttribute('propertyid', '');
+
+
+        $('a[href="#property_edit"]').trigger('click');
+    })
+
+    $(document).on("click", "#save_button, #edit_button, #delete_button", function(){
+        //Disabling the Button while data is being saved in Server
+        //$(this).attr("disabled", "disabled")
+        //$(this).text("Confirming...")
+        //console.log("SAVE")
+        action = $(this).attr("action");
+        propertyid = $("#listing_id").val();
+        listing_id = $("#listing_id").val();
+        property_number = $("#property_number").val();
+        developer = $("#developer").val();
+        developer_s = $("#developer_s").val();
+        developer_e = $("#developer_e").val();
+        development_name = $("#development_name").val();
+        development_name_s = $("#development_name_s").val();
+        development_name_e = $("#development_name_e").val();
+
+        phase = $("#phase").val();
+        phase = $("#phase").val();
+        phase = $("#phase").val();
+        address = $("#address").val();
+        address = $("#address").val();
+        address = $("#address").val();
+        area = $("#area").val();
+        area = $("#area").val();
+        area = $("#area").val();
+        district = $("#district").val();
+        district = $("#district").val();
+        district = $("#district").val();
+        /*
+        development_type = $("#development_type").val();
+        min_selling_price = $("#min_selling_price").val();
+        num_units = $("#num_units").val();
+        first_sale_date = $("#first_sale_date").val();
+        estimated_completion_date = $("#estimated_completion_date").val();
+        management_company = $("#management_company").val();
+        vendor_holding_company = $("#vendor_holding_company").val();
+        school_net = $("#school_net").val();
+        project_details = $("#project_details").val();
+        advertisement_date = $("#advertisement_date").val();
+        */
+        const formData = {
+            action: $(this).attr("action"),
+            propertyid: $("#listing_id").val(),
+            listing_id: $("#listing_id").val(),
+            property_number: $("#property_number").val(),
+            developer: $("#developer").val(),
+            developer_s: $("#developer_s").val(),
+            developer_e: $("#developer_e").val(),
+            development_name: $("#development_name").val(),
+            development_name_s: $("#development_name_s").val(),
+            development_name_e: $("#development_name_e").val(),
+            phase: $("#phase").val(),
+            phase_s: $("#phase_s").val(),
+            phase_e: $("#phase_e").val(),
+            address: $("#address").val(),
+            address_s: $("#address_s").val(),
+            address_e: $("#address_e").val(),
+            area: $("#area").val(),
+            area_s: $("#area_s").val(),
+            area_e: $("#area_e").val(),
+            district: $("#district").val(),
+            district_s: $("#district_s").val(),
+            district_e: $("#district_e").val(),
+            development_type: $("#development_type").val(),
+            min_selling_price: $("#min_selling_price").val(),
+            num_units: $("#num_units").val(),
+            first_sale_date: $("#first_sale_date").val(),
+            estimated_completion_date: $("#estimated_completion_date").val(),
+            management_company: $("#management_company").val(),
+            management_company_s: $("#management_company_s").val(),
+            management_company_e: $("#management_company_e").val(),
+            vendor_holding_company: $("#vendor_holding_company").val(),
+            vendor_holding_company_s: $("#vendor_holding_company_s").val(),
+            vendor_holding_company_e: $("#vendor_holding_company_e").val(),
+            school_net: $("#school_net").val(),
+            school_net_s: $("#school_net_s").val(),
+            school_net_e: $("#school_net_e").val(),
+            project_details: $("#project_details").val(),
+            project_details_s: $("#project_details_s").val(),
+            project_details_e: $("#project_details_e").val(),
+            advertisement_date: $("#advertisement_date").val(),
+        };
+
+        if (formData.property_number == "") {
+            alert("請輸入物業編號");
+            $("#property_number").focus();
+            return false
+        }
+        if (formData.area == "") {
+            alert("請選擇地區");
+            $("#area").focus();
+            return false
+        }
+        if (formData.area_s == "") {
+            alert("請選擇地區");
+            $("#area_s").focus();
+            return false
+        }
+        if (formData.area_e == "") {
+            alert("請選擇地區");
+            $("#area_e").focus();
+            return false
+        }
+        if (formData.district == "") {
+            alert("請輸入分區");
+            $("#district").focus();
+            return false
+        }
+        if (formData.district_s == "") {
+            alert("請輸入分區");
+            $("#district_s").focus();
+            return false
+        }
+        if (formData.district_e == "") {
+            alert("請輸入分區");
+            $("#district_e").focus();
+            return false
+        }
+
+        if (formData.action == 'add') {
+            if (!(window.confirm("新增新盤資料，你確定嗎？"))) {
+                return false;
+            }
+        } else {
+            if (formData.action == 'edit') {
+                if (!(window.confirm("更改新盤資料，你確定嗎？"))) {
+                    return false;
+                }
+            } else {
+                if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                    return false;
+                }
+            }
+        }
+
+        // Saving Data into Database
+        //alert('|action:' + action + '|propertyno:' + propertyno + '|propertyname:' + propertyname + '|usage:' + usage + '|district:' + district + '|subdistrict:' + subdistrict + '|street:' + street + '|streetno:' + streetno + '|building:' + building + '|floor:' + floor + '|unit:' + unit + '|offertype:' + offertype + '|possession:' + possession + '|grossarea:' + grossarea + '|netarea:' + netarea + '|sellingprice:' + sellingprice + '|unitprice:' + unitprice + '|rent:' + rent + '|unitrent:' + unitrent + '|managementfee:' + managementfee + '|unitmanagementfee:' + unitmanagementfee + '|rates:' + rates + '|unitrates:' + unitrates)
+        $.ajax({
+            url:'{% url 'newPropertyMain_save' %}',
+            type:'POST',
+            data:formData,
+        })
+
+        .done(function(response){
+            var messagetext = "";
+            if (response == "Success") {
+                var messagetype = "success"
+                if (action == "add") messagetext = development_name+"新盤已成功加入"
+                if (action == "edit") messagetext = development_name+"新盤已成功更新"
+                if (action == "delete") messagetext = development_name+"新盤已成功刪除"
+            } else {
+                var messagetype = "danger"
+                if (action == "add") messagetext = "新盤加入失敗，請重新再試！\n"+response
+                if (action == "edit") messagetext = development_name+"新盤更新失敗，請重新再試！\n"+response
+                if (action == "delete") messagetext = development_name+"新盤刪除失敗，請重新再試！\n"+response
+            }
+            $.notify({
+                message: messagetext
+                },{
+                    type: messagetype,
+                    allow_dismiss: true,
+                    positon: 'top right',
+                    offset: 20,
+                    spacing: 10,
+                    z_index: 1031,
+            });
+            if (action == "edit") $('a[href="#property_edit"]').trigger('click');
+            //if (action == "delete") $('a[href="#property_view"]').trigger('click');
+        })
+
+        .fail(function(xhr, status, error){
+            // alert the error if any error occured
+            alert(xhr.responseText);
+            $("#editTable").html(xhr.responseText);
+        })
+    })
+
+    $(document).on("click", ".export_excel", function(){
+        action = $(this).attr("action");
+        area = $(this).attr("area");
+
+        $.ajax({
+            url:'{% url 'newPropertyMain_response' %}',
+            type:'POST',
+            data:{action:action, area:area},
+        })
+
+        .done(function(response){
+            var messagetype = "success"
+            if (area == "None") area = "全部"
+            messagetext = area+"物業已成功匯出"
+            $.notify({
+                message: messagetext
+                },{
+                    type: messagetype,
+                    allow_dismiss: true,
+                    positon: 'top right',
+                    offset: 20,
+                    spacing: 10,
+                    z_index: 1031,
+            });
+            const fileUrl = response.file_url;
+            if (fileUrl) {
+                window.open(fileUrl); // Open the file in a new tab
+            }
+        })
+
+        .fail(function(xhr, status, error){
+            // alert the error if any error occured
+            //alert(xhr.responseText);
+            $("#area_view").html(xhr.responseText);
+        })
+    })
+
+    $(document).on("click", ".import_excel", function(){
+        var fileInput = document.getElementById("import_file_button");
+        var file = fileInput.files[0];
+        action = $(this).attr("action");
+        if (fileInput.files.length == 0) {
+            alert("先選擇檔案後才上匯入")
+            return false;
+        }
+        var formData = new FormData();
+        formData.append("action", action);
+        formData.append("file", file);
+
+        $.ajax({
+            url: '/upload_newproperty/', // URL to your upload file endpoint
+            type: 'POST',
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Set the content type to false to let jQuery set it
+            success: function(response) {
+                var messagetype = "success"
+                if (usage == "None") usage = "全部本地"
+                messagetext = usage+"物業已成功匯入"
+                $.notify({
+                    message: messagetext
+                    },{
+                        type: messagetype,
+                        allow_dismiss: true,
+                        positon: 'top right',
+                        offset: 20,
+                        spacing: 10,
+                        z_index: 1031,
+                });
+                $('#responseMessage').html('<p>' + response.message + '</p>');
+            },
+            error: function(jqXHR) {
+                alert(jqXHR.responseJSON.error)
+                $('#responseMessage').html('<p>' + jqXHR.responseJSON.error + '</p>');
+            }
+        });
+    })
+
+    $("#searchinput").on("keyup", function() {
+        var oTable = $('#contentTable').dataTable();
+        oTable.fnFilter($(this).val());
+    });
+    {% if user_propertyid is not None and user_propertyid != "" %}
+        $('a[href="#property_edit"]').trigger('click');
+    {% endif %}
+
+
+{% endif %}
+</script>
+{% if action == "property_edit" %}
+    <script src="{% static 'Koho/assets/js/owlcarousel/owl-custom.js' %}"></script>
+{% endif %}
+{% endblock custom_js %}

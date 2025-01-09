@@ -1,0 +1,937 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item">
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                {{property_list.0.usage}}
+                            {% elif request.session.lang == "sc" %}
+                                {{property_list.0.usage_s}}
+                            {% else %}
+                                {{property_list.0.usage_e}}
+                            {% endif %}
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"全部"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+{% load watermark %}
+      <!--=====================================-->
+      <!--=   Single Listing     Start        =-->
+      <!--=====================================-->
+   <style>
+/*
+ * Always set the map height explicitly to define the size of the div element
+ * that contains the map.
+ */
+#map {
+  height: 100%;
+}
+
+/*
+ * Optional: Makes the sample page fill the window.
+ */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+gmp-map {
+  height: 400px;
+}
+    </style>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-k1UGS0OD7HZxTLWIOOhyfrl8ryiHniY&callback=console.debug&libraries=maps,marker&v=beta">
+    </script>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+
+      /* Optional: Makes the sample page fill the window. */
+      gmp-map  {
+        height: 600px;
+        width: 600px;
+        margin: 0;
+      }
+    </style>
+
+      <section class="single-listing-wrap1">
+        <div class="container" id="property_foreign_show">
+          <div class="single-property">
+            <div class="content-wrapper">
+              <div class="property-heading">
+                <div class="row">
+                  <div class="col-lg-6 col-md-12">
+                    <div class="single-list-cate">
+                      <div class="item-categoery">
+                            {{property_list.0.offertype|showlang:request.session.lang}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-md-12">
+                    <div class="single-list-price">{{property_list.0.offertype|showlang:request.session.lang}}
+                        {% if property_list.0.offertype == "放售" %}
+                          {{property_list.0.currency|default_if_none:""}}${{property_list.0.sellingprice|default_if_none:""|format_number_with_commas}} {{"起"|showlang:request.session.lang}}
+                        {% endif %}
+                        {% if property_list.0.offertype == "放租" %}
+                          {{property_list.0.currency|default_if_none:""}}${{property_list.0.rent|default_if_none:""|format_number_with_commas}}/{{"月"|showlang:request.session.lang}}
+                        {% endif %}
+                        {% if property_list.0.offertype == "連租約售" %}
+                          {{"放售"|showlang:request.session.lang}} {{property_list.0.currency|default_if_none:""}}${{property_list.0.sellingprice|default_if_none:""|format_number_with_commas}} {{"起"|showlang:request.session.lang}}
+                        {% endif %}
+                        {% if property_list.0.offertype == "租售" %}
+                          {{"放售"|showlang:request.session.lang}} {{property_list.0.currency|default_if_none:""}}${{property_list.0.sellingprice|default_if_none:""|format_number_with_commas}} {{"起"|showlang:request.session.lang}} {{"或"|showlang:request.session.lang}} {{"放租"|showlang:request.session.lang}} {{property_list.0.currency|default_if_none:""}}${{property_list.0.rent|default_if_none:""|format_number_with_commas}}/{{"月"|showlang:request.session.lang}}
+                        {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <div class="row align-items-center">
+                  <div class="col-lg-8 col-md-12">
+                    <div class="single-verified-area">
+                      <div class="item-title">
+                        <h3>
+                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                            {{property_list.0.projectname}}
+                        {% elif request.session.lang == "sc" %}
+                            {{property_list.0.projectname_s}}
+                        {% else %}
+                            {{property_list.0.projectname_e}}
+                        {% endif %}
+                        </h3>
+                      </div>
+                    </div>
+                    <div class="single-item-address">
+                      <ul>
+                        <li>
+                          <i class="fas fa-map-marker-alt"></i>
+                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                            {{property_list.0.country}}
+                        {% elif request.session.lang == "sc" %}
+                            {{property_list.0.country_s}}
+                        {% else %}
+                            {{property_list.0.country_e}}
+                        {% endif %}
+                        </li>
+                        <li><i class="fas fa-clock"></i>{{property_list.0.listingdate|date:'Y/m/d'}}</li>
+                        <li><i class="fas fa-eye"></i>{{"瀏覽次數"|showlang:request.session.lang}}：{{property_list.0.viewcounter}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-12">
+                    <div class="side-button">
+                      <ul>
+                        <!--
+                        <li>
+                          <a href="/property_foreign_show/{{property_list.0.propertyforeignid}}" class="side-btn"
+                            ><i class="flaticon-share"></i
+                          ></a>
+                        </li>
+                        -->
+                        <!--
+                        <li>
+                            {% if displayproperty.propertyforeignid|safe in favorites_cookies %}
+                            <a href="#" data-toggle="tooltip" data-placement="bottom" onclick="toggleFavorites('{{property_list.0.propertyforeignid}}')" class="side-btn favorite-add" member_id="{{request.session.member_id}}" property_id="{{property_list.0.propertyforeignid}}" title="刪除我的最愛">
+                                <i class="flaticon-check"></i>
+                            </a>
+                            {% else %}
+                            <a href="#" data-toggle="tooltip" data-placement="bottom" onclick="toggleFavorites('{{property_list.0.propertyforeignid}}')" class="side-btn favorite-add" member_id="{{request.session.member_id}}" property_id="{{property_list.0.propertyforeignid}}" title="加入我的最愛">
+                                <i class="flaticon-heart"></i>
+                            </a>
+                            {% endif %}
+                        </li>
+                        -->
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+
+                  <div class="single-listing-box1">
+                    <div class="overview-area">
+                      <h3 class="item-title">{{"圖片"|showlang:request.session.lang}}</h3>
+
+                  <div class="featured-thumb-slider-area wow fadeInUp" data-wow-delay=".4s">
+                    <div class="feature-box3 swiper-container" style="height:580px:width:auto;text-align:center">
+                      <div class="swiper-wrapper gallery my-gallery" id="aniimated-thumbnials" itemscope="">
+                        {% for displayfile in property_file_list %}
+                          {% if "x.xmp4" not in displayfile.filename %}
+                            <div class="swiper-slide">
+                              {% setvar "/static/dist/img-web/propertyforeign-cms/"|addtext:displayfile.propertyforeignid|addtext:"/"|addtext:displayfile.filename as property_image %}
+                              <figure class="reveal box-col-25" itemprop="associatedMedia" itemscope=""><a href="{{property_image}}" itemprop="contentUrl" data-size="1600x950">
+                              <div class="feature-img1">
+                                  <!--<img src="/static/dist/img-web/property-cms/{{displayfile.propertyforeignid}}/{{displayfile.filename}}" alt="feature" width="1100"/>-->
+                                  {% if ".mp4" in displayfile.filename %}
+                                  <video width="100%" height="100%" controls>
+                                    <source src="{{property_image}}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                  </video>
+                                  {% else %}
+                                  <img src="{{property_image}}" alt="feature" class="img-thumbnail" itemprop="thumbnail" style="width:auto; height:580px"/>
+                                  {% endif %}
+                              </div>
+                              </a></figure>
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="featured-thum-slider2 swiper-container">
+                      <div class="swiper-wrapper">
+                        {% for displayfile in property_file_list %}
+                          {% if ".xxmp4" not in displayfile.filename %}
+                        <div class="swiper-slide">
+                          {% setvar "/static/dist/img-web/propertyforeign-cms/"|addtext:displayfile.propertyforeignid|addtext:"/"|addtext:displayfile.filename as property_image %}
+                          <div class="item-img">
+                            <!--<img src="/static/dist/img-web/property-cms/{{displayfile.propertyforeignid}}/{{displayfile.filename}}" alt="feature" width="206"/>-->
+                              {% if ".mp4" in displayfile.filename %}
+                              <video width="206" height="100" style="pointer-events: none;">
+                                <source src="{{property_image}}" type="video/mp4">
+                                Your browser does not support the video tag.
+                              </video>
+                              {% else %}
+                                <img src="{{property_image}}" alt="feature" style="width:206px; height:100px"/>
+                              {% endif %}
+                          </div>
+                        </div>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+
+                    <br>
+                    </div>
+                  </div>
+                {% if property_floorplan_list|length > 0 %}
+                  <div class="single-listing-box1">
+                    <div class="overview-area floor-plan-box">
+                  <h3 class="item-title">{{"平面圖"|showlang:request.session.lang}}</h3>
+                  <div id="accordion" class="accordion">
+                    {% for displayfloorplan in property_floorplan_list %}
+                    <div class="card">
+                      <div class="card-header">
+                        <div class="heading-title{% if forloop.counter != 1%} collapsed{% endif %}" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="true" role="button">
+                          <!--<span>{{"平面圖"|showlang:request.session.lang}}#{{forloop.counter}}</span>-->
+                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                          <span>{{"平面圖"|showlang:request.session.lang}}#{{forloop.counter}}<font size="5"><b>{% if displayfloorplan.filetitle|default_if_none:"" != "" %} - {{displayfloorplan.filetitle}}{% endif %}</b></font></span>
+                        {% elif request.session.lang == "sc" %}
+                          <span>{{"平面圖"|showlang:request.session.lang}}#{{forloop.counter}}<font size="5"><b>{% if displayfloorplan.filetitle_s|default_if_none:"" != "" %} - {{displayfloorplan.filetitle_s}}{% endif %}</b></font></span>
+                        {% else %}
+                          <span>{{"平面圖"|showlang:request.session.lang}}#{{forloop.counter}}<font size="5"><b>{% if displayfloorplan.filetitle_e|default_if_none:"" != "" %} - {{displayfloorplan.filetitle_e}}{% endif %}</b></font></span>
+                        {% endif %}
+                          <div class="card-list">
+                            <!--
+                            <ul>
+                              <li>
+                                <i class="flaticon-two-overlapping-square"></i><span>{% if property_list.0.grossarea|default_if_none:"" != "" %}約{{property_list.0.grossarea|default_if_none:""|format_number_with_commas}} 平方呎(建築){%else%}{{property_list.0.netarea|default_if_none:""|format_number_with_commas}} 平方呎{%endif%}</span>
+                              </li>
+                            </ul>
+                            -->
+                          </div>
+                        </div>
+                      </div>
+                      <div id="collapse{{forloop.counter}}" class="collapse{% if forloop.counter == 1%} show{% endif %}" data-parent="#accordion">
+                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                            <center>{% if displayfloorplan.filedescription|default_if_none:"" != "" %}{{displayfloorplan.filedescription}}{% endif %}</center>
+                        {% elif request.session.lang == "sc" %}
+                            <center>{% if displayfloorplan.filedescription_s|default_if_none:"" != "" %}{{displayfloorplan.filedescription_s}}{% endif %}</center>
+                        {% else %}
+                            <center>{% if displayfloorplan.filedescription_e|default_if_none:"" != "" %}{{displayfloorplan.filedescription_e}}{% endif %}</center>
+                        {% endif %}
+                        <div class="card-body">
+                          {% setvar "/static/dist/img-web/floorplanforeign-cms/"|addtext:displayfloorplan.propertyforeignid|addtext:"/"|addtext:displayfloorplan.filename as floorplan_image %}
+                          <figure class="reveal box-col-25" itemprop="associatedMedia" itemscope=""><a href="{{floorplan_image}}" itemprop="contentUrl" data-size="1600x950">
+                          <div class="item-img">
+                            <img src="{{floorplan_image}}" alt="shape"/>
+                          </div>
+                          </a></figure>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                  </div>
+                {% endif %}
+                    <!--
+                  <div class="single-listing-box1">
+                    <div class="overview-area map-box">
+                      <h3 class="item-title">{{"地圖位置"|showlang:request.session.lang}}</h3>
+                        <div class="item-map">
+                            <gmp-map
+                              center="12.940146945766383, 80.17412285394178"
+                              zoom="13"
+                              map-id="DEMO_MAP_ID"
+                              id="my-map">
+                              <gmp-advanced-marker
+                                position="12.940146945766383, 80.17412285394178"
+                                title="My location">
+                              </gmp-advanced-marker>
+                            </gmp-map>
+
+                        </div>
+                    </div>
+                  </div>
+                    -->
+
+                </div>
+                <div class="col-lg-6 widget-break-lg sidebar-widget">
+                  <div class="single-listing-box1">
+                    <div class="overview-area">
+                      <h3 class="item-title">{{"概要"|showlang:request.session.lang}}</h3>
+                      <div class="gallery-icon-box">
+                        <div class="item-icon-box col-lg-4 col-md-6 col-sm-12">
+                          <div class="item-icon">
+                            <i class="flaticon-comment"></i>
+                          </div>
+                          <ul class="item-number">
+                            <li>{{"物業編號"|showlang:request.session.lang}}：</li>
+                            <li class="deep-clr">{{property_list.0.propertyno}}</li>
+                          </ul>
+                        </div>
+                        <div class="item-icon-box col-lg-4 col-md-6 col-sm-12">
+                          <div class="item-icon">
+                            <i class="flaticon-home"></i>
+                          </div>
+                          <ul class="item-number">
+                            <li>{{"用途"|showlang:request.session.lang}}：</li>
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                <li class="deep-clr">{{property_list.0.usage}}</li>
+                            {% elif request.session.lang == "sc" %}
+                                <li class="deep-clr">{{property_list.0.usage_s}}</li>
+                            {% else %}
+                                <li class="deep-clr">{{property_list.0.usage_e}}</li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                        <div class="item-icon-box col-lg-4 col-md-6 col-sm-12">
+                          <div class="item-icon">
+                            <i class="flaticon-maps-and-flags"></i>
+                          </div>
+                          <ul class="item-number">
+                            <li>{{"國家"|showlang:request.session.lang}}：</li>
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                <li class="deep-clr">{{property_list.0.country}}</li>
+                            {% elif request.session.lang == "sc" %}
+                                <li class="deep-clr">{{property_list.0.country_s}}</li>
+                            {% else %}
+                                <li class="deep-clr">{{property_list.0.country_e}}</li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                        <div class="item-icon-box col-lg-4 col-md-6 col-sm-12">
+                          <div class="item-icon">
+                            <i class="flaticon-maps-and-flags"></i>
+                          </div>
+                          <ul class="item-number">
+                            <li>{{"發展商"|showlang:request.session.lang}}：</li>
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                <li class="deep-clr">{{property_list.0.developer}}</li>
+                            {% elif request.session.lang == "sc" %}
+                                <li class="deep-clr">{{property_list.0.developer_s}}</li>
+                            {% else %}
+                                <li class="deep-clr">{{property_list.0.developer_e}}</li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                        <div class="item-icon-box col-lg-4 col-md-6 col-sm-12">
+                          <div class="item-icon">
+                            <i class="flaticon-calendar"></i>
+                          </div>
+                          <ul class="item-number">
+                            <li>{{"完工日期"|showlang:request.session.lang}}：</li>
+                            <li class="deep-clr">{{property_list.0.completiondate}}</li>
+                          </ul>
+                        </div>
+                        <div class="item-icon-box col-lg-4 col-md-6 col-sm-12">
+                          <div class="item-icon">
+                            <i class="flaticon-two-overlapping-square"></i>
+                          </div>
+                          <ul class="item-number">
+                            <li>{{"戶型"|showlang:request.session.lang}}：</li>
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                <li class="deep-clr">{{property_list.0.unittypes}}</li>
+                            {% elif request.session.lang == "sc" %}
+                                <li class="deep-clr">{{property_list.0.unittypes_s}}</li>
+                            {% else %}
+                                <li class="deep-clr">{{property_list.0.unittypes_e}}</li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                        <div class="item-icon-box col-lg-4 col-md-6 col-sm-12">
+                          <div class="item-icon">
+                            <i class="flaticon-pencil"></i>
+                          </div>
+                          <ul class="item-number">
+                            <li>{{"單位面積"|showlang:request.session.lang}}：</li>
+                              {% if property_list.0.unitsize|default_if_none:"" != "" and property_list.0.unitsize|default_if_none:"" != 0 %}
+                                {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                    <li class="deep-clr">{{property_list.0.unitsize|default_if_none:""|format_number_with_commas}}</li>
+                                {% elif request.session.lang == "sc" %}
+                                    <li class="deep-clr">{{property_list.0.unitsize_s|default_if_none:""|format_number_with_commas}}</li>
+                                {% else %}
+                                    <li class="deep-clr">{{property_list.0.unitsize_e|default_if_none:""|format_number_with_commas}}</li>
+                                {% endif %}
+                              {% else %}
+                                {{"未提供"|showlang:request.session.lang}}
+                              {% endif %}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="overview-area listing-area">
+                      <h3 class="item-title">{{"關於物業"|showlang:request.session.lang}}</h3>
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                {{property_list.0.projectdescription|safe}}
+                            {% elif request.session.lang == "sc" %}
+                                {{property_list.0.projectdescription_s|safe}}
+                            {% else %}
+                                {{property_list.0.projectdescription_e|safe}}
+                            {% endif %}
+                    </div>
+                    <div class="overview-area listing-area">
+                      <h3 class="item-title">{{"物業設施"|showlang:request.session.lang}}</h3>
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                {{property_list.0.propertyfeatures|safe}}
+                            {% elif request.session.lang == "sc" %}
+                                {{property_list.0.propertyfeatures_s|safe}}
+                            {% else %}
+                                {{property_list.0.propertyfeatures_e|safe}}
+                            {% endif %}
+                    </div>
+                      <!--
+                    <div class="overview-area single-details-box table-responsive">
+                      <h3 class="item-title">詳情</h3>
+                      <table class="table-box1">
+                        <tr>
+                          <td class="item-bold">物業編號</td>
+                          <td>{{property_list.0.propertyno}}</td>
+                          <td class="item-bold">Price</td>
+                          <td>$12,500</td>
+                        </tr>
+                        <tr>
+                          <td class="item-bold">Property Type</td>
+                          <td>Apartment</td>
+                          <td class="item-bold">Parking</td>
+                          <td>Yes</td>
+                        </tr>
+                        <tr>
+                          <td class="item-bold">Rooms</td>
+                          <td>04</td>
+                          <td class="item-bold">Property Status</td>
+                          <td>For Rent</td>
+                        </tr>
+                        <tr>
+                          <td class="item-bold">Bath Rooms</td>
+                          <td>03</td>
+                          <td class="item-bold">Land Area</td>
+                          <td>15,000 sqft</td>
+                        </tr>
+                        <tr>
+                          <td class="item-bold">Size</td>
+                          <td>1050 sqft</td>
+                          <td class="item-bold">Year Build</td>
+                          <td>2021</td>
+                        </tr>
+                      </table>
+                    </div>
+                    -->
+                    <!--
+                    <div class="overview-area ameniting-box">
+                      <h3 class="item-title">Features & Amenities</h3>
+                      <div class="row">
+                        <div class="col-lg-4">
+                          <ul class="ameniting-list">
+                            <li><i class="fas fa-check-circle"></i>TV Cable</li>
+                            <li>
+                              <i class="fas fa-check-circle"></i>Air
+                              Conditioning
+                            </li>
+                            <li><i class="fas fa-check-circle"></i>Barbeque</li>
+                            <li><i class="fas fa-check-circle"></i>Gym</li>
+                          </ul>
+                        </div>
+                        <div class="col-lg-4">
+                          <ul class="ameniting-list">
+                            <li>
+                              <i class="fas fa-check-circle"></i>Swimming Pool
+                            </li>
+                            <li><i class="fas fa-check-circle"></i>Laundry</li>
+                            <li>
+                              <i class="fas fa-check-circle"></i>Microwave
+                            </li>
+                            <li><i class="fas fa-check-circle"></i>Lawn</li>
+                          </ul>
+                        </div>
+                        <div class="col-lg-4">
+                          <ul class="ameniting-list">
+                            <li><i class="fas fa-check-circle"></i>Sauna</li>
+                            <li>
+                              <i class="fas fa-check-circle"></i>Window
+                              Coverings
+                            </li>
+                            <li>
+                              <i class="fas fa-check-circle"></i>CC Camera
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    -->
+                      <!--
+                    <div class="overview-area video-box1">
+                      <h3 class="item-title">{{"視頻"|showlang:request.session.lang}}</h3>
+                      <div class="item-img">
+
+                        <img src="https://img.youtube.com/vi/1iIZeIy7TqM/maxresdefault.jpg" alt="YouTube Video Thumbnail" class="youtube-thumbnail">
+                        <div class="play-button">
+                          <div class="item-icon">
+                            <a href="http://www.youtube.com/watch?v=1iIZeIy7TqM" class="play-btn play-btn-big">
+                                <img src="https://img.youtube.com/vi/1iIZeIy7TqM/maxresdefault.jpg" alt="YouTube Video Thumbnail" class="youtube-thumbnail">
+                              <span class="play-icon style-2">
+                                <i class="fas fa-play"></i>
+                              </span>
+                            </a>
+                          </div>
+                        </div>
+
+
+                      </div>
+                    </div>
+                    -->
+                    <div class="widget widget-contact-box">
+                        <h3 class="widget-subtitle">{{"與我們對話"|showlang:request.session.lang}}</h3>
+                        <div class="media">
+                          <div class="item-logo">
+                            <img src="{% static 'dist/img/infinyrealty_small_w.png' %}" alt="logo" width="100" eight="100"/>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="d-flex">InfinyRealty</h4>
+                            <div class="item-phn d-flex">
+                              <font color="green"><i class="fab fa-whatsapp fa-2x"></i></font>&nbsp;&nbsp;<a target="_blank" href="https://wa.me/+85221191189?text=查詢{{property_list.0.propertyname}}"><h5> + 852 21191189</h5></a>
+                            </div>
+                            <div class="item-mail d-flex"><i class="fas fa-envelope fa-2x"></i>&nbsp;&nbsp;<a href="mailto:realty@infiny.group"><h5>realty@infiny.group</h5></a></div>
+                          </div>
+                            <ul class="wid-contact-button">
+                              <li>
+                              </li>
+                              <li>
+                                {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                  <button type="button" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="add" name="enquiry_button" class="btn btn-normal open_modal_info" action="enquiry" property_id="{{property_list.0.propertyforeignid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.district}}{{property_list.0.subdistrict}}{{property_list.0.street}}{% if property_list.0.streetno|default_if_none:"" != "" %}{{property_list.0.streetno}}號{{property_list.0.building}}{% endif %}{% if property_list.0.floorzone|default_if_none:"" != "" %}{{property_list.0.floorzone}}{% endif %}"><i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;{{"查詢"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;
+                                  </button>
+                                {% elif request.session.lang == "sc" %}
+                                  <button type="button" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="add" name="enquiry_button" class="btn btn-normal open_modal_info" action="enquiry" property_id="{{property_list.0.propertyforeignid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.district_s}}{{property_list.0.subdistrict_s}}{{property_list.0.street_s}}{% if property_list.0.streetno|default_if_none:"" != "" %}{{property_list.0.streetno}}號{{property_list.0.building_s}}{% endif %}{% if property_list.0.floorzone|default_if_none:"" != "" %}{{property_list.0.floorzone}}{% endif %}"><i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;{{"查詢"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;
+                                  </button>
+                                {% else %}
+                                  <button type="button" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="add" name="enquiry_button" class="btn btn-normal open_modal_info" action="enquiry" property_id="{{property_list.0.propertyforeignid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.district_e}}{{property_list.0.subdistrict}}{{property_list.0.street_e}}{% if property_list.0.streetno|default_if_none:"" != "" %}{{property_list.0.streetno}}號{{property_list.0.building_e}}{% endif %}{% if property_list.0.floorzone|default_if_none:"" != "" %}{{property_list.0.floorzone}}{% endif %}"><i class="fa fa-user"></i>&nbsp;&nbsp;&nbsp;{{"查詢"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;
+                                  </button>
+                                {% endif %}
+                              </li>
+                              <!--<li>
+                                  <button href="/property_foreign_show/{{property_list.0.propertyforeignid}}" type="button" id="share_button" name="share_button" class="btn btn-normal" action="share"><i class="fas fa-share-alt"></i>&nbsp;&nbsp;&nbsp;{{"分享"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;
+                                  </button>
+                              </li>-->
+                            </ul>
+                        </div>
+
+                      </div>
+                  <br>
+
+                  <!--
+                  <div class="widget widget-listing-box1">
+                    <h3 class="widget-subtitle">最新上市</h3>
+                    <div class="item-img">
+                      <a href="single-listing2.html"
+                        ><img
+                          src="img/blog/widget1.jpg"
+                          alt="widget"
+                          width="540"
+                          height="360"
+                      /></a>
+                      <div class="item-category-box1">
+                        <div class="item-category">For Rent</div>
+                      </div>
+                    </div>
+                    <div class="widget-content">
+                      <div class="item-category10">
+                        <a href="single-listing2.html">Villa</a>
+                      </div>
+                      <h4 class="item-title">
+                        <a href="single-listing2.html"
+                          >Modern Villa for House Highland Ave Los Angeles</a
+                        >
+                      </h4>
+                      <div class="location-area">
+                        <i class="flaticon-maps-and-flags"></i>2150 S Jones
+                        Blvd, USA
+                      </div>
+                      <div class="item-price">$11,000<span>/mo</span></div>
+                    </div>
+                    <div class="widget-listing">
+                      <div class="item-img">
+                        <a href="single-listing2.html"
+                          ><img
+                            src="img/blog/widget2.jpg"
+                            alt="widget"
+                            width="120"
+                            height="102"
+                        /></a>
+                      </div>
+                      <div class="item-content">
+                        <h5 class="item-title">
+                          <a href="single-listing2.html"
+                            >House Highland Ave Los Angeles</a
+                          >
+                        </h5>
+                        <div class="location-area">
+                          <i class="flaticon-maps-and-flags"></i>California
+                        </div>
+                        <div class="item-price">$3,000<span>/mo</span></div>
+                      </div>
+                    </div>
+                    <div class="widget-listing">
+                      <div class="item-img">
+                        <a href="single-listing2.html"
+                          ><img
+                            src="img/blog/widget3.jpg"
+                            alt="widget"
+                            width="120"
+                            height="102"
+                        /></a>
+                      </div>
+                      <div class="item-content">
+                        <h5 class="item-title">
+                          <a href="single-listing2.html"
+                            >House Highland Ave Los Angeles</a
+                          >
+                        </h5>
+                        <div class="location-area">
+                          <i class="flaticon-maps-and-flags"></i>California
+                        </div>
+                        <div class="item-price">$1,200<span>/mo</span></div>
+                      </div>
+                    </div>
+                    <div class="widget-listing no-brd">
+                      <div class="item-img">
+                        <a href="single-listing2.html"
+                          ><img
+                            src="img/blog/widget4.jpg"
+                            alt="widget"
+                            width="120"
+                            height="102"
+                        /></a>
+                      </div>
+                      <div class="item-content">
+                        <h5 class="item-title">
+                          <a href="single-listing2.html"
+                            >House Highland Ave Los Angeles</a
+                          >
+                        </h5>
+                        <div class="location-area">
+                          <i class="flaticon-maps-and-flags"></i>California
+                        </div>
+                        <div class="item-price">$1,900<span>/mo</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+<!-- Modal -->
+
+<div class="modal fade" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="InfoModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>{{"查詢"|showlang:request.session.lang}}</b></span></h4>
+            </div>
+            <div id="modal-message">
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="property_id">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group">
+					<label for="property_name" class="control-label">{{"查詢物業地址"|showlang:request.session.lang}}
+                        <div id="property_name" style="color: var(--rt-primary-color)"></div>
+                    </label>
+			    </div>
+				<div class="form-group">
+					<label for="property_no" class="control-label">{{"物業編號"|showlang:request.session.lang}}
+                        <div id="property_no" style="color: var(--rt-primary-color)"></div>
+                    </label>
+			    </div>
+				<div class="form-group">
+					<label for="contact_name">{{"姓名"|showlang:request.session.lang}}</label>
+						<input type="text" class="form-control" id="contact_name" placeholder="{{"輸入姓名"|showlang:request.session.lang}}" value="">
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-3">
+                        <label for="phone_area_code">{{"電話區號"|showlang:request.session.lang}}</label>
+						<select id="phone_area_code" class="form-control" style="background: #fff; cursor: pointer; padding-top:10px;width: 100%">
+							<option value="+852" selected>+852 ({{"香港"|showlang:request.session.lang}})</option>
+							<option value="+853">+853 ({{"澳門"|showlang:request.session.lang}})</option>
+							<option value="+86">+86 ({{"中國"|showlang:request.session.lang}})</option>
+						</select>
+                    </div>
+                    <div class="form-group col-sm-9">
+                        <label for="phone_number">{{"電話號碼"|showlang:request.session.lang}}</label>
+                        <input type="number" class="form-control" id="phone_number" placeholder="{{"請輸入電話號碼"|showlang:request.session.lang}}" value="" size="8">
+                    </div>
+                </div>
+				<div class="form-group">
+					<label for="email">{{"電郵地址"|showlang:request.session.lang}}</label>
+						<input type="text" class="form-control" id="email" placeholder="{{"輸入電郵地址"|showlang:request.session.lang}}" value="">
+			    </div>
+                <div class="form-group">
+                    <label for="message" class="control-label">
+                        {{"訊息"|showlang:request.session.lang}}：
+                    </label>
+                    <textarea class="form-control" id="message" placeholder="" rows="5"></textarea>
+                </div>
+                 <div class="form-group d-flex align-items-center">
+                     <input type="checkbox" name="agree" id="newsletter" value="1" checked/><label class="form-check-label" for="rtcl-agree">&nbsp;&nbsp;{{"收取本公司物業資訊"|showlang:request.session.lang}}</label>
+                  </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="add_button" action="enquiry"><i class="fa fa-plane"></i>&nbsp;&nbsp;{{"送出"|showlang:request.session.lang}}</button>
+                <button type="button" class="btn btn-normal" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;{{"取消"|showlang:request.session.lang}}</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Root element of PhotoSwipe. Must have class pswp.-->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+    <div class="pswp__scroll-wrap">
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+      <div class="pswp__ui pswp__ui--hidden">
+        <div class="pswp__top-bar">
+          <div class="pswp__counter"></div>
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(".open_modal_info").click(function(){
+        // Adding the Value from Table to Modal form
+        $(".modal-header").css('color', '#FFFFFF');
+        $("#property_id").val($(this).attr("property_id"));
+        $("#property_no").html($(this).attr("property_no"));
+        $("#property_name").html($(this).attr("property_name"));
+        $("#action").val($(this).attr("action"));
+
+        var property_id = $(this).attr("property_id");
+        var property_no = $(this).attr("property_no");
+        var property_name = $(this).attr("property_name");
+        var action = $(this).attr("action");
+        if (action == 'enquiry') {
+            $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>{{"查詢物業"|showlang:request.session.lang}}</b>");
+            $(".modal-header").css('background-color', '#F39C12');
+            $("#add_button").show();
+            $("#edit_button").hide();
+            $("#delete_button").hide();
+        } else {
+            $("#FunctionTitle").html("<i class='icon-eye'></i>&nbsp;&nbsp;<b>{{"查詢物業"|showlang:request.session.lang}}</b>");
+            $(".modal-header").css('background-color', '#F39C12');
+            $("#add_button").show();
+            $("#edit_button").hide();
+            $("#delete_button").hide();
+        }
+    });
+
+    $(document).on("click", "#add_button", function(){
+        var action = $(this).attr("action");
+        var property_id = $("#property_id").val();
+        var property_name = $("#property_name").text();
+        var contact_name = $("#contact_name").val();
+        var email = $("#email").val();
+        var phone_area_code = $("#phone_area_code").val();
+        var phone_number = $("#phone_number").val();
+        var message = $("#message").val();
+        if ($('#newsletter').prop('checked')) {
+          var newsletter = 1;
+        } else {
+          var newsletter = 0;
+        }
+
+        if ((action == "enquiry")) {
+            if (contact_name == '') {
+                alert('{{"請輸入您的姓名"|showlang:request.session.lang}}');
+                $("#contact_name").focus();
+                return false;
+            }
+            if (email == '') {
+                alert('{{"請輸入您的電郵地址"|showlang:request.session.lang}}');
+                $("#email").focus();
+                return false;
+            }
+            if (phone_number == '') {
+                alert('{{"請輸入電話號碼"|showlang:request.session.lang}}');
+                $("#phone_number").focus();
+                return false;
+            }
+
+            if (action == "enquiry") {
+                if (!(window.confirm("{{"查詢以上資料，你確定嗎？"|showlang:request.session.lang}}"))) {
+                    return false;
+                }
+            }
+
+            $.ajax({
+                url:'{% url 'enquiry_save' %}',
+                type:'POST',
+                data:{action:action, property_id:property_id, property_name: $.trim(property_name), contact_name:contact_name, email:email, phone_area_code:phone_area_code, phone_number:phone_number, message:message, newsletter:newsletter},
+            })
+
+            .done(function(response){
+                if (response == "Success") {
+                    $.notify({
+                        message: "{{"你的網上查詢已成功送出"|showlang:request.session.lang}}"
+                        },{
+                            type: 'success',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    document.location.href = "/main"
+                }
+            })
+
+            .fail(function(xhr, status, error){
+                // alert the error if any error occured
+                $("#modal-message").html(xhr.responseText)
+                //alert(xhr.responseText);
+            })
+        }
+
+    });
+
+    function toggleFavorites(propertyforeignid) {
+      // Get the current value of the cookie (if it exists)
+      var existingValue = document.cookie.replace(/(?:(?:^|.*;\s*)favorites\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
+      // Convert the existing value to an array (or create an empty array if it doesn't exist)
+      var favorites = existingValue ? existingValue.split(",") : [];
+
+      // Check if the propertyforeignid is already in the favorites list
+      var index = favorites.indexOf(propertyforeignid);
+
+      if (index === -1) {
+        // Add the propertyforeignid to the favorites list
+        favorites.push(propertyforeignid);
+        console.log("Added propertyforeignid " + propertyforeignid + " to favorites!");
+      } else {
+        // Remove the propertyforeignid from the favorites list
+        favorites.splice(index, 1);
+        console.log("Removed propertyforeignid " + propertyforeignid + " from favorites!");
+      }
+
+      // Convert the array back to a string
+      var updatedValue = favorites.join(",");
+
+      // Set the modified cookie with the updated value
+      document.cookie = "favorites=" + updatedValue + "; expires=Thu, 31 Dec 2025 23:59:59 UTC; path=/";
+    }
+
+    function ispropertyforeignidInFavorites(propertyforeignid) {
+      var existingValue = document.cookie.replace(/(?:(?:^|.*;\s*)favorites\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+      var favorites = existingValue ? existingValue.split(",") : [];
+      return favorites.includes(propertyforeignid);
+    }
+
+    function updateFavorites(propertyforeignid) {
+      var favoriteIcon = document.getElementById(".favorite-add");
+      if (ispropertyforeignidInFavorites(propertyforeignid)) {
+        favoriteIcon.classList.add("highlighted");
+      } else {
+        favoriteIcon.classList.remove("highlighted");
+      }
+    }
+
+    $(document).on("click", "#print_button", function(){
+        var buttontype = $(this).attr("buttontype");
+
+        if (buttontype == 'print') {
+
+            sRestricted = '';
+            var sheader = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+            sheader = sheader + '<style>';
+            sheader = sheader + 'body{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'table tr td{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'body { margin: 0; padding: 15;  box-sizing: border-box;}';
+            sheader = sheader + '</style>';
+
+            var sstyle = '<link rel="stylesheet" href="{% static 'dist/css/Adminlte.css' %}" /><link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.css' %}"/>';
+
+           //my_window.document.write( sheader );
+            var tabobj = $('<div width=550px></div>').html($('#property_foreign_show').html());
+            tabobj.find('button').hide();
+
+            shtml = tabobj.html();
+            tabobj.printThis();
+
+            //my_window.document.write( '<html><head>' +sheader + '</head>' + sstyle + '<body>' + shtml + '</body></html>');
+        }
+    })
+
+</script>
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

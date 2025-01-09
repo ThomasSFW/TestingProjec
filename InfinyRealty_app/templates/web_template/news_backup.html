@@ -1,0 +1,266 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">主頁</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">研究與新聞</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+<style>
+.datepicker-here .today {
+  background-color: #007bff;
+  color: #fff;
+}
+.datepicker-here .selected {
+  background-color: #007bff;
+  color: #fff;
+}
+</style>
+    <!--=====================================-->
+    <!--=   Terms     Start                 =-->
+    <!--=====================================-->
+        <div class="article-head"><br>
+		    <h5 class="text-center" style="font-weight:600">研究與新聞</h5>
+		</div>
+
+        <section class="blog-wrap5">
+            <div class="container">
+                <div class="row gutters-40">
+                    <div class="col-lg-8">
+                        <div class="row" id="">
+                        {% for displaydata in content_detail|dictsortreversed:"create_date" %}
+                            <div class="col-lg-6 col-md-6">
+                                <div class="blog-box1 blog-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <!--<div class="item-img">
+                                        <a href="blog1.html"><img src="{% static 'dist/img-web/news/1/hongkong.jpg' %}" alt="blog" width="520" height="350"></a>
+                                    </div>-->
+                                    <div class="thumbnail-date">
+                                        <div class="popup-date">
+                                            <span class="day">{{displaydata.create_date|date:"d"}}</span><span class="month">{{displaydata.create_date|date:"m"}}月</span>
+                                        </div>
+                                    </div>
+                                    <div class="item-content">
+                                        <!--<div class="entry-meta">
+                                            <ul>
+                                                <li><a href="blog2.html">Apartment, Room</a></li>
+                                                <li><a href="blog2.html">5 min</a></li>
+                                            </ul>
+                                        </div>-->
+                                        <div class="heading-title">
+                                            <a href="/news_detail/{{displaydata.content_detail_id}}"><h5 style="color:#330066;font=weight:600;-webkit-line-clamp: 1!important;-webkit-box-orient: vertical;">{{displaydata.content_detail_title|default_if_none:""|remove_p_tags|safe}}</h5></a>
+                                            <div class="display: -webkit-box !important;font=weight:600;overflow: hidden!important;-webkit-line-clamp: 1!important;-webkit-box-orient: vertical;">{{displaydata.content_detail_name|safe|slice:"40"}}...</div>
+                                        </div>
+                                        <div class="blog-button">
+                                            <a href="/news_detail/{{displaydata.content_detail_id}}" class="item-btn">更多<i class="fas fa-arrow-right"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="col-lg-12 col-md-12">
+                                <div class="blog-box1 blog-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <center>沒有{{select_date}}研究與新聞記錄</center>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                        <!--
+                        <div class="pagination-style-1">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="with-sidebar2.html" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"><a class="page-link active" href="/news/1">1</a></li>
+                                <li class="page-item"><a class="page-link" href="/news/2">2</a></li>
+                                <li class="page-item"><a class="page-link" href="/news/3">3</a></li>
+                                <li class="page-item"><a class="page-link" href="/news/4">4</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="with-sidebar2.html" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        -->
+                    </div>
+                    <div class="col-lg-4 widget-break-lg sidebar-widget">
+                        <!--<div class="widget widget-search-box">
+                            <h3 class="widget-subtitle">搜尋</h3>
+                            <div class="widget-form-box">
+                                <input class="form-control" type="text" placeholder="你想找什麼？">
+                                <div class="item-search"><i class="fas fa-search"></i></div>
+                            </div>
+                        </div>-->
+                        <div class="widget widget-categoery-box">
+                            <h3 class="widget-subtitle">搜索日期</h3>
+                            <div class="datepicker-here" data-language="en" width="100%"></div>
+                            <button id="get-date" style="display:none">Get Selected Date</button>
+                            <div id="selected-date" style="display:none">{{select_date}}</div>
+                            <br>
+                        </div>
+                        <!--<div class="widget widget-categoery-box">
+                            <h3 class="widget-subtitle">物業分類</h3>
+                            <ul class="categoery-list">
+                                {% for displaydata in usage_view_list %}
+                                <li class="property_type_select"><a href="#">{{displaydata.Usage|default_if_none:"全部"}}<span class="categoery-count">{{displaydata.UsageCount}}</span></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>-->
+                        <!--
+                        <div class="widget widget-listing-box1">
+                            <h3 class="widget-subtitle">Latest Listing</h3>
+                            <div class="widget-listing">
+                                <div class="item-img">
+                                    <a href="single-listing1.html"><img src="img/blog/widget2.jpg" alt="widget" width="120" height="102"></a>
+                                </div>
+                                <div class="item-content">
+                                    <h5 class="item-title"><a href="single-listing1.html">House Highland Ave  Los Angeles</a></h5>
+                                    <div class="location-area"><i class="flaticon-maps-and-flags"></i>California</div>
+                                    <div class="item-price">$3,000<span>/mo</span></div>
+                                </div>
+                            </div>
+                            <div class="widget-listing">
+                                <div class="item-img">
+                                    <a href="single-listing1.html"><img src="img/blog/widget3.jpg" alt="widget" width="120" height="102"></a>
+                                </div>
+                                <div class="item-content">
+                                    <h5 class="item-title"><a href="single-listing1.html">House Highland Ave  Los Angeles</a></h5>
+                                    <div class="location-area"><i class="flaticon-maps-and-flags"></i>California</div>
+                                    <div class="item-price">$1,200<span>/mo</span></div>
+                                </div>
+                            </div>
+                            <div class="widget-listing no-brd">
+                                <div class="item-img">
+                                    <a href="single-agent1.html"><img src="img/blog/widget4.jpg" alt="widget" width="120" height="102"></a>
+                                </div>
+                                <div class="item-content">
+                                    <h5 class="item-title"><a href="single-listing1.html">House Highland Ave  Los Angeles</a></h5>
+                                    <div class="location-area"><i class="flaticon-maps-and-flags"></i>California</div>
+                                    <div class="item-price">$1,900<span>/mo</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+                        <!--<div class="widget widget-taglist">
+                            <h3 class="widget-subtitle">熱門標籤</h3>
+                            <ul class="tag-list">
+                                {% for displaydata in usage_view_list %}
+                                <li><a href="#">{{displaydata.Usage|default_if_none:"全部"}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    var propertyTypeItems = document.querySelectorAll(".property_type_select");
+    var offerTypeItems = document.querySelectorAll(".offer_type_select");
+    propertyTypeItems.forEach(function(item) {
+        item.addEventListener("click", function() {
+            var usage = item.getAttribute("value");
+            var action = 'search';
+            $.ajax({
+                url:'{% url 'main_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, usage:usage},
+            })
+            .done(function(response){
+                document.location.href = "/property_search";
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+        });
+    });
+
+    function news_list() {
+        alert("fdf")
+        action = "news_list"
+        $.ajax({
+            url:'{% url 'news_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, start_date:start_date, end_date:end_date},
+        })
+        .done(function(response){
+            $(pagetype).html(response);
+        })
+        .fail(function(xhr, status, error){
+            $('#errormessage').html(xhr.responseText);
+        })
+    }
+
+    var $datepicker = $('.datepicker-here');
+
+    // Initialize the datepicker
+    $datepicker.datepicker({
+      language: 'en',
+      onSelect: function(formattedDate, date, inst) {
+        // Get the selected date when the user selects a date
+        updateSelectedDate(date);
+      }
+    });
+
+  // Set the default date to today
+  $datepicker.datepicker('setDate', "{{select_Date}}");
+  setSelectedDate("{{select_Date}}");
+
+    // Function to update the selected date display
+    function updateSelectedDate(date) {
+      var $selectedDate = $('#selected-date');
+      if (date) {
+        $selectedDate.text('Selected date: ' + date.toLocaleDateString('en-CA', {year: 'numeric',month: '2-digit',day: '2-digit'}));
+        location.href = "/news/" + date.toLocaleDateString('en-CA', {year: 'numeric',month: '2-digit',day: '2-digit'}).replace(/\//g, '-');
+      } else {
+        $selectedDate.text('No date selected');
+      }
+    }
+
+    // Function to update the selected date display
+    function setSelectedDate(date) {
+      var $selectedDate = $('#selected-date');
+      if (date) {
+        $selectedDate.text('Selected date: ' + date.toLocaleDateString('en-CA', {year: 'numeric',month: '2-digit',day: '2-digit'}));
+      } else {
+        $selectedDate.text('No date selected');
+      }
+    }
+
+    // Button click event to get the selected date
+    $('#get-date').on('click', function() {
+      var selectedDate = $datepicker.data('datepicker').getDate();
+      updateSelectedDate(selectedDate);
+    });
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

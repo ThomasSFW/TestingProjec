@@ -1,0 +1,478 @@
+{% extends 'common_template/base_template.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">印表機管理</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb" style="float:right">
+    {% for displayitem in menuitem %}
+    <li><i class="fa fa-dashboard"></i></li>
+    <li>{{displayitem.tabName}}</li>
+    <li>{{displayitem.catName}}</li>
+    <li class="active">{{displayitem.subCatName}}</li>
+    {% endfor %}
+    </ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <!-- /.card-header -->
+                <div class="box-header with-border">
+					<div class="col-md-3 nopadding">
+                        <span class="label label-primary">過濾</span>
+                        <b>關鍵字</b>&nbsp;&nbsp;
+                        <div class="input-group">
+                            <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                                <span class="input-group-btn">
+									<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                </span>
+						</div>
+                    </div>
+                    <div class="col-md-8">
+                    </div>
+                </div>
+            </div>
+
+            <div class="box box-warning">
+                <div id="contentBody" class="table-responsive box-body">
+                    <div id="preloader"><div class="sk-three-bounce"><div class="sk-child sk-bounce1"></div><div class="sk-child sk-bounce2"></div><div class="sk-child sk-bounce3"></div></div></div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Modal -->
+
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="ModalTitle"><span id="FunctionTitle"><i class="fa fa-edit"></i>&nbsp;&nbsp;<b>Edit</b></span><button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button></h4>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="printer_id">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group">
+					<label for="printer_name">印表機名稱</label>
+						<input type="text" class="form-control" id="printer_name" placeholder="輸入印表機名稱" value="">
+			    </div>
+				<div class="form-group">
+					<label for="printer_model">打印機型號</label>
+						<input type="text" class="form-control" id="printer_model" placeholder="輸入打印機型號" value="">
+			    </div>
+				<div class="form-row">
+                    <div class="form-group col-sm-8 nopadding">
+                        <label for="printer_client_id">客戶端號</label>
+                            <input type="text" class="form-control" id="printer_client_id" placeholder="輸入客戶端號" value="">
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="printer_serial_number">序列號</label>
+                            <input type="text" class="form-control" id="printer_serial_number" placeholder="輸入序列號" value="">
+			    </div>
+				<div class="form-row">
+                    <div class="form-group col-sm-8 nopadding">
+                        <label for="ip_address">IP地址</label>
+						    <input type="text" class="form-control" id="ip_address" placeholder="輸入IP地址" value="">
+
+                    </div>
+                    <div class="form-group col-sm-4">
+					<label for="port">端口</label>
+						<input type="text" class="form-control" id="port" placeholder="輸入端口" value="">
+                    </div>
+			    </div>
+				<div class="form-row">
+                    <div class="form-group col-sm-4 nopadding">
+                        <label for="location_code">位置代號</label>
+                            <input type="text" class="form-control" id="location_code" placeholder="輸入位置代號" value="">
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="location">位置名稱</label>
+                            <input type="text" class="form-control" id="location" placeholder="輸入位置名稱" value="">
+                    </div>
+                    <div class="form-group col-sm-4 nopadding">
+                        <label for="location_level">位置層級</label>
+                            <input type="text" class="form-control" id="location_level" placeholder="輸入位置層級" value="">
+                    </div>
+			    </div>
+				<div class="form-group">
+					<label>狀態</label>
+						<div class="form-group clearfix">
+							<div class="icheck-success d-inline" style="margin-right:20px">
+								<input type="radio" id="status_1" name="status" checked>
+								<label for="status_1" value="1">正常</label>
+							</div>
+							<div class="icheck-success d-inline" style="margin-right:20px">
+								<input type="radio" id="status_0" name="status">
+								<label for="status_0" value="0">失效</label>
+							</div>
+						</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                {% if 260 in request.session.accessright %}
+                <button type="submit" class="btn btn-danger" id="add_button" action="add"><i class="fa fa-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="submit" class="btn btn-warning" id="edit_button" action="edit"><i class="fa fa-edit"></i>&nbsp;&nbsp;更新</button>
+                {% endif %}
+                {% if 1419 in request.session.accessright %}
+                <button type="submit" class="btn btn-danger" id="remove_button"><i class="fa fa-trash"></i>&nbsp;&nbsp;刪除</button>
+                {% endif %}
+                {% if 1437 in request.session.accessright %}
+                <button type="submit" class="btn btn-primary" id="print_button" action="print_test"><i class="fa fa-print"></i>&nbsp;&nbsp;列印測試(本機)</button>
+                <button type="submit" class="btn btn-info" id="print_mqtt_button" action="print_test_mqtt"><i class="fa fa-print"></i>&nbsp;&nbsp;列印測試(MQTT)</button>
+                {% endif %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" action="close"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        var table;
+
+        $("#searchinput").on("keyup", function() {
+			var oTable = $('#contentTable').dataTable();
+			oTable.fnFilter($(this).val());
+        });
+        function load_table() {
+            $("#contentTable").html('<br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>');
+            $.ajax({
+                url:'{% url 'printer_response' %}',
+                type:'POST',
+                data:{action:'printer_list'},
+            })
+
+            .done(function(response){
+                $("#contentBody").html(response);
+                refresh_table();
+            })
+
+            .fail(function(xhr, status, error){
+                $("#contentBody").html(xhr.responseText);
+            })
+        }
+
+        function refresh_table() {
+            table = $('#contentTable').DataTable({
+                "paging": true,
+                "dom": '<"toolbar">Brtip',
+                "order": [],
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                   language: {
+                       "sProcessing": "處理中...",
+                       "sLengthMenu": "顯示 _MENU_ 項結果",
+                       "sZeroRecords": "沒有匹配結果",
+                       "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                       "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                       "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                       "sInfoPostFix": "",
+                       "sSearch": "搜索：",
+                       "sUrl": "",
+                       "oPaginate": {
+                           "sFirst": "首頁",
+                           "sPrevious": "上一頁",
+                           "sNext": "下一頁",
+                           "sLast": "末頁"
+                       },
+                   },
+                buttons: [
+                    {   extend: "copy",
+                        text: '<i class="fa fa-copy"></i>&nbsp;&nbsp;複製',
+                        className: 'btn-warning'
+                    },
+                    {
+                        extend: "print",
+                        text: '<i class="fa fa-print"></i>&nbsp;&nbsp;列印',
+                        customize: function(win)
+                        {
+                            var last = null;
+                            var current = null;
+                            var bod = [];
+
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+
+                            style.type = 'text/css';
+                            style.media = 'print';
+
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+                            head.appendChild(style);
+                        },
+                        className: 'btn-primary'
+                    },
+                    {% if 260 in request.session.accessright %}
+                    {
+                        text: '<i class="fa fa-plus"></i>&nbsp;&nbsp;新增印表機',
+                        action: function(e, dt, node, config) {
+                            $('#EditModal').modal('show');
+                            $("#FunctionTitle").html("<i class='fa fa-plus'></i>&nbsp;&nbsp;<b>新增印表機</b>");
+                            $(".modal-header").css('background-color', '#DD4B39');
+            				$(".modal-header").css('color', '#FFFFFF');
+                            $("#add_button").show();
+                            $("#edit_button").hide();
+                            $("#remove_button").hide();
+                            $("#print_button").hide();
+
+                            $("#printer_id").val($(this).attr("printer_id"));
+                            $("#action").val($(this).attr("action"));
+                            $("#printer_name").val($(this).attr("printer_name"));
+                            $("#printer_model").val($(this).attr("printer_model"));
+                            $("#printer_client_id").val($(this).attr("printer_client_id"));
+                            $("#printer_serial_number").val($(this).attr("printer_serial_number"));
+                            $("#ip_address").val($(this).attr("ip_address"));
+                            $("#port").val($(this).attr("port"));
+                            $("#location_code").val($(this).attr("location_code"));
+                            $("#location").val($(this).attr("location"));
+                            $("#location_level").val($(this).attr("location_level"));
+                            $("#status").val($(this).attr("status"));
+                        },
+                        className: 'btn-danger'
+                    },
+                    {% endif %}
+                ],
+            });
+    		$("div.toolbar").css("padding-bottom", "10px");
+            $("div.toolbar").html('<b><font size=3>印表機列表</font></b>&nbsp;&nbsp;&nbsp;');
+        }
+
+        $("#add_button").click(function(){
+            $("#action").val("add");
+        });
+
+        $("#edit_button").click(function(){
+            $("#action").val("edit");
+        });
+
+        $("#remove_button").click(function(){
+            $("#action").val("delete");
+        });
+
+        $("#print_button").click(function(){
+            $("#action").val("print_test");
+        });
+
+        $("#print_mqtt_button").click(function(){
+            $("#action").val("print_test_mqtt");
+        });
+
+        document.getElementById("upload-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var action = $("#action").val();
+            var printer_id = $("#printer_id").val();
+            var printer_name = $("#printer_name").val();
+            var printer_model = $("#printer_model").val();
+            var printer_client_id = $("#printer_client_id").val();
+            var printer_serial_number = $("#printer_serial_number").val();
+            var ip_address = $("#ip_address").val();
+            var port = $("#port").val();
+            var location_code = $("#location_code").val();
+            var location = $("#location").val();
+            var location_level = $("#location_level").val();
+            if ($("#status_1").prop("checked"))
+                {status = 1}
+            else
+                {status = 0};
+            if ((action == "add") || (action == "edit")) {
+                if (printer_name == '') {
+                    alert('請輸入印表機名稱');
+                    return false;
+                }
+                if (printer_model == '') {
+                    alert('請輸入印表機型號');
+                    return false;
+                }
+                if (ip_address == '') {
+                    alert('請輸入IP地址');
+                    return false;
+                }
+                if (port == '') {
+                    alert('請輸入端口');
+                    return false;
+                }
+                if (location_code == '') {
+                    alert('請輸入位置代號');
+                    return false;
+                }
+                if (location == '') {
+                    alert('請輸入位置名稱');
+                    return false;
+                }
+                if (location_level == '') {
+                    alert('請輸入位置層級');
+                    return false;
+                }
+                if (action == "add") {
+                    if (!(window.confirm("新增印表機記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                } else {
+                    if (action == "edit") {
+                        if (!(window.confirm("更新印表機記錄，你確定嗎？"))) {
+                            return false;
+                        }
+                    } else {
+                        if (!(window.confirm("是否列印測試頁？"))) {
+                            return false;
+                        }
+                    }
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("printer_id", printer_id);
+                formData.append("printer_name", printer_name);
+                formData.append("printer_model", printer_model);
+                formData.append("printer_client_id", printer_client_id);
+                formData.append("printer_serial_number", printer_serial_number);
+                formData.append("ip_address", ip_address);
+                formData.append("port", port);
+                formData.append("location_code", location_code);
+                formData.append("location", location);
+                formData.append("location_level", location_level);
+                formData.append("status", status);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'printer_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功更新"
+                            },{
+                                type: 'success',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "delete") {
+                if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("printer_id", printer_id);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'printer_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功刪除"
+                            },{
+                                type: 'danger',
+                                    placement: {
+                                        from: "top",
+                                        align: "center"
+                                    },
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "print_test") {
+                if (!(window.confirm("是否列印測試頁？"))) {
+                    return false;
+                }
+                alert(action + printer_name + ip_address + port)
+                $.ajax({
+                    url:'{% url 'printer_response' %}',
+                    type:'POST',
+                    data:{action:'print_test', ip_address:ip_address, port:port, printer_name:printer_name},
+                })
+                .done(function(response){
+                    $("#EditModal").modal("hide");
+                    load_table();
+                    //$("#contentBody").html(response);
+                })
+                .fail(function(xhr, status, error){
+                    $('#contentBody').html(xhr.responseText);
+                    //alert(xhr.responseText);
+                })
+            }
+            if (action == "print_test_mqtt") {
+                if (!(window.confirm("是否列印測試頁MQTT？"))) {
+                    return false;
+                }
+                //alert(action + printer_name + ip_address + port)
+                $.ajax({
+                    url:'{% url 'printer_response' %}',
+                    type:'POST',
+                    data:{action:'print_test_mqtt', ip_address:ip_address, port:port, printer_name:printer_name},
+                })
+                .done(function(response){
+                    $("#EditModal").modal("hide");
+                    load_table();
+                    //$("#contentBody").html(response);
+                })
+                .fail(function(xhr, status, error){
+                    $('#contentBody').html(xhr.responseText);
+                    //alert(xhr.responseText);
+                })
+            }
+        });
+
+        load_table()
+    })
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

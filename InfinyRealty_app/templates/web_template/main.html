@@ -1,0 +1,865 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Main Banner     Start           =-->
+    <!--=====================================-->
+<style>
+.filter-btn.active {
+    background-color: #B13B3C;
+    color: #fff;
+}
+</style>
+        <section class="main-banner-wrap1 main-banner-wrap5" id="main-banner" data-bg-image="/static/dist/img-web/main/victoria-harbour1.jpg">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-xl-12" style="display: flex; flex-direction: column;">
+
+                        <div class="main-banner-box1 main-banner-box5">
+                            <!--<h1 class="item-title wow fadeInUp" data-wow-delay=".4s">讓我們找到一個完美的地方</h1>-->
+                            <!--
+                            <div class="listing-category-list wow fadeInUp" data-wow-delay=".6s">
+                                <div class="search-radio">
+                                    <ul class="list-inline">
+                                        <li class="apartments">
+                                            <label for="apartments" class="active">
+                                                <i class="far fa-building active"></i>
+                                                <span>商業</span>
+                                                <input checked="" type="radio" name="rtcl_category" id="apartments" value="商業">
+                                            </label>
+                                        </li>
+                                        <li class="home">
+                                            <label for="home">
+                                                <i class="fas fa-home"></i>
+                                                <span>住宅</span>
+                                                <input checked="" type="radio" name="rtcl_category" id="home" value="住宅">
+                                            </label>
+                                        </li>
+                                        <li class="office">
+                                            <label for="office">
+                                                <i class="fas fa-briefcase"></i>
+                                                <span>工業</span>
+                                                <input checked="" type="radio" name="rtcl_category" id="office" value="工業">
+                                            </label>
+                                        </li>
+                                        <li class="shop">
+                                            <label for="shop">
+                                                <i class="fas fa-shopping-basket"></i>
+                                                <span>商舖</span>
+                                                <input checked="" type="radio" name="rtcl_category" id="shop" value="商舖">
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            -->
+                            <div class="banner-search-wrap">
+                                <div class="row col-sm-3">
+                                    <div class="box">
+                                        <div class="box-top">
+                                            <div class="rt-filter-btn" style="white-space: nowrap;">
+                                                <div class="filter-button-area" offertype="放售" style="cursor:pointer">
+                                                    <!--<a class="filter-btn" href="#" id="search_button" buttontype="search" offertype="放售"><i class="fas fa-building"></i> <span>售盤</span></a>-->
+                                                    <div class="filter-btn" id="search_offertype_button" buttontype="search" offertype="放售"><i class="fas fa-building"></i> <span>{{"售盤"|showlang:request.session.lang}}</span></div>
+                                                </div>
+                                                <div class="filter-button-area" offertype="放租" style="cursor:pointer">
+                                                    <!--<a class="filter-btn" href="#" id="search_button" buttontype="search" offertype="放租"><i class="fas fa-home"></i> <span>租盤</span></a>-->
+                                                    <div class="filter-btn" id="search_offertype_button" buttontype="search" offertype="放租"><i class="fas fa-home"></i> <span>{{"租盤"|showlang:request.session.lang}}</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row col-sm-9">
+                                </div>
+                            </div>
+                            <div class="banner-search-wrap">
+                                <div class="rld-main-search">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="box">
+                                                <div class="box-top">
+                                                    <div class="rld-single-input ml-22">
+                                                        <input type="text" placeholder="{{"搜尋租盤或售盤於各大地區、大廈名稱、街道"|showlang:request.session.lang}}" id="search-propertyname" size="55">
+                                                    </div>
+                                                    <div class="rld-single-input ml-22">
+                                                        <input type="text" placeholder="{{"物業編號"|showlang:request.session.lang}}" id="search-propertyno">
+                                                    </div>
+                                                    <div class="rld-single-select ml-22">
+                                                        <select class="select single-select" id="search-usage">
+                                                            <option value="">{{"物業類別"|showlang:request.session.lang}}</option>
+                                                            <option value="商業">{{"商業"|showlang:request.session.lang}}</option>
+                                                            <option value="工業">{{"工業"|showlang:request.session.lang}}</option>
+                                                            <option value="商舖">{{"商舖"|showlang:request.session.lang}}</option>
+                                                            <option value="住宅">{{"住宅"|showlang:request.session.lang}}</option>
+                                                            <option value="海外物業">{{"海外物業"|showlang:request.session.lang}}</option>
+                                                            <option value="一手新盤">{{"一手新盤"|showlang:request.session.lang}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="rld-single-select ml-22" style="display:none">
+                                                        <select class="select single-select" id="search-offertype">
+                                                            <option value="">{{"盤類類別"|showlang:request.session.lang}}</option>
+                                                            <option value="放售">{{"售盤"|showlang:request.session.lang}}</option>
+                                                            <option value="放租">{{"租盤"|showlang:request.session.lang}}</option>
+                                                            <!--<option value="租售">租售盤</option>
+                                                            <option value="連租約售">連租約售盤</option>-->
+                                                        </select>
+                                                    </div>
+                                                    <div class="rld-single-select">
+                                                        <select class="select single-select" id="search-areacode">
+                                                            <option value="">{{"所有地區"|showlang:request.session.lang}}</option>
+                                                            <option value="港島">{{"港島"|showlang:request.session.lang}}</option>
+                                                            <option value="九龍">{{"九龍"|showlang:request.session.lang}}</option>
+                                                            <option value="新界">{{"新界"|showlang:request.session.lang}}</option>
+                                                            <!--<option value="離島">離島</option>-->
+                                                        </select>
+                                                    </div>
+                                                    <div class="rt-filter-btn" style="white-space: nowrap;">
+                                                        <div class="dropdown-filter item">
+                                                            <span>
+                                                                <i class="fas fa-sliders-h"></i> {{"進階搜尋"|showlang:request.session.lang}}
+                                                            </span>
+                                                        </div>
+                                                        <div class="filter-button-area">
+                                                            <a class="filter-btn" href="#" id="search_button" buttontype="search"><i class="fas fa-search"></i> <span>{{"物業"|showlang:request.session.lang}}</span></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="explore__form-checkbox-list full-filter">
+                                                    <div class="row">
+                                                        <!--<div class="col-lg-4 col-md-6 py-1 pr-30 pl-0">
+                                                            <div class="form-group bed">
+                                                                <label class="item-bedrooms">目的</label>
+                                                                <div class="nice-select form-control wide" tabindex="0">
+                                                                    <span class="current">任何</span>
+                                                                    <ul class="list">
+                                                                        <li data-value="1" class="option selected ">買物業</li>
+                                                                        <li data-value="2" class="option">租物業</li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        -->
+                                                        <div class="col-lg-2 col-md-6">
+                                                            <div class="form-group bath">
+                                                                <label for="price_min" class="item-bath" id="price_min_label">{{"售價"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}})</label>
+                                                                <input type="number" id="price_min" value="" placeholder="{{"最小"|showlang:request.session.lang}}({{"萬"|showlang:request.session.lang}})" maxlength="7" class="form-control" required="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-6">
+                                                            <div class="form-group garage">
+                                                                <label for="price_max" class="item-bath" id="price_max_label">{{"售價"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}})</label>
+                                                                <input type="number" id="price_max" value="" placeholder="{{"最大"|showlang:request.session.lang}}({{"萬"|showlang:request.session.lang}})" maxlength="7" class="form-control" required="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-6">
+                                                            <div class="form-group bath">
+                                                                <label for="unitprice_min" class="item-bath" id="unitprice_min_label">{{"呎價"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}})</label>
+                                                                <input type="number" id="unitprice_min" value="" placeholder="{{"最小"|showlang:request.session.lang}}" maxlength="7" class="form-control" required="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-6">
+                                                            <div class="form-group garage">
+                                                                <label for="unitprice_max" class="item-bath"id="unitprice_max_label">{{"呎價"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}})</label>
+                                                                <input type="number" id="unitprice_max" value="" placeholder="{{"最大"|showlang:request.session.lang}}" maxlength="7" class="form-control" required="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-6">
+                                                            <div class="form-group bath">
+                                                                <label for="area_min" class="item-bath">{{"面積"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}})</label>
+                                                                <input type="number" id="area_min" value="" placeholder="{{"最小"|showlang:request.session.lang}}" maxlength="7" class="form-control" required="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-6">
+                                                            <div class="form-group garage">
+                                                                <label for="area_max" class="item-bath">{{"面積"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}})</label>
+                                                                <input type="number" id="area_max" value="" placeholder="{{"最大"|showlang:request.session.lang}}" maxlength="7" class="form-control" required="">
+                                                            </div>
+                                                        </div>
+                                                        <!--
+                                                        <div class="main-search-field-2 col-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-4 col-md-4 py-1 pl-0 pr-0">
+                                                                    <div class="price-range-wrapper">
+                                                                        <div class="range-box">
+                                                                            <div class="price-label">售價</div>
+                                                                            <div id="price-range-filter-3" class="price-range-filter"></div>
+                                                                            <div class="price-filter-wrap d-flex align-items-center">
+                                                                                <div class="price-range-select">
+                                                                                    <div class="price-range" id="price-range-min-3"></div>
+                                                                                    <div class="price-range">-</div>
+                                                                                    <div class="price-range" id="price-range-max-3"></div>
+                                                                                    <div class="price-range range-title">萬/HKD</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 py-1 pl-0 pr-0">
+                                                                    <div class="price-range-wrapper">
+                                                                        <div class="range-box">
+                                                                            <div class="price-label">呎價</div>
+                                                                            <div id="price-range-filter-2" class="price-range-filter"></div>
+                                                                            <div class="price-filter-wrap d-flex align-items-center">
+                                                                                <div class="price-range-select">
+                                                                                    <div class="price-range" id="price-range-min-2"></div>
+                                                                                    <div class="price-range">-</div>
+                                                                                    <div class="price-range" id="price-range-max-2"></div>
+                                                                                    <div class="price-range range-title">HKD</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4 col-md-4 py-1 pl-0 pr-0">
+                                                                    <div class="price-range-wrapper">
+                                                                        <div class="range-box">
+                                                                            <div class="price-label">大約面積</div>
+                                                                            <div id="price-range-filter-4" class="price-range-filter"></div>
+                                                                            <div class="price-filter-wrap d-flex align-items-center">
+                                                                                <div class="price-range-select">
+                                                                                    <div class="price-range" id="price-range-min-4"></div>
+                                                                                    <div class="price-range">-</div>
+                                                                                    <div class="price-range" id="price-range-max-4"></div>
+                                                                                    <div class="price-range range-title">平方呎</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        -->
+                                                        <!--
+                                                        <div class="filter-button">
+                                                            <a href="index3.html" class="filter-btn1">確定過濾</a>
+                                                            <a href="index3.html" class="filter-btn1 reset-btn">重設過濾<i class="fas fa-redo-alt"></i></a>
+                                                        </div>
+                                                        -->
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--<p class="item-para wow fadeInUp" data-wow-delay=".4s">我們有多達<span
+                                        class="banner-p">5,400</span>商業、住宅、工業及商舖給你選擇
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!--=====================================-->
+    <!--=   Property     Start              =-->
+    <!--=====================================-->
+
+        <section class="property-wrap2">
+            <div class="container">
+                <div class="item-heading-center mb-20">
+                    <h2 class="section-title">{{"精選推介"|showlang:request.session.lang}}</h2>
+                    <!--<div class="bg-title-wrap" style="display: block;">
+                        <span class="background-title solid">Properties</span>
+                    </div>-->
+                    <div id="errormessage"></div>
+                    <div class="d-flex justify-content-center">
+                        <ul class="nav nav-tabs" id="info-tab" role="tablist">
+                            <!--<li class="nav-item"> <a class="nav-link" id="recommend-sell-tab" data-bs-toggle="tab" href="#recommend-sell" role="tab" action="recommend_view" usage="" offertype="放售" display="2" aria-controls="recommend-sell" aria-selected="false"> <i class="icofont icofont-contacts"></i>放售 </a> </li>
+                            <li class="nav-item"> <a class="nav-link" id="recommend-rent-tab" data-bs-toggle="tab" href="#recommend-rent" role="tab" action="recommend_view" usage="" offertype="放租" display="2" aria-controls="recommend-rent" aria-selected="false"> <i class="icofont icofont-contacts"></i>放租 </a> </li>-->
+                            <li class="nav-item"> <a class="nav-link" id="recommend-sell-tab" role="tab" action="recommend_view" usage="" offertype="放售" display="2" aria-controls="recommend-sell" aria-selected="false"> <i class="icofont icofont-contacts"></i>{{"放售"|showlang:request.session.lang}} </a> </li>
+                            <li class="nav-item"> <a class="nav-link active" id="recommend-rent-tab" role="tab" action="recommend_view" usage="" offertype="放租" display="2" aria-controls="recommend-rent" aria-selected="false"> <i class="icofont icofont-contacts"></i>{{"放租"|showlang:request.session.lang}} </a> </li>
+                        </ul>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <ul class="nav nav-tabs" id="info-tab" role="tablist">
+                            <li class="nav-item"> <a class="nav-link active" id="recommend-commercial-tab" data-bs-toggle="tab" href="#recommend-commercial" role="tab" action="recommend_view" usage="商業" offertype="放租" display="2" aria-controls="recommend-commercial" aria-selected="true"> <i class="icofont icofont-ui-home"></i>{{"商業"|showlang:request.session.lang}}</a></li>
+                            <li class="nav-item"> <a class="nav-link" id="recommend-industrial-tab" data-bs-toggle="tab" href="#recommend-industrial" role="tab" action="recommend_view" usage="工業" offertype="放租" display="2" aria-controls="recommend-industrial" aria-selected="false"> <i class="icofont icofont-man-in-glasses"></i>{{"工業"|showlang:request.session.lang}}</a></li>
+                            <li class="nav-item"> <a class="nav-link" id="recommend-shop-tab" data-bs-toggle="tab" href="#recommend-shop" role="tab" action="recommend_view" usage="商舖" offertype="放租" display="2" aria-controls="recommend-shop" aria-selected="false"> <i class="icofont icofont-contacts"></i>{{"商舖"|showlang:request.session.lang}}</a></li>
+                            <li class="nav-item"> <a class="nav-link" id="recommend-residential-tab" data-bs-toggle="tab" href="#recommend-residential" role="tab" action="recommend_view" usage="住宅" offertype="放租" display="2" aria-controls="recommend-residential" aria-selected="false"> <i class="icofont icofont-contacts"></i>{{"住宅"|showlang:request.session.lang}}</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="tab-content" id="info-tabContent">
+                      <div class="tab-pane fade show active" id="recommend-commercial" role="tabpanel" aria-labelledby="recommend-commercial-tab">
+                      </div>
+                      <div class="tab-pane fade" id="recommend-industrial" role="tabpanel" aria-labelledby="recommend-industrial-tab">
+                      </div>
+                      <div class="tab-pane fade" id="recommend-shop" role="tabpanel" aria-labelledby="recommend-shop-tab">
+                      </div>
+                      <div class="tab-pane fade" id="recommend-residential" role="tabpanel" aria-labelledby="recommend-residential-tab">
+                      </div>
+                      <div class="tab-pane fade" id="recommend-sell" role="tabpanel" aria-labelledby="recommend-sell-tab">
+                      </div>
+                      <div class="tab-pane fade" id="recommend-rent" role="tabpanel" aria-labelledby="recommend-rent-tab">
+                      </div>
+                    </div>
+                </div>
+
+                <div class="property-button">
+                    <a href="/property_search" class="item-btn">{{"瀏覽所有物業"|showlang:request.session.lang}}</a>
+                </div>
+            </div>
+        </section>
+    <!--=====================================-->
+    <!--=   Choose    Start                 =-->
+    <!--=====================================-->
+
+        <section class="why-choose-wrap1">
+            <div class="container">
+                <div class="item-heading-center mb-20">
+                    <!--<span class="section-subtitle">People Like Us</span>-->
+                    <h2 class="section-title2">{{"InfinyRealty 的優勢"|showlang:request.session.lang}}</h2>
+                    <!--<div class="bg-title-wrap" style="display: block;">
+                        <span class="background-title solid">Choose</span>
+                    </div>-->
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="choose-box1 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="choose-shape1">
+                                <a href="#"><img src="{% static 'HomListi/img/figure/Secure-Payment-1.svg' %}" alt="shape" width="59" height="63"></a>
+                            </div>
+                            <h3 class="item-title"><a href="single-listing3.html">{{"願景與目標"|showlang:request.session.lang}}</a></h3>
+                            <p>{{"我們為客戶提供房地產的諮詢服務皆是重質量而非重數量。我們深信良好的品牌聲譽能在這競爭激烈的市場中脫穎而出。"|showlang:request.session.lang}}</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="choose-box1 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="choose-shape1">
+                                <a href="#"><img src="{% static 'HomListi/img/figure/home_dollar-1.svg' %}" alt="shape" width="59" height="63"></a>
+                            </div>
+                            <h3 class="item-title"><a href="single-listing3.html">{{"承諾與誠信"|showlang:request.session.lang}}</a></h3>
+                            <p>{{"我們承諾以真誠及專業的態度對待每一位客戶，為客戶選擇最合適的方案。"|showlang:request.session.lang}}</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="choose-box1 wow fadeInUp" data-wow-delay=".6s">
+                            <div class="choose-shape1 choose-shape2">
+                                <a href="#"><img src="{% static 'HomListi/img/figure/home-calculator-1.svg' %}" alt="shape" width="59" height="63"></a>
+                            </div>
+                            <h3 class="item-title"><a href="single-listing3.html">{{"風格與管理"|showlang:request.session.lang}}</a></h3>
+                            <p>{{"我們採用扁平化管理架構務求更靈活及快捷處理客戶的需求。"|showlang:request.session.lang}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!--=====================================-->
+    <!--=   Feature     Start               =-->
+    <!--=====================================-->
+        <!--
+        <section class="feature-rent-wrap1">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-7 col-sm-12">
+                        <div class="item-heading-left">
+                            <span class="section-subtitle">最新物業</span>
+                            <h2 class="section-title">出租物業</h2>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5 col-sm-12">
+                        <div class="heading-button">
+                            <a href="/property_rent" class="heading-btn">瀏覽所有出租物業</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="recommend-rent">
+                </div>
+            </div>
+        </section>
+        -->
+
+    <!--=====================================-->
+    <!--=   Progress     Start              =-->
+    <!--=====================================-->
+
+        <section class="progress-bar-wrap1 counter-appear">
+            <div class="shape-img1 wow fadeInLeft" data-wow-delay=".4s">
+                <img src="{% static 'HomListi/img/figure/counter-bg-2.png' %}" alt="progress">
+            </div>
+            <div class="container">
+                <div class="item-heading-bar">
+                    <h2 class="item-title">{{"甲級寫字樓空置率"|showlang:request.session.lang}}</h2>
+                    <p>{{vacancylist|in_content_detail:0}}</p>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{vacancylist|in_content_detail:1}}">{{vacancylist|in_content_detail:1}}</span>%</div>
+                                    <label style="width: 180px;">{{"全香港"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="lightgreen">{{vacancylist|in_content_detail:2}}</font> {{"按季"|showlang:request.session.lang}} <font color="red">{{vacancylist|in_content_detail:3}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".3s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{vacancylist|in_content_detail:4}}">{{vacancylist|in_content_detail:4}}</span>%</div>
+                                    <label style="width: 180px;">{{"中環/金鐘/上環"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="lightgreen">{{vacancylist|in_content_detail:5}}</font> {{"按季"|showlang:request.session.lang}} <font color="lightgreen">{{vacancylist|in_content_detail:6}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".4s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{vacancylist|in_content_detail:7}}">{{vacancylist|in_content_detail:7}}</span>%</div>
+                                    <label style="width: 180px;">{{"灣仔/銅鑼灣"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="lightgreen">{{vacancylist|in_content_detail:8}}</font> {{"按季"|showlang:request.session.lang}} <font color="lightgreen">{{vacancylist|in_content_detail:9}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{vacancylist|in_content_detail:10}}">{{vacancylist|in_content_detail:10}}</span>%</div>
+                                    <label style="width: 180px;">{{"港島東"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="red">{{vacancylist|in_content_detail:11}}</font> {{"按季"|showlang:request.session.lang}} <font color="red">{{vacancylist|in_content_detail:12}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{vacancylist|in_content_detail:13}}">{{vacancylist|in_content_detail:13}}</span>%</div>
+                                    <label style="width: 180px;">{{"尖沙咀/柯士甸"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="lightgreen">{{vacancylist|in_content_detail:14}}</font> {{"按季"|showlang:request.session.lang}} <font color="lightgreen">{{vacancylist|in_content_detail:15}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{vacancylist|in_content_detail:16}}">{{vacancylist|in_content_detail:16}}</span>%</div>
+                                    <label style="width: 180px;">{{"東九龍"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="lightgreen">{{vacancylist|in_content_detail:17}}</font> {{"按季"|showlang:request.session.lang}} <font color="lightgreen">{{vacancylist|in_content_detail:18}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <br>
+                <div class="item-heading-bar">
+                    <h2 class="item-title">{{"租金指数"|showlang:request.session.lang}}</h2>
+                    <p>{{rentindexlist|in_content_detail:21}}</p>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{rentindexlist|in_content_detail:22}}">{{rentindexlist|in_content_detail:22}}</span></div>
+                                    <label>{{"平均租金指數"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="lightgreen">{{rentindexlist|in_content_detail:23}}</font> {{"按季"|showlang:request.session.lang}} <font color="lightgreen">{{rentindexlist|in_content_detail:24}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".3s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{rentindexlist|in_content_detail:25}}">{{rentindexlist|in_content_detail:25}}</span></div>
+                                    <label>{{"甲級指數"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="red">{{rentindexlist|in_content_detail:26}}</font> {{"按季"|showlang:request.session.lang}} <font color="red">{{rentindexlist|in_content_detail:27}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".4s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{rentindexlist|in_content_detail:28}}">{{rentindexlist|in_content_detail:28}}</span></div>
+                                    <label>{{"乙級指數"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="red">{{rentindexlist|in_content_detail:29}}</font> {{"按季"|showlang:request.session.lang}} <font color="red">{{rentindexlist|in_content_detail:30}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="{{rentindexlist|in_content_detail:31}}">{{rentindexlist|in_content_detail:31}}</span></div>
+                                    <label>{{"丙級指數"|showlang:request.session.lang}}</label>
+                                    <label style="width: 180px;">{{"按月"|showlang:request.session.lang}} <font color="red">{{rentindexlist|in_content_detail:32}}</font> {{"按季"|showlang:request.session.lang}} <font color="red">{{rentindexlist|in_content_detail:33}}</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!--=====================================-->
+    <!--=   Building Index     Start              =-->
+    <!--=====================================-->
+        <!--
+        <section class="property-wrap2">
+            <div class="container">
+                <div class="item-heading-center">
+                    <h2 class="section-title">大廈索引</h2>
+                    <div class="d-flex justify-content-center">
+                        <ul class="nav nav-tabs" role="tablist">
+                          <li class="nav-item"><a class="nav-link active" id="index-commercial-tab" data-bs-toggle="tab" href="#index-commercial" role="tab" action="index_view" usage="商業" display="2" aria-controls="index-commercial" aria-selected="true"><i class="icofont icofont-ui-home"></i>商業</a></li>
+                          <li class="nav-item"><a class="nav-link" id="index-industrial-tab" data-bs-toggle="tab" href="#index-industrial" role="tab" action="index_view" usage="工業" display="1" aria-controls="index-industrial" aria-selected="false"><i class="icofont icofont-man-in-glasses"></i>工業</a></li>
+                          <li class="nav-item"><a class="nav-link" id="index-shop-tab" data-bs-toggle="tab" href="#index-shop" role="tab" action="index_view" usage="商舖" display="1" aria-controls="index-shop" aria-selected="false"><i class="icofont icofont-contacts"></i>商舖</a></li>
+                        </ul>
+                    </div>
+                    <div class="tab-content justify-content-spaced-around" id="index-tabContent">
+                      <div class="tab-pane fade show active" id="index-commercial" role="tabpanel" aria-labelledby="index-commercial-tab">
+
+                      </div>
+                      <div class="tab-pane fade justify-content-spaced-around" id="index-industrial" role="tabpanel" aria-labelledby="index-industrial-tab">
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                      </div>
+                      <div class="tab-pane fade justify-content-spaced-around" id="index-shop" role="tabpanel" aria-labelledby="index-shop-tab">
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                      </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+        -->
+
+    <!--=====================================-->
+    <!--=   Building Index     Start              =-->
+    <!--=====================================-->
+
+        <section class="property-wrap2">
+            <div class="container">
+                <div class="item-heading-center mb-20">
+                    <h2 class="section-title">{{"最新成交"|showlang:request.session.lang}}</h2>
+                    <!--<div class="bg-title-wrap" style="display: block;">
+                        <span class="background-title solid">Properties</span>
+                    </div>-->
+                    <div class="d-flex justify-content-center">
+                        <ul class="nav nav-tabs" role="tablist">
+                          <li class="nav-item"><a class="nav-link active" id="index2-commercial-tab" data-bs-toggle="tab" href="#index2-commercial" role="tab" action="transaction_record" usage="{{"寫字樓"|showlang:request.session.lang}}" display="1" aria-controls="index2-commercial" aria-selected="true"><i class="icofont icofont-ui-home"></i>{{"商業"|showlang:request.session.lang}}</a></li>
+                          <li class="nav-item"><a class="nav-link" id="index2-industrial-tab" data-bs-toggle="tab" href="#index2-industrial" role="tab" action="transaction_record" usage="{{"工商"|showlang:request.session.lang}}" display="2" aria-controls="index2-industrial" aria-selected="false"><i class="icofont icofont-man-in-glasses"></i>{{"工業"|showlang:request.session.lang}}</a></li>
+                          <li class="nav-item"><a class="nav-link" id="index2-shop-tab" data-bs-toggle="tab" href="#index2-shop" role="tab" action="transaction_record" usage="{{"商舖"|showlang:request.session.lang}}" display="3" aria-controls="index2-shop" aria-selected="false"><i class="icofont icofont-contacts"></i>{{"商舖"|showlang:request.session.lang}}</a></li>
+                          <li class="nav-item"><a class="nav-link" id="index2-carpark-tab" data-bs-toggle="tab" href="#index2-carpark" role="tab" action="transaction_record" usage="{{"車位"|showlang:request.session.lang}}" display="3" aria-controls="index2-carpark" aria-selected="false"><i class="icofont icofont-contacts"></i>{{"車位"|showlang:request.session.lang}}</a></li>
+                        </ul>
+                    </div>
+                    <div class="tab-content justify-content-spaced-around" id="index2-tabContent">
+                      <div class="tab-pane fade show active" id="index2-commercial" role="tabpanel" aria-labelledby="index2-commercial-tab">
+                          <div class="loader-box"><div class="loader-2"></div></div>
+                      </div>
+                      <div class="tab-pane fade" id="index2-industrial" role="tabpanel" aria-labelledby="index2-industrial-tab">
+                          <div class="loader-box"><div class="loader-2"></div></div>
+                      </div>
+                      <div class="tab-pane fade" id="index2-shop" role="tabpanel" aria-labelledby="index2-shop-tab">
+                          <div class="loader-box"><div class="loader-2"></div></div>
+                      </div>
+                      <div class="tab-pane fade" id="index2-carpark" role="tabpanel" aria-labelledby="index2-carpark-tab">
+                          <div class="loader-box"><div class="loader-2"></div></div>
+                      </div>
+                    </div>
+                </div>
+                <div class="property-button">
+                    <a href="/transaction" class="item-btn">{{"更多成交"|showlang:request.session.lang}}</a>
+                </div>
+            </div>
+
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    //var images = ['victoria-harbour1.jpg', 'victoria-harbour2.jpg', 'victoria-harbour3.jpg', 'victoria-harbour4.jpg', 'victoria-harbour5.jpg'];
+    var images = ['pexels-komod-ayal-492320497-18093534.jpg', 'pexels-nickkwanhk-2806522.jpg', 'pexels-ansel-lee-1635554-3130060.jpg', 'pexels-beardedtexantravels-5190257.jpg', 'pexels-ben-cheung-140183-3038813.jpg', 'pexels-drone_m-208339939-11739839.jpg', 'pexels-jimbear-3327505.jpg', 'pexels-koma-tang-10472205-9169642.jpg'];
+    var currentIndex = 0;
+
+    function changeBackgroundImage() {
+      var bannerWrap = $('.main-banner-wrap1');
+      var newBgImage = '/static/dist/img-web/main/' + images[currentIndex];
+        bannerWrap.css('background-image', 'url(' + newBgImage + ')');
+        currentIndex = (currentIndex + 1) % images.length;
+    }
+    setInterval(changeBackgroundImage, 10000); // Change image every 10 seconds
+
+    var filterButtons = document.querySelectorAll('.filter-button-area');
+
+    filterButtons.forEach(function(button) {
+      button.addEventListener('click', function() {
+        // 切換背景顏色
+        toggleButtonBackground(this);
+      });
+    });
+
+    function toggleButtonBackground(button) {
+      // 先移除所有按鈕的高亮樣式
+      filterButtons.forEach(function(btn) {
+        btn.style.backgroundColor = '';
+      });
+      // 為當前點擊的按鈕設置高亮樣式
+      button.style.backgroundColor = '#B13B3C';
+      button.style.color = '#fff';
+    }
+
+    // Get all the filter buttons
+    var filterButtons = document.querySelectorAll('.filter-btn');
+
+    // Add click event listener to each button
+    filterButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            filterButtons.forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            // Add active class to the clicked button
+            this.classList.add('active');
+        });
+    });
+
+    action = "recommend_view";
+    usage = "商業";
+    offertype = "放租";
+    display = 2;
+    pagetype = "#recommend-commercial";
+
+    $.ajax({
+        url:'{% url 'main_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, usage:usage, offertype:offertype, display:display},
+    })
+    .done(function(response){
+        $(pagetype).html(response);
+    })
+    .fail(function(xhr, status, error){
+        $('#errormessage').html(xhr.responseText);
+    })
+
+    action = "transaction_record";
+    //usage = "商業";
+    usage = "{{"寫字樓"|showlang:request.session.lang}}";
+    display = 1;
+    pagetype3 = "#index2-commercial";
+
+    $.ajax({
+        url:'{% url 'main_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, usage:usage, display:display},
+    })
+    .done(function(response){
+        $(pagetype3).html(response);
+    })
+    .fail(function(xhr, status, error){
+        $('#errormessage').html(xhr.responseText);
+    })
+
+
+    var selectTab
+    $('[data-bs-toggle="tab"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-bs-target'),
+            action = $this.attr('action');
+            usage = $this.attr('usage');
+            offertype = $this.attr('offertype');
+            display = $this.attr('display');
+
+            $.ajax({
+                url:'{% url 'main_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, usage:usage, offertype:offertype, display:display},
+            })
+            .done(function(response){
+                //  alert(pagetype)
+                $(pagetype).html(response);
+                refresh_table();
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            $this.tab('show');
+        return false;
+    });
+
+    $('#recommend-rent-tab').click(function() {
+        $('#recommend-rent-tab').addClass('active');
+        $('#recommend-sell-tab').removeClass('active');
+        $('a[id^="recommend-"]').each(function() {
+            $(this).attr('offertype', '放租');
+        });
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+    });
+
+    $('#recommend-sell-tab').click(function() {
+        $('#recommend-sell-tab').addClass('active');
+        $('#recommend-rent-tab').removeClass('active');
+        $('a[id^="recommend-"]').each(function() {
+            $(this).attr('offertype', '放售');
+        });
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+    });
+
+    $(document).on("click", "#search_button", function(){
+        var buttontype = $(this).attr("buttontype");
+
+        if (buttontype == 'search') {
+            propertyname = $("#search-propertyname").val();
+            propertyno = $("#search-propertyno").val();
+            usage = $("#search-usage").val();
+            //offertype = $(this).attr('offertype');
+            offertype = $("#search-offertype").val();
+            areacode = $("#search-areacode").val();
+            price_min = $("#price_min").val();
+            price_max = $("#price_max").val();
+            unitprice_min = $("#unitprice_min").val();
+            unitprice_max = $("#unitprice_max").val();
+            area_min = $("#area_min").val();
+            area_max = $("#area_max").val();
+            var action = 'search';
+
+            $.ajax({
+                url:'{% url 'main_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, propertyname:propertyname, propertyno:propertyno, usage:usage, offertype:offertype, areacode:areacode, price_min:price_min, price_max:price_max, unitprice_min:unitprice_min, unitprice_max:unitprice_max, area_min:area_min, area_max:area_max},
+            })
+            .done(function(response){
+                document.location.href = "/property_search";
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+        }
+    });
+
+    $(document).on("click", "#search_offertype_button", function(){
+        var buttontype = $(this).attr("buttontype");
+        var offertype = $(this).attr('offertype');
+
+        if (buttontype == 'search') {
+            // Add click event listeners to the buttons
+            if (offertype == '放租') {
+                $("#search-offertype").val("放租");
+                var label = document.getElementById("price_min_label");
+                label.textContent = "{{"租價(最小)"|showlang:request.session.lang}}";
+                var label = document.getElementById("price_max_label");
+                label.textContent = "{{"租價(最大)"|showlang:request.session.lang}}";
+                var label = document.getElementById("unitprice_min_label");
+                label.textContent = "{{"呎租(最小)"|showlang:request.session.lang}}";
+                var label = document.getElementById("unitprice_max_label");
+                label.textContent = "{{"呎租(最大)"|showlang:request.session.lang}}";
+                var input = document.getElementById("price_min");
+                input.placeholder = "{{"最小"|showlang:request.session.lang}}";
+                var input = document.getElementById("price_max");
+                input.placeholder = "{{"最大"|showlang:request.session.lang}}";
+                var input = document.getElementById("search-propertyname");
+                input.placeholder = "{{"搜尋租盤於各大地區、大廈名稱、街道"|showlang:request.session.lang}}";
+            } else {
+                $("#search-offertype").val("放售");
+                var label = document.getElementById("price_min_label");
+                label.textContent = "{{"售價(最小)"|showlang:request.session.lang}}";
+                var label = document.getElementById("price_max_label");
+                label.textContent = "{{"售價(最大)"|showlang:request.session.lang}}";
+                var label = document.getElementById("unitprice_min_label");
+                label.textContent = "{{"呎價(最小)"|showlang:request.session.lang}}";
+                var label = document.getElementById("unitprice_max_label");
+                label.textContent = "{{"呎價(最大)"|showlang:request.session.lang}}";
+                var input = document.getElementById("price_min");
+                input.placeholder = "{{"最小(萬)"|showlang:request.session.lang}}";
+                var input = document.getElementById("price_max");
+                input.placeholder = "{{"最大(萬)"|showlang:request.session.lang}}";
+                var input = document.getElementById("search-propertyname");
+                input.placeholder = "{{"搜尋售盤於各大地區、大廈名稱、街道"|showlang:request.session.lang}}";
+            }
+        }
+        return false;
+    });
+
+    /*
+    var offerTypeItems = document.querySelectorAll(".offer_type_select");
+    offerTypeItems.forEach(function(item) {
+        item.addEventListener("click", function() {
+            var offertype = item.getAttribute("value");
+            var action = 'search';
+            $.ajax({
+                url:'{% url 'main_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, offertype:offertype},
+            })
+            .done(function(response){
+                document.location.href = "/property_search";
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+        });
+    });
+    */
+
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

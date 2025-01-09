@@ -1,0 +1,119 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"聯絡我們"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+    <!--=====================================-->
+    <!--=   contact    Start                =-->
+    <!--=====================================-->
+    <style>
+/*
+ * Always set the map height explicitly to define the size of the div element
+ * that contains the map.
+ */
+#map {
+  height: 100%;
+}
+
+/*
+ * Optional: Makes the sample page fill the window.
+ */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+gmp-map {
+  height: 400px;
+}
+    </style>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-k1UGS0OD7HZxTLWIOOhyfrl8ryiHniY&callback=console.debug&libraries=maps,marker&v=beta">
+    </script>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+
+      /* Optional: Makes the sample page fill the window. */
+      gmp-map  {
+        height: 600px;
+        width: 800px;
+        margin: 0;
+        padding-top: 50px;
+      }
+    </style>
+        <section class="contact-wrap">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="contact-box1">
+                            <div class="contact-img">
+                                <gmp-map center="22.279041290283203,114.1707763671875" zoom="14" map-id="DEMO_MAP_ID">
+                                  <gmp-advanced-marker position="22.279041290283203,114.1707763671875" title="My location"></gmp-advanced-marker>
+                                </gmp-map>
+                            </div>
+                            <div class="contact-content">
+                                <h3 class="contact-title">{{"聯絡我們"|showlang:request.session.lang}}</h3>
+                                <div class="phone-box">
+                                    <div class="item-label">{{"地址"|showlang:request.session.lang}}：</div>
+                                    <div class="phone-number">{{"香港灣仔分域街18號捷利中心地下3-4號舖"|showlang:request.session.lang}}</div>
+                                    <div class="item-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                </div>
+                                <div class="phone-box">
+                                    <div class="item-label">{{"聯絡我們"|showlang:request.session.lang}}：</div>
+                                    <div class="phone-number">+852 2119 1189</div>
+                                    <div class="item-icon"><i class="fab fa-whatsapp"></i></div>
+                                </div>
+                                <div class="phone-box">
+                                    <div class="item-label">{{"電郵地址"|showlang:request.session.lang}}：</div>
+                                    <div class="email-address"><a target="_blank" href="mailto:realty@infiny.group">realty@infiny.group</a></div>
+                                    <div class="item-icon"><i class="fas fa-envelope fa-2x"></i></div>
+                                </div>
+                                <div class="social-box">
+                                    <div class="item-label">{{"社交分享"|showlang:request.session.lang}}：</div>
+                                    <ul class="item-social">
+                                        <li><a href="https://www.facebook.com/infinyrealty" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                                        <!--<li><a href="https://twitter.com/" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                                        <li><a href="https://vimeo.com/" target="_blank"><i class="fab fa-vimeo-v"></i></a></li>-->
+                                        <!--<li><a href="https://www.instagram.com/infinyhk" target="_blank"><i class="fab fa-instagram"></i></a></li>-->
+                                        <li><a href="https://wa.me/+85221191189" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                                    </ul>
+                                    <div class="item-icon"><i class="fas fa-share-alt"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

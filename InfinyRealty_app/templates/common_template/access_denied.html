@@ -1,0 +1,42 @@
+{% extends 'common_template/base_template.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <!--<h3>Access Denied</h3>-->
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+
+
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div id="contentBlock">
+        <div align=center>
+            <span class="title" style="font-size:18px"><br><br><br><br>
+                <h3><img src="{% static 'dist/img/unauthorize-150x150.png' %}" width=40 valign=absmiddle> <b>建設中</b></h3><br>
+            您的用戶名稱是 <font color=blue>{{request.session.username}}</font>
+            <br><br>
+            不便之處，敬請原諒<br>
+            <br>
+            如需要系統操作方面的協助，請致電 9229 0621 聯絡<b>服務台</b>
+            </span>
+        </div>
+    </div>
+</section>
+{% endblock main_content %}
+
+{% block custom_js %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}

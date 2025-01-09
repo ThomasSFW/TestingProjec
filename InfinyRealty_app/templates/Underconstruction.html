@@ -1,0 +1,58 @@
+﻿{% load static %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>InfinyRealty.com</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+	<link href="{% static "uena/vendor/sweetalert2/dist/sweetalert2.min.css" %}" rel="stylesheet">
+	<link href="{% static "uena/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" %}" rel="stylesheet">
+    <link href="{% static "uena/css/style.css" %}" rel="stylesheet">
+</head>
+
+<body>
+	<div class="authincation d-flex flex-column flex-lg-row flex-column-fluid">
+		<div class="container flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
+			<div class="d-flex justify-content-center h-100 align-items-center">
+				<div class="authincation-content style-2">
+					<div class="row no-gutters">
+						<div class="col-xl-12 tab-content">
+
+							<div id="sign-in" class="auth-form tab-pane fade show active  form-validation">
+								<form   id="dz_login_signin_form"  class="form-validate">
+									<h3 class="text-center mb-2">InfinyRealty.com upgrading our system</h3>
+									<h2 class="text-center mb-4 text-black">Sorry for any inconvenience caused</h2>
+									
+								</form>
+							</div>
+													</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--**********************************
+	Scripts
+***********************************-->
+	<!-- Required vendorsxx -->
+	<script src="{% static "uena/vendor/global/global.min.js" %}"></script>
+	<script src="{% static "uena/vendor/bootstrap-select/dist/js/bootstrap-select.min.js" %}"></script>
+	<script src="{% static "uena/js/custom.js" %}"></script>
+	<script src="{% static "uena/vendor/sweetalert2/dist/sweetalert2.min.js" %}"></script>
+	<!-- Jquery Validation -->
+    <script src="{% static "uena/vendor/jquery-validation/jquery.validate.min.js" %}"></script>
+	
+	<script src="{% static "uena/js/login-form.js" %}"></script>
+	<script src="{% static "uena/js/deznav-init.js" %}"></script>
+</body>
+</html>
+
+{% endblock %}

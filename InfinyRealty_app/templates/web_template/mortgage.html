@@ -1,0 +1,171 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"按揭"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Account     Start               =-->
+    <!--=====================================-->
+    <div class="article-head"><br>
+        <h5 class="text-center" style="font-weight:600">{{"按揭"|showlang:request.session.lang}}</h5>
+    </div>
+    <main class="site-main content-area">
+        <div class="container">
+            <div>
+                <div id="errormessage"></div>
+                <div class="d-flex justify-content-center">
+                    <ul class="nav nav-tabs" id="info-tab" role="tablist">
+                      <li class="nav-item"><a class="nav-link active" style="width:190px;text-align:center" id="service-tab" data-bs-toggle="tab" href="#service" role="tab" action="service" mortgage_type="服務" aria-controls="transfer" aria-selected="false"><i class="icofont icofont-user"></i>{{"服務"|showlang:request.session.lang}}</a></li>
+                      <li class="nav-item"><a class="nav-link" style="width:190px;text-align:center" id="interest-tab" data-bs-toggle="tab" href="#interest" role="tab" action="interest" mortgage_type="按息" aria-controls="interest" aria-selected="true"><i class="icofont icofont-ui-home"></i>{{"按息"|showlang:request.session.lang}}</a></li>
+                      <li class="nav-item"><a class="nav-link" style="width:190px;text-align:center" id="calculator-tab" data-bs-toggle="tab" href="#calculator" role="tab" action="calculator" mortgage_type="按揭計算機" aria-controls="calculator" aria-selected="false"><i class="icofont icofont-man-in-glasses"></i>{{"按揭計算機"|showlang:request.session.lang}}</a></li>
+                      <li class="nav-item"><a class="nav-link" style="width:190px;text-align:center" id="transfer-tab" data-bs-toggle="tab" href="#transfer" role="tab" action="transfer" mortgage_type="按揭轉介" aria-controls="transfer" aria-selected="false"><i class="icofont icofont-contacts"></i>{{"按揭轉介"|showlang:request.session.lang}}</a></li>
+                    </ul>
+                </div>
+                <div class="tab-content" id="info-tabContent">
+                  <div class="tab-pane fade show active" id="service" role="tabpanel" aria-labelledby="service-tab">
+                  </div>
+                  <div class="tab-pane fade" id="interest" role="tabpanel" aria-labelledby="interest-tab">
+                  </div>
+                  <div class="tab-pane fade" id="calculator" role="tabpanel" aria-labelledby="calculator-tab">
+                  </div>
+                  <div class="tab-pane fade" id="transfer" role="tabpanel" aria-labelledby="transfer-tab">
+                  </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+<div class="modal fade" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="InfoModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>{{"查詢"|showlang:request.session.lang}}</b></span></h4>
+            </div>
+            <div id="modal-message">
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="property_id">
+                <input type="hidden" class="form-control" id="property_no">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group">
+					<label for="property_name" class="control-label">{{"查詢物業地址"|showlang:request.session.lang}}</label>
+						<input type="text" class="form-control" id="property_name" placeholder="輸入物業地址" value="">
+                    </label>
+			    </div>
+				<div class="form-group">
+					<label for="contact_name">{{"姓名"|showlang:request.session.lang}}</label>
+						<input type="text" class="form-control" id="contact_name" placeholder="輸入姓名" value="">
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-3">
+                        <label for="phone_area_code">{{"電話區號"|showlang:request.session.lang}}</label>
+						<select id="phone_area_code" class="form-control" style="background: #fff; cursor: pointer; padding-top:10px;width: 100%">
+							<option value="+852" selected>+852 ({{"香港"|showlang:request.session.lang}})</option>
+							<option value="+853">+853 ({{"澳門"|showlang:request.session.lang}})</option>
+							<option value="+86">+86 ({{"中國"|showlang:request.session.lang}})</option>
+						</select>
+                    </div>
+                    <div class="form-group col-sm-9">
+                        <label for="phone_number">{{"電話號碼"|showlang:request.session.lang}}</label>
+                        <input type="number" class="form-control" id="phone_number" placeholder="{{"請輸入電話號碼"|showlang:request.session.lang}}" value="" size="8">
+                    </div>
+                </div>
+				<div class="form-group">
+					<label for="email">{{"電郵地址"|showlang:request.session.lang}}</label>
+						<input type="text" class="form-control" id="email" placeholder="{{"輸入電郵地址"|showlang:request.session.lang}}" value="">
+			    </div>
+                <div class="form-group">
+                    <label for="message" class="control-label">
+                        {{"訊息"|showlang:request.session.lang}}：
+                    </label>
+                    <textarea class="form-control" id="message" placeholder="" rows="5"></textarea>
+                </div>
+                 <div class="form-group d-flex align-items-center">
+                     <input type="checkbox" name="agree" id="newsletter" value="1" checked/><label class="form-check-label" for="rtcl-agree">&nbsp;&nbsp;{{"收取本公司物業資訊"|showlang:request.session.lang}}</label>
+                  </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="add_button" action="mortgage"><i class="fa fa-plane"></i>&nbsp;&nbsp;{{"送出"|showlang:request.session.lang}}</button>
+                <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;{{"取消"|showlang:request.session.lang}}</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    action = "service";
+    pagetype2 = "#service";
+
+    $.ajax({
+        url:'{% url 'mortgage_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action},
+    })
+    .done(function(response){
+        $(pagetype2).html(response);
+    })
+    .fail(function(xhr, status, error){
+        $('#errormessage').html(xhr.responseText);
+    })
+
+
+    var selectTab
+    $('[data-bs-toggle="tab"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-bs-target'),
+            action = $this.attr('action');
+
+            $.ajax({
+                url:'{% url 'mortgage_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action},
+            })
+            .done(function(response){
+                //  alert(pagetype)
+                $(pagetype).html(response);
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            $this.tab('show');
+        return false;
+    });
+
+
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

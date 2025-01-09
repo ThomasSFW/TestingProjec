@@ -1,0 +1,850 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">業主管理</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<section class="content">
+    <div class="row">
+        <!-- Zero Configuration  Starts-->
+        <div class="col-sm-12">
+            <div class="card">
+
+                <div class="card-header pb-0" style="display:none">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label" for="cboTeam">用途</label>
+                            <select id="cboUsage" class="form-select">
+                            {% if 1400 in request.session.accessright %}<option value="" {% if user_usage == "" %}selected{% endif %}>- 所有用途 -</option>{% endif %}
+                            {% for usages in usagelist %}
+                                <option value="{{usages.code_detail_name}}" {% if user_usage == usages.code_detail_name %}selected{% endif %}>{{usages.code_detail_name}}</option>
+                            {% endfor %}
+                            </select>
+                            <div id="propertyid">{{user_propertyid}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal" id="ContactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="action">
+                <input type="hidden" class="form-control" id="contactid">
+                <input type="hidden" class="form-control" id="propertyid" value="{{user_propertyid}}">
+				<div class="form-group">
+					<label for="SelectContactType">聯絡人身份</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio1" name="SelectContactType">
+								<label for="radio1" value="1">業主</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio2" name="SelectContactType">
+								<label for="radio2" value="1">買家</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio3" name="SelectContactType">
+								<label for="radio3" value="1">租客</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio4" name="SelectContactType">
+								<label for="radio4" value="1">其他</label>
+							</div>
+						</div>
+			    </div>
+				<div class="form-group">
+					<label for="TxtCompany">公司</label>
+						<input type="text" class="form-control" id="TxtCompany" placeholder="輸入公司名稱" value="">
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-3">
+                        <label for="TxtTitle">職位</label>
+                            <input type="text" class="form-control" id="TxtTitle" placeholder="輸入職位" value="">
+    			    </div>
+                    <div class="form-group col-sm-9">
+                        <label for="TxtPerson">姓名</label>
+                            <textarea type="text" class="form-control" id="TxtPerson" placeholder="輸入姓名" value=""></textarea>
+    			    </div>
+			    </div>
+				<div class="form-group">
+					<label for="TxtAddress">地址</label>
+						<input type="text" class="form-control" id="TxtAddress" placeholder="輸入地址" value="">
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-3">
+                        <label>聯絡類型</label>
+                        <select id="SelectInfoType" class="form-control">
+                            <option value="手機">手機</option>
+                            <option value="公司">公司</option>
+                            <option value="住宅">住宅</option>
+                            <option value="電郵">電郵</option>
+                            <option value="其他" selected>其他</option>
+                        </select>
+    			    </div>
+                    <div class="form-group col-sm-9">
+                        <label for="TxtContactInfo">聯絡資料</label>
+                            <input type="text" class="form-control" id="TxtContactInfo" placeholder="輸入手機號碼或聯絡資料" value="">
+    			    </div>
+                    <div class="form-group col-sm-12">
+                        <label for="TxtContactEmail">電郵地址</label>
+                            <input type="text" class="form-control" id="TxtContactEmail" placeholder="輸入聯絡電郵地址" value="">
+    			    </div>
+			    </div>
+                <div class="form-group">
+                    <label for="TxtCTCPerson">CTC Person</label>
+                        <input type="text" class="form-control" id="TxtCTCPerson" placeholder="輸入CTC Person" value="">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="add_contact_button" action="add_contact"><i class="icon-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="button" class="btn btn-warning" id="edit_contact_button" action="edit_contact"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                {% if 1421 in request.session.accessright %}
+                <button type="button" class="btn btn-danger" id="delete_contact_button" action="delete_contact"><i class="icon-trash"></i>&nbsp;&nbsp;刪除</button>
+                {% endif %}
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="FollowModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="action">
+                <input type="hidden" class="form-control" id="followid">
+                <input type="hidden" class="form-control" id="propertyid">
+				<div class="form-group">
+					<label for="SelectStatus">狀態</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio5" name="SelectStatus">
+								<label for="radio5" value="1">開價</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio6" name="SelectStatus">
+								<label for="radio6" value="1">跟進</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio7" name="SelectStatus">
+								<label for="radio7" value="1">還價</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio8" name="SelectStatus">
+								<label for="radio8" value="1">完成</label>
+							</div><br>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio9" name="SelectStatus">
+								<label for="radio9" value="1">已租</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio10" name="SelectStatus">
+								<label for="radio10" value="1">已售</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio11" name="SelectStatus">
+								<label for="radio11" value="1">連租約售</label>
+							</div>
+						</div>
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-6">
+                        <label for="TxtUnitPrice">業主叫價(@)</label>
+                            <input type="number" class="form-control" id="TxtUnitPrice" placeholder="輸入業主叫價(@)" value="">
+    			    </div>
+                    <div class="form-group col-sm-6">
+                        <label for="TxtSellingPrice">業主叫價(M)</label>
+                            <input type="number" class="form-control" id="TxtSellingPrice" placeholder="輸入業主叫價(M)" value="">
+    			    </div>
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-6">
+                        <label for="TxtUnitRent">業主叫租(@)</label>
+                            <input type="number" class="form-control" id="TxtUnitRent" placeholder="輸入業主叫租(@)" value="">
+    			    </div>
+                    <div class="form-group col-sm-6">
+                        <label for="TxtRent">業主叫租(K)</label>
+                            <input type="number" class="form-control" id="TxtRent" placeholder="輸入業主叫租(M)" value="">
+    			    </div>
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-12">
+                        <label for="TxtDescription">描述</label>
+                            <textarea type="text" class="form-control" id="TxtDescription" placeholder="輸入描述" value="" rows="5"></textarea>
+    			    </div>
+			    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="add_follow_button" action="add_follow"><i class="icon-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="button" class="btn btn-warning" id="edit_follow_button" action="edit_follow"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="PictureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width:515px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>上載圖片</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+					<input type="hidden" class="form-control" id="action">
+				</div>
+                <div class="form-group col-sm-12">
+                    <table border="2" class="table table-striped" bordercolor="grey">
+                        <colgroup>
+                            <col style="width:20%;background-color: #f2f2f2;">
+                            <col style="width:30%;">
+                            <col style="width:20%;background-color: #e6e6e6;">
+                            <col style="width:30%;">
+                        </colgroup>
+                        <thead>
+                            <td align="center" class="bg-success" colspan="4"><b>物業資料</b></td>
+                        </thead>
+                        <tr>
+                            <td width="200"><b>物業編號：</b></td>
+                            <td colspan="3"><span id="propertyno_picture"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>物業名稱：</b></td>
+                            <td colspan="3"><span id="propertyname_picture"></span></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="form-group col-sm-12">
+                    <div class="product-info">
+                      <h3 class="mt-4" style="font-weight:600">物業圖片</h3>
+                      <form class="dropzone dropzone-primary" id="multiFileUpload" action="/upload/">
+    					<input type="hidden" class="form-control" id="proprertyid">
+                        <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
+                          <h4>將文件拖放到此處或點擊上傳。</h4><span class="note needsclick"></span>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+			</div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-plus" aria-hidden="true"></i>&nbsp;&nbsp;加入</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="ContactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width:515px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>聯絡資料</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+			</div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-plus" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Root element of PhotoSwipe. Must have class pswp.-->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+    <div class="pswp__scroll-wrap">
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+      <div class="pswp__ui pswp__ui--hidden">
+        <div class="pswp__top-bar">
+          <div class="pswp__counter"></div>
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script type="text/javascript">
+    var table;
+
+    const myModal = document.getElementById('PictureModal');
+
+    // Add an event listener to the modal
+    myModal.addEventListener('hidden.bs.modal', function () {
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+    });
+
+    $("#cboUsage").on('change', function(){
+        var val = $(this).val();
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        var propertyEditElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+        var propertyEditElement = document.getElementById('property_edits'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+        var propertyEditElement = document.getElementById('request_reviews'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+
+        //$("#"+activeTabPanel.id+"1").attr("usage",val);
+		//$('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+		$('a[href="#property_view"]').trigger('click');
+    });
+
+	function load_menu() {
+		action = "menutab";
+		usage = $("#cboUsage").val();
+		propertyid = $("#propertyid").html();
+		$('#contentBody').html("<br/><center><div class=\"loader-box\"><div class=\"loader-7\"></div></div></center>");
+		$.ajax({
+			url:'{% url 'ownerMain_response' %}',
+			type:'POST',
+			data:{action:action, usage:usage, propertyid:propertyid},
+		})
+
+		.done(function(response){
+			$('#contentBody').html(response);
+		})
+
+		.fail(function(xhr, status, error){
+            $('.box-header').html(xhr.responseText);
+			//alert(xhr.responseText);
+		})
+	}
+
+	function refresh_table() {
+        table = $('#contentTable').DataTable({
+            columnDefs: [
+              {
+                targets: [0, 11, 15], // Specify the column indices (0-based) that should not be sortable
+                orderable: false,
+              },
+              {
+                targets: [0], // Specify the column indices (0-based) that should not be sortable
+                'checkboxes': {
+                   'selectRow': true
+                }
+              },
+            ],
+            destroy: true,
+            //"paging": false,
+            "dom": 'Brtip',
+            order: [[ 0, "desc" ]],
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+               language: {
+                   "sProcessing": "處理中...",
+                   "sLengthMenu": "顯示 _MENU_ 項結果",
+                   "sZeroRecords": "沒有匹配結果",
+                   "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                   "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                   "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                   "sInfoPostFix": "",
+                   "sSearch": "搜索：",
+                   "sUrl": "",
+                   "oPaginate": {
+                       "sFirst": "首頁",
+                       "sPrevious": "上一頁",
+                       "sNext": "下一頁",
+                       "sLast": "末頁"
+                   },
+               },
+        });
+	}
+
+    $(document).on("click", "#add_contact_button, #edit_contact_button, #delete_contact_button", function(){
+        var action = $(this).attr("action");;
+        var contactid = $("#contactid").val();
+        var propertyid = $("#propertyid").val();
+        if ($("#radio1").is(':checked')) contacttype = "業主";
+        if ($("#radio2").is(':checked')) contacttype = "買家";
+        if ($("#radio3").is(':checked')) contacttype = "租客";
+        if ($("#radio4").is(':checked')) contacttype = "其他";
+        var company = $("#TxtCompany").val();
+        var title = $("#TxtTitle").val();
+        var person = $("#TxtPerson").val();
+        var address = $("#TxtAddress").val();
+        var infotype = $("#SelectInfoType").val();
+        var contactinfo = $("#TxtContactInfo").val();
+        var email = $("#TxtContactEmail").val();
+        var ctcperson = $("#TxtCTCPerson").val();
+        if ((action == "add_contact") || (action == "edit_contact")) {
+            if (person == '') {
+                alert('請輸入姓名');
+                return false;
+            }
+            if (contactinfo == '') {
+                alert('請輸入聯絡資料');
+                return false;
+            }
+            if (action == "add_contact") {
+                if (!(window.confirm("新增"+contacttype+"聯絡資料，你確定嗎？"))) {
+                    return false;
+                }
+            } else {
+                if (!(window.confirm("更新"+contacttype+"聯絡資料，你確定嗎？"))) {
+                    return false;
+                }
+            }
+        } else {
+            if (!(window.confirm("刪除"+contacttype+"聯絡資料，你確定嗎？"))) {
+                return false;
+            }
+        }
+        $.ajax({
+            url:'{% url 'property_save' %}',
+            type:'POST',
+            data:{action:action, contactid:contactid, propertyid:propertyid, contacttype:contacttype, company:company, title:title, person:person, address:address, infotype:infotype, contactinfo:contactinfo, email:email, ctcperson:ctcperson},
+        })
+
+        .done(function(response){
+            if (response == "Success")
+                var messagetype = "success"
+            else
+                var messagetype = "danger"
+            if (action == "add_contact") messagetext = "聯絡資料已成功加入"
+            if (action == "edit_contact") messagetext = propertyid+"聯絡資料已成功更新"
+            if (action == "delete_contact") messagetext = propertyid+"聯絡資料已成功刪除"
+            $.notify({
+                message: messagetext
+                },{
+                    type: messagetype,
+                    allow_dismiss: true,
+                    positon: 'top right',
+                    offset: 20,
+                    spacing: 10,
+                    z_index: 1031,
+            });
+            var tabContent = document.querySelector('.tab-content');
+            var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+            $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+            $("#ContactModal").modal("hide");
+        })
+
+        .fail(function(xhr, status, error){
+            // alert the error if any error occured
+            //alert(xhr.responseText);
+            $("#ContactModal").html(xhr.responseText);
+        })
+    });
+
+    $(document).on("click", "#add_item_button", function(){
+        var propertyid = $(this).attr("propertyid")
+        var itemname = '<div class="row" onclick="hideRow(this)"><div class="col-sm-3"><label class="form-label"><h4>'+$("#itemname").val()+'</h4></label></div>'
+        var itemcontent = '<div class="col-sm-8"><h4 style="font-weight:600">：'+$("#itemcontent").val()+'</h4></div><div class="col-sm-1"><i class="icofont icofont-ui-close oddsheet_delete"></i></div></div>'
+        if (itemname == '') {
+            alert('請輸入項目名稱');
+            return false;
+        }
+        if (itemcontent == '') {
+            alert('請輸入項目內容');
+            return false;
+        }
+        var checked = 0;
+        if ($("#itemname").val() == "預設：最新業主叫價") {
+            var oddsheet_sell = "<strike><font color=red>"+$("#oddsheet_sell").attr("content")+"</font></strike>";
+            $("#oddsheet_sell").html("<h4 style=\"font-weight:600\">：港幣$"+oddsheet_sell+"&nbsp;&nbsp;"+$("#itemcontent").val()+"</h4>");
+            checked = 1;
+        }
+        if ($("#itemname").val() == "預設：最新業主叫租") {
+            var oddsheet_rent = "<strike><font color=red>"+$("#oddsheet_rent").attr("content")+"</font></strike>";
+            $("#oddsheet_rent").html("<h4 style=\"font-weight:600\">：港幣$"+oddsheet_rent+"&nbsp;&nbsp;"+$("#itemcontent").val()+"</h4>");
+            checked = 1;
+        }
+        if ($("#itemname").val() == "預設：最新管理費") {
+            var oddsheet_managementfee = "<strike><font color=red>"+$("#oddsheet_managementfee").attr("content")+"</font></strike>";
+            $("#oddsheet_managementfee").html("<h4 style=\"font-weight:600\">：港幣$"+oddsheet_managementfee+"&nbsp;&nbsp;"+$("#itemcontent").val()+"</h4>");
+            checked = 1;
+        }
+        if ($("#itemname").val() == "預設：賣點") {
+            $("#oddsheet_sellingpoint").html("<h4 style=\"font-weight:600\">"+$("#itemcontent").val()+"</h4>");
+            checked = 1;
+        }
+        if ($("#itemname").val() == "物業圖片") {
+            var itemcontent = '<div class=\"col-sm-8\"><h4 style="font-weight:600"><img class=\"align-self-center img-fluid\" width=\"500px\" src=\"/static/dist/img-web/property-cms/'+propertyid+'/'+$("#itemcontent").val()+'\" alt=\"#\"></h4></div>'
+            checked = 0;
+        }
+        if ($("#itemname").val() == "物業平面圖") {
+            var itemcontent = '<div class=\"col-sm-8\"><h4 style="font-weight:600"><img class=\"align-self-center img-fluid\" width=\"500px\" src=\"/static/dist/img-web/floorplan-cms/'+propertyid+'/'+$("#itemcontent").val()+'\" alt=\"#\"></h4></div>'
+            checked = 0;
+        }
+        if (checked == 0) $("#oddsheet").append(itemname+itemcontent)
+        $("#itemname").val("");
+        $("#itemcontent").val("");
+    });
+
+    $(document).on("click", "#reset_oddsheet_button", function(){
+        if (!(window.confirm("重新建立盤紙，你確定嗎？"))) {
+            return false;
+        }
+        $('a[href="#property_oddsheet"]').trigger('click');
+    })
+
+    $(document).on("click", "#reset_oddsheet_multi_button", function(){
+        if (!(window.confirm("重新建立多項盤紙，你確定嗎？"))) {
+            return false;
+        }
+        $('a[href="#property_oddsheet_multi"]').trigger('click');
+    })
+
+    $(document).on("click", "#download_oddsheet_button", function(){
+        var buttontype = $(this).attr("buttontype");
+        var propertyno = $("#propertyno").val();
+        var propertyname = $("#propertyname").val();
+        if (buttontype == 'pdf') {
+            var sheader = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">';
+            sheader = sheader + '<style>';
+            sheader = sheader + 'body{font-family:tahoma;font-size:14px;}';
+            sheader = sheader + 'div{font-family:tahoma;font-size:14pt;}';
+            sheader = sheader + 'body { box-sizing: border-box;height: 100%;margin: 0;}';
+            sheader = sheader + '.row, .col-sm-12, .footer-logo-area, .footer-logo-area-2 { height: 100%;}';
+            sheader = sheader + '</style>';
+
+            var sstyle = '<link rel="stylesheet" href="{% static 'Koho/assets/css/style.css' %}"/><link rel="stylesheet" href="{% static 'Koho/assets/css/vendors/bootstrap.css' %}"/>';
+
+            var tabobj = $('<div width=780px></div>').html($('#oddsheet').html());
+
+            tabobj.find('button').hide();
+
+            shtml = tabobj.html();
+
+            var pdf = new jsPDF('mm', 'px', 'A4');
+
+            html2canvas(document.getElementById('oddsheet')).then(function(canvas) {
+                var imgData = canvas.toDataURL('image/png');
+                var doc = new jsPDF('mm', 'px', 'A4');
+                doc.addImage(imgData, 'PNG', 10, 10);
+                doc.save(propertyno + ' ' + propertyname+'- 盤紙.pdf');
+                //simulateDownloadImageClick(canvas.toDataURL(), 'file-name.png');
+            });
+
+
+            // Convert the HTML content to a string
+            source = shtml;
+            //source = '<html><head>' +sheader + '</head>' + sstyle + '<body>' + shtml + '<font size=30px><b>Happy Birthday</b></font></body></html>'
+            //var source = $('<div>').append(tabobj.clone()).html();
+
+            // we support special element handlers. Register them with jQuery-style
+            // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+            // There is no support for any other type of selectors
+            // (class, of compound) at this time.
+            specialElementHandlers = {
+                // element with id of "bypass" - jQuery style selector
+                '#bypassme': function (element, renderer) {
+                    // true = "handled elsewhere, bypass text extraction"
+                    return true
+                }
+            };
+            margins = {
+                top: 10,
+                bottom: 20,
+                left: 20,
+                width: 500
+            };
+            // all coords and widths are in jsPDF instance's declared units
+            // 'inches' in this case
+            pdf.fromHTML(
+            source, // HTML string or DOM elem ref.
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width, // max width of content on PDF
+                'elementHandlers': specialElementHandlers
+            },
+
+            function (dispose) {
+                // dispose: object with X, Y of the last line add to the PDF
+                //          this allow the insertion of new lines after html
+                //pdf.save(propertyname+'- 盤紙.pdf');
+            }, margins);
+
+        }
+
+        function simulateDownloadImageClick(uri, filename) {
+          var link = document.createElement('a');
+          if (typeof link.download !== 'string') {
+            window.open(uri);
+          } else {
+            link.href = uri;
+            link.download = filename;
+            accountForFirefox(clickLink, link);
+          }
+        }
+
+        function clickLink(link) {
+          link.click();
+        }
+
+        function accountForFirefox(click) { // wrapper function
+          let link = arguments[1];
+          document.body.appendChild(link);
+          click(link);
+          document.body.removeChild(link);
+        }
+    })
+
+    $(document).on("click", "#download_oddsheet_multi_button", function(){
+        var buttontype = $(this).attr("buttontype");
+        var propertyno = $("#propertyno").val();
+        var propertyname = $("#propertyname").val();
+        if (buttontype == 'pdf') {
+            var sheader = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">';
+            sheader = sheader + '<style>';
+            sheader = sheader + 'body{font-family:tahoma;font-size:14px;}';
+            sheader = sheader + 'div{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'body { margin: 100; padding: 150;  box-sizing: border-box;}';
+            sheader = sheader + '</style>';
+
+            var sstyle = '<link rel="stylesheet" href="{% static 'dist/css/Adminlte.css' %}"/><link rel="stylesheet" href="{% static 'dist/css/skins/_all-skins.min.css' %}"/><link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.css' %}"/>';
+
+
+            var tabobj = $('<div width=780px></div>').html($('#oddsheet').html());
+            // Select all elements with the class "oddsheet_delete"
+            var deleteIcons = document.querySelectorAll(".oddsheet_delete");
+
+            // Loop through the selected elements and hide them
+            for (var i = 0; i < deleteIcons.length; i++) {
+              deleteIcons[i].style.display = "none";
+            }
+            tabobj.find('button').hide();
+
+            shtml = tabobj.html();
+
+            var pdf = new jsPDF('landscape', 'mm', 'A4');
+
+            html2canvas(document.getElementById('oddsheet')).then(function(canvas) {
+                var imgData = canvas.toDataURL('image/png');
+                var doc = new jsPDF('landscape', 'mm', 'A4');
+                doc.addImage(imgData, 'PNG', 10, 10);
+                doc.save(propertyno + ' ' + propertyname+'- 盤紙.pdf');
+                //simulateDownloadImageClick(canvas.toDataURL(), 'file-name.png');
+            });
+
+
+            // Convert the HTML content to a string
+            source = shtml;
+            //source = '<html><head>' +sheader + '</head>' + sstyle + '<body>' + shtml + '<font size=30px><b>Happy Birthday</b></font></body></html>'
+            //var source = $('<div>').append(tabobj.clone()).html();
+
+            // we support special element handlers. Register them with jQuery-style
+            // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+            // There is no support for any other type of selectors
+            // (class, of compound) at this time.
+            specialElementHandlers = {
+                // element with id of "bypass" - jQuery style selector
+                '#bypassme': function (element, renderer) {
+                    // true = "handled elsewhere, bypass text extraction"
+                    return true
+                }
+            };
+            margins = {
+                top: 10,
+                bottom: 20,
+                left: 20,
+                width: 500
+            };
+            // all coords and widths are in jsPDF instance's declared units
+            // 'inches' in this case
+            pdf.fromHTML(
+            source, // HTML string or DOM elem ref.
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width, // max width of content on PDF
+                'elementHandlers': specialElementHandlers
+            },
+
+            function (dispose) {
+                // dispose: object with X, Y of the last line add to the PDF
+                //          this allow the insertion of new lines after html
+                //pdf.save(propertyname+'- 盤紙.pdf');
+            }, margins);
+
+        }
+
+        function simulateDownloadImageClick(uri, filename) {
+          var link = document.createElement('a');
+          if (typeof link.download !== 'string') {
+            window.open(uri);
+          } else {
+            link.href = uri;
+            link.download = filename;
+            accountForFirefox(clickLink, link);
+          }
+        }
+
+        function clickLink(link) {
+          link.click();
+        }
+
+        function accountForFirefox(click) { // wrapper function
+          let link = arguments[1];
+          document.body.appendChild(link);
+          click(link);
+          document.body.removeChild(link);
+        }
+    })
+
+    $(document).on("click", "#add_follow_button, #edit_follow_button, #delete_follow_button", function(){
+        var action = $(this).attr("action");
+        var followid = $(this).attr("followid");
+        var propertyid = $("#propertyid").val();
+        if ($("#radio5").is(':checked')) status = "開價";
+        if ($("#radio6").is(':checked')) status = "跟進";
+        if ($("#radio7").is(':checked')) status = "還價";
+        if ($("#radio8").is(':checked')) status = "完成";
+        if ($("#radio9").is(':checked')) status = "已租";
+        if ($("#radio10").is(':checked')) status = "已售";
+        if ($("#radio11").is(':checked')) status = "連租約售";
+        var sellingprice = $("#TxtSellingPrice").val();
+        var unitprice = $("#TxtUnitPrice").val();
+        var rent = $("#TxtRent").val();
+        var unitrent = $("#TxtUnitRent").val();
+        var description = $("#TxtDescription").val();
+        if ((action == "add_follow") || (action == "edit_follow")) {
+            if (description == '') {
+                alert('請輸入描述');
+                return false;
+            }
+            if (action == "add_follow") {
+                if (!(window.confirm("新增"+status+"資料，你確定嗎？"))) {
+                    return false;
+                }
+            } else {
+                if (!(window.confirm("更新"+status+"資料，你確定嗎？"))) {
+                    return false;
+                }
+            }
+        } else {
+            if (!(window.confirm("刪除"+status+"資料，你確定嗎？"))) {
+                return false;
+            }
+        }
+
+        $.ajax({
+            url:'{% url 'property_save' %}',
+            type:'POST',
+            data:{action:action, followid:followid, propertyid:propertyid, status:status, sellingprice:sellingprice, unitprice:unitprice, rent:rent, unitrent:unitrent, description:description},
+        })
+
+        .done(function(response){
+            if (action == "add_follow") messagetext = "跟進資料已成功加入"
+            if (action == "edit_follow") messagetext = propertyid+"跟進資料已成功更新"
+            if (action == "delete_follow") messagetext = propertyid+"跟進資料已成功刪除"
+            $.notify({
+                message: messagetext
+                },{
+                    type: 'success',
+                    allow_dismiss: true,
+                    positon: 'top right',
+                    offset: 20,
+                    spacing: 10,
+                    z_index: 1031,
+            });
+            var tabContent = document.querySelector('.tab-content');
+            var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+            $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+            $("#FollowModal").modal("hide");
+        })
+
+        .fail(function(xhr, status, error){
+            // alert the error if any error occured
+            //alert(xhr.responseText);
+            $("#FollowModal").html(xhr.responseText);
+        })
+    });
+
+    // Initialize Dropzone
+    Dropzone.autoDiscover = false;
+    var myDropzone = new Dropzone("#multiFileUpload", {
+        url: "/upload/",
+        params: {
+          property_id: "",
+          filetype: ""
+        },
+        maxFilesize: 20, // Maximum file size in MB
+        maxFiles: 20, // Maximum number of files allowed
+        acceptedFiles: ".jpg, .jpeg, .png, .pdf, .docs, .xlsx, .mp4", // Allowed file extensions
+        addRemoveLinks: true, // Show remove file links
+        dictRemoveFile: "刪除", // Text for the remove file link
+        init: function() {
+          this.on("success", function(file, response) {
+            // Handle success after file upload
+            console.log("File uploaded successfully: " + file.name + property_id);
+          });
+          this.on("error", function(file, errorMessage) {
+            // Handle error after file upload
+            console.log("Error uploading file: " + file.name + " - " + errorMessage);
+          });
+        }
+    });
+
+
+    // Initial page
+    load_menu()
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

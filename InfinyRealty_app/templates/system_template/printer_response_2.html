@@ -1,0 +1,124 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "printer_list" %}
+        <table id="contentTable" class="table table-bordered table-striped display mb-4 dataTablesCard card-table text-black customer-list-tbl" data-page-length="15">
+            <thead>
+                <tr class="bg-primary">
+                    <th><strong class="font-w600 wspace-no">ID</strong></th>
+                    <th><strong class="font-w600 wspace-no">印表機名稱2</strong></th>
+                    <th><strong class="font-w600 wspace-no">打印機型號</strong></th>
+                    <!--<th><strong class="font-w600 wspace-no">序列號</strong></th>-->
+                    <th><strong class="font-w600 wspace-no">IP地址</strong></th>
+                    <!--<th><strong class="font-w600 wspace-no">端口</strong></th>-->
+                    <th><strong class="font-w600 wspace-no">位置代號</th>
+                    <th><strong class="font-w600 wspace-no">位置名稱</th>
+                    <th><strong class="font-w600 wspace-no">位置層級</th>
+                    <th><strong class="font-w600 wspace-no">狀態</th>
+                    <th class="bg-none"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for displaydata in printers %}
+                <tr>
+                    <td>{{ displaydata.printer_id }}</td>
+                    <td>{{ displaydata.printer_name }}</td>
+                    <td>{{ displaydata.printer_model }}</td>
+                    <!--<td>{{ displaydata.printer_serial_number }}</td>-->
+                    <td><span class="font-w600">{{ displaydata.ip_address }}</span></td>
+                    <!--<td style="text-align:center;">{{ displaydata.port }}</td>-->
+                    <td style="text-align:center;">{{ displaydata.location_code }}</td>
+                    <td>{{ displaydata.location }}</td>
+                    <td style="text-align:center;">{{ displaydata.location_level }}</td>
+                    <td>
+                        {% if displaydata.status == "1" %}
+                        <div class="label label-success">正常</div>
+                        {% else %}
+                        <div class="label label-default">取消</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="dropdown ml-auto">
+                            <div class="btn-link" data-toggle="dropdown" aria-expanded="false" role="button">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.0005 12C11.0005 12.5523 11.4482 13 12.0005 13C12.5528 13 13.0005 12.5523 13.0005 12C13.0005 11.4477 12.5528 11 12.0005 11C11.4482 11 11.0005 11.4477 11.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M18.0005 12C18.0005 12.5523 18.4482 13 19.0005 13C19.5528 13 20.0005 12.5523 20.0005 12C20.0005 11.4477 19.5528 11 19.0005 11C18.4482 11 18.0005 11.4477 18.0005 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4.00049 12C4.00049 12.5523 4.4482 13 5.00049 13C5.55277 13 6.00049 12.5523 6.00049 12C6.00049 11.4477 5.55277 11 5.00049 11C4.4482 11 4.00049 11.4477 4.00049 12Z" stroke="#3E4954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item text-black" href="#">
+                                Accept order
+                                </a>
+                                <a class="dropdown-item text-black" href="#">
+                                Reject order
+                                </a>
+                                <a class="dropdown-item text-black" href="#">
+                                View Details
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td style = "text-align: center;" colspan="11">{{ displaydata.printer_id }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "printer_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#tabid").val($(this).attr("tabid"));
+                $("#action").val($(this).attr("action"));
+                $("#TxtTabName").val($(this).attr("tabname"));
+                $("#TxtURL").val($(this).attr("url"));
+                $("#TxtSequence").val($(this).attr("sequence"));
+                $("#TxtIconClass").val($(this).attr("iconclass"));
+                if (($(this).attr("isenabled") == "1") || ($(this).attr("isenabled") == ""))
+                    $("#radioActive").prop("checked", true);
+                else
+                    $("#radioInActive").prop("checked", true);
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='fa fa-trash'></i>&nbsp;&nbsp;<b>Add New Tab Information</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                } else {
+                    $("#FunctionTitle").html("<i class='fa fa-edit'></i>&nbsp;&nbsp;<b>Modify Tab Information</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

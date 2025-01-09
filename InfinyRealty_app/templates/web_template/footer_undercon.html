@@ -1,0 +1,203 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block footer_content %}
+{% load static %}
+    <!--=====================================-->
+    <!--=   Footer     Start                =-->
+    <!--=====================================-->
+
+    <footer class="footer-area">
+        <div class="footer-top footer-top-style">
+            <a class="container">
+                <a target="_blank" class="floating-icon" href="https://wa.me/+85221191189">
+                    <i class="fab fa-whatsapp"></i> <!-- Font Awesome chat icon -->
+                </a>
+
+                <div class="row justify-content-between">
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="footer-logo-area footer-logo-area-2">
+                            <div class="item-logo">
+                                <img src="{% static 'dist/img-web/main/infinyrealty_logo_light.png' %}" alt='logo' width="280" class='img-fluid'/>
+                            </div>
+                            <p>
+                                {{"承灃物業有限公司於2023年成立，專營香港寫字樓及商舖的租賃與買賣；亦為客戶提供多元化地產項目諮詢，包括世界各地的全幢物業、地皮、商場等，承諾以真誠及專業的態度對待每一份的委託。"|showlang:request.session.lang}}
+                            </p>
+                            <div class="item-social">
+                                <ul>
+                                    <li><a href="https://www.facebook.com/infinyrealty" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                                    <!--<li><a href="https://twitter.com/" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                                    <li><a href="https://vimeo.com/" target="_blank"><i class="fab fa-vimeo-v"></i></a></li>-->
+                                    <!--<li><a href="https://www.instagram.com/infinyhk" target="_blank"><i class="fab fa-instagram"></i></a></li>-->
+                                    <li><a href="https://wa.me/+85221191189" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6">
+                        <div class="footer-link footer-link-style-2">
+                            <div class="footer-title footer-title-style2">
+                                <h3>{{"快速連結"|showlang:request.session.lang}}</h3>
+                            </div>
+                            <div class="item-link">
+                                <ul>
+                                    <li><a href="#">{{"關於我們"|showlang:request.session.lang}}</a></li>
+                                    <!--<li><a href="blog-details1.html">Blogs & Articles </a></li>-->
+                                    <li><a href="#">{{"使用條款"|showlang:request.session.lang}}</a></li>
+                                    <li><a href="#">{{"免責聲明"|showlang:request.session.lang}}</a></li>
+                                    <li><a href="#">{{"私隱政策聲明"|showlang:request.session.lang}}</a></li>
+                                    <li><a href="#">{{"聯絡我們"|showlang:request.session.lang}}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="col-xl-2 col-lg-3 col-md-6 col-sm-6">
+                    </div>-->
+                    <!--<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                        <div class="footer-insta">
+                            <div class="footer-title footer-title-style2">
+                                <h3>物業網絡</h3>
+                            </div>
+                            <div class="insta-link">
+                                <ul>
+                                    <li>
+                                        <div class="item-img">
+                                            <a href="https://www.instagram.com/" class="insta-pic">
+                                                <img src="{% static 'HomListi/img/instagram/insta1.jpg' %}" width="86" height="73"
+                                                    alt="instagram">
+                                            </a>
+                                            <div class="item-overlay">
+                                                <a href="https://www.instagram.com/" target="_blank">
+                                                    <i class="fab fa-instagram"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-img">
+                                            <a href="https://www.instagram.com/" class="insta-pic">
+                                                <img src="{% static 'HomListi/img/instagram/insta2.jpg' %}" width="86" height="73"
+                                                    alt="instagram">
+                                            </a>
+                                            <div class="item-overlay">
+                                                <a href="https://www.instagram.com/" target="_blank">
+                                                    <i class="fab fa-instagram"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-img">
+                                            <a href="https://www.instagram.com/" class="insta-pic">
+                                                <img src="{% static 'HomListi/img/instagram/insta3.jpg' %}" width="86" height="73"
+                                                    alt="instagram">
+                                            </a>
+                                            <div class="item-overlay">
+                                                <a href="https://www.instagram.com/" target="_blank">
+                                                    <i class="fab fa-instagram"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-img">
+                                            <a href="https://www.instagram.com/" class="insta-pic">
+                                                <img src="{% static 'HomListi/img/instagram/insta4.jpg' %}" width="86" height="73"
+                                                    alt="instagram">
+                                            </a>
+                                            <div class="item-overlay">
+                                                <a href="https://www.instagram.com/" target="_blank">
+                                                    <i class="fab fa-instagram"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-img">
+                                            <a href="https://www.instagram.com/" class="insta-pic">
+                                                <img src="{% static 'HomListi/img/instagram/insta5.jpg' %}" width="86" height="73"
+                                                    alt="instagram">
+                                            </a>
+                                            <div class="item-overlay">
+                                                <a href="https://www.instagram.com/" target="_blank">
+                                                    <i class="fab fa-instagram"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="item-img">
+                                            <a href="https://www.instagram.com/" class="insta-pic">
+                                                <img src="{% static 'HomListi/img/instagram/insta6.jpg' %}" width="86" height="73"
+                                                    alt="instagram">
+                                            </a>
+                                            <div class="item-overlay">
+                                                <a href="https://www.instagram.com/" target="_blank">
+                                                    <i class="fab fa-instagram"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="footer-contact footer-contact-style-2">
+                            <div class="footer-title footer-title-style2">
+                                <h3>{{"聯絡我們"|showlang:request.session.lang}}</h3>
+                            </div>
+                            <div class="footer-location">
+                                <ul>
+                                    <li class="item-map"><i class="fas fa-map-marker-alt"></i>{{"香港灣仔分域街18號捷利中心地下3-4號舖"|showlang:request.session.lang}}</li>
+                                    <li><a target="_blank" href="mailto:realty@infiny.group"><i class="fas fa-envelope"></i>realty@infiny.group</a></li>
+                                    <li><a target="_blank" href="https://wa.me/+85221191189?text=我想查詢物業"><i class="fab fa-whatsapp"></i>+852 21191189</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom footer-bottom-style-2">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="copyright-area1">
+                            <ul>
+                                <li>{{"本網站提供的資料僅供參考。 承灃物業有限公司不會對由任何錯誤、不準確或遺漏而直接或間接引起的任何損失或損害承擔任何責任。"|showlang:request.session.lang}}</li>
+                                <!--<li><a href="/terms">使用條款</a></li>
+                                <li><a href="/privacy">私隱政策聲明</a></li>-->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="copyright-area2">
+                            <p>© 2024 {{"承灃物業有限公司"|showlang:request.session.lang}} &nbsp;&nbsp;&nbsp;&nbsp; {{"牌照號碼：C-098612"|showlang:request.session.lang}} &nbsp;&nbsp;&nbsp;&nbsp; {{"版權所有"|showlang:request.session.lang}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+        <!-- start back to top -->
+        <a href="javascript:void(0)" id="back-to-top">
+            <i class="fas fa-angle-double-up"></i>
+        </a>
+        <!-- End back to top -->
+
+
+
+{% endblock footer_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

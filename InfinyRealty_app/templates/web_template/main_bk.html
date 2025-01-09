@@ -1,0 +1,761 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Main Banner     Start           =-->
+    <!--=====================================-->
+
+        <section class="main-banner-wrap2">
+            <ul class="section-cloud">
+                <li><img src="{% static 'HomListi/img/figure/banner5.png' %}" alt="shape" width="147" height="51"></li>
+                <li><img src="{% static 'HomListi/img/figure/banner6.png' %}" alt="shape" width="184" height="50"></li>
+                <li><img src="{% static 'HomListi/img/figure/banner7.png' %}" alt="shape" width="92" height="32"></li>
+            </ul>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="main-banner-box2 wow slideInUp" data-wow-delay=".3s">
+                            <div class="item-img">
+                                <img src="{% static 'HomListi/img/banner/banner3.png' %}" alt="banner" width="751" height="451">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-section-wrap1 motion-effects-wrap wow bounceInDown" data-wow-delay=".3s">
+                            <ul class="element-list">
+
+                                <li>
+                                    <img class="motion-effects6 wow fadeInUp d-none d-xl-block" data-wow-delay="400ms"
+                                        data-wow-duration="800ms" src="{% static 'HomListi/img/figure/banner3.png' %}" alt="shape" width="87" height="87">
+                                </li>
+                                <li>
+                                    <img class="motion-effects7 wow fadeInUp d-none d-xl-block" data-wow-delay="400ms"
+                                        data-wow-duration="800ms" src="{% static 'HomListi/img/figure/banner2.png' %}" alt="shape" width="177" height="110">
+                                </li>
+                            </ul>
+                            <h2 class="item-title"><a href="without-sidebar.html">尋找適合你的物業</a></h2>
+                            <form action="index2.html" class="rent-form">
+                                <div class="form-check-box">
+                                    <label class="checkbox-button checkbox-button-2">
+                                        <input type="checkbox" class="checkbox-button__input" id="choice1-1" name="choice1">
+                                        <span class="checkbox-button__control checkbox-button__control-2 active"></span>
+                                        <span class="checkbox-button__label checkbox-button__label-2">租賃</span>
+                                      </label>
+                                      <label class="checkbox-button checkbox-button-2">
+                                        <input type="checkbox" class="checkbox-button__input" id="choice1-2" name="choice2">
+                                        <span class="checkbox-button__control checkbox-button__control-2"></span>
+                                        <span class="checkbox-button__label checkbox-button__label-2">出售</span>
+                                      </label>
+                                      <label class="checkbox-button checkbox-button-2">
+                                        <input type="checkbox" class="checkbox-button__input" id="choice1-3" name="choice3">
+                                        <span class="checkbox-button__control checkbox-button__control-2"></span>
+                                        <span class="checkbox-button__label checkbox-button__label-2">買樓</span>
+                                      </label>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="row">
+                                        <div class="form-group col-lg-12">
+                                            <input type="text" class="form-control" placeholder="關鍵字">
+                                        </div>
+                                        <div class="form-group col-lg-12">
+                                            <div class="form-icon-area">
+                                                <input type="text" class="form-control" placeholder="物業位置">
+                                                <div class="form-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="select-area">
+                                    <div class="row gutters-15">
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="price-content">
+                                                <select name="MinPrice" id="MinPrice">
+                                                    <option value="Price">最低價格</option>
+                                                    <option value="$">$25,000</option>
+                                                    <option value="$">$20,000</option>
+                                                    <option value="$">$15,000</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="price-content">
+                                                <select name="MaxPrice" id="MaxPrice">
+                                                    <option value="Price">最高價格</option>
+                                                    <option value="$">$50,000</option>
+                                                    <option value="$">$45,000</option>
+                                                    <option value="$">$40,000</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="space-content">
+                                                <select name="SpaceSize" id="SpaceSize">
+                                                    <option value="Space">空間大小</option>
+                                                    <option value="$">931 Sqf</option>
+                                                    <option value="$">550 Sqf</option>
+                                                    <option value="$">700 Sqf</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--<div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="room-content">
+                                                <select name="BedRooms" id="BedRooms">
+                                                    <option value="Room">Bed Rooms</option>
+                                                    <option value="$">5</option>
+                                                    <option value="$">4</option>
+                                                    <option value="$">3</option>
+                                                </select>
+                                            </div>
+                                        </div>-->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group-button col-lg-12">
+                                        <a href="without-sidebar.html" class="form-btn">尋找</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!--=====================================-->
+    <!--=   Property     Start              =-->
+    <!--=====================================-->
+
+        <section class="property-wrap2">
+            <div class="container">
+                <div class="item-heading-center mb-20">
+                    <span class="section-subtitle">我們的物業</span>
+                    <h2 class="section-title">最新物業</h2>
+                    <div class="bg-title-wrap" style="display: block;">
+                        <span class="background-title solid">Properties</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="single-listing2.html"><img src="{% static 'dist/img-web/property/250px-Millennium_Plaza_2010.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                        <div class="item-category">租賃</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$600,000<span>/月</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="single-listing1.html">新紀元中心</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="item-img">
+                                <a href="single-listing2.html"><img src="{% static 'HomListi/img/blog/property6.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$300,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="single-listing1.html">Brand New Shopping Mall for Sale</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".6s">
+                            <div class="item-img">
+                                <a href="single-listing2.html"><img src="{% static 'HomListi/img/blog/property7.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Buy</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$10,200<span>/mo</span></div>
+                                        <span class="item-veryfy"><i class="fas fa-check"></i></span>
+                                    </div>
+                                    <h3 class="item-title"><a href="single-listing1.html">Northwest Office Space</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".8s">
+                            <div class="item-img">
+                                <a href="single-listing2.html"><img src="{% static 'HomListi/img/blog/property8.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Rent</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$250,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="single-listing1.html">Diamond Manco Apartment</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="single-listing2.html"><img src="{% static 'HomListi/img/blog/property9.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$8,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="single-listing1.html">Affordable Green Villa House</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="item-img">
+                                <a href="single-listing2.html"><img src="{% static 'HomListi/img/blog/property10.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Buy</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$9,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="single-listing1.html">Countryside Modern Lake View</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="property-button">
+                    <a href="single-listing2.html" class="item-btn">瀏覽所有物業</a>
+                </div>
+            </div>
+        </section>
+    <!--=====================================-->
+    <!--=   Choose    Start                 =-->
+    <!--=====================================-->
+
+        <section class="why-choose-wrap1">
+            <div class="shape-img1 wow fadeInRight" data-wow-delay=".3s">
+                <img src="{% static 'HomListi/img/figure/shape9.png' %}" alt="shape" width="253" height="212">
+            </div>
+            <div class="container">
+                <div class="item-heading-center mb-20">
+                    <span class="section-subtitle">People Like Us</span>
+                    <h2 class="section-title">Why Choose Us</h2>
+                    <div class="bg-title-wrap" style="display: block;">
+                        <span class="background-title solid">Choose</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="choose-box1 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="choose-shape1">
+                                <a href="index3.html"><img src="{% static 'HomListi/img/figure/Secure-Payment-1.svg' %}" alt="shape" width="59" height="63"></a>
+                            </div>
+                            <h3 class="item-title"><a href="single-listing3.html">Property Management</a></h3>
+                            <p>when an unknown printer took galley and scrambled itmakepe spear survived not five
+                                centuries</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="choose-box1 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="choose-shape1">
+                                <a href="index3.html"><img src="{% static 'HomListi/img/figure/home_dollar-1.svg' %}" alt="shape" width="59" height="63"></a>
+                            </div>
+                            <h3 class="item-title"><a href="single-listing3.html">Mortgage Services</a></h3>
+                            <p>when an unknown printer took galley and scrambled itmakepe spear survived not five
+                                centuries</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="choose-box1 wow fadeInUp" data-wow-delay=".6s">
+                            <div class="choose-shape1 choose-shape2">
+                                <a href="index3.html"><img src="{% static 'HomListi/img/figure/home-calculator-1.svg' %}" alt="shape" width="59" height="63"></a>
+                            </div>
+                            <h3 class="item-title"><a href="single-listing3.html">Transparentcy Tax Clearing</a></h3>
+                            <p>when an unknown printer took galley and scrambled itmakepe spear survived not five
+                                centuries</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!--=====================================-->
+    <!--=   Feature     Start               =-->
+    <!--=====================================-->
+
+        <section class="feature-rent-wrap1">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-7 col-sm-12">
+                        <div class="item-heading-left">
+                            <span class="section-subtitle">Latest Listings</span>
+                            <h2 class="section-title">Properties For Rent</h2>
+                            <div class="bg-title-wrap" style="display: block;">
+                                <span class="background-title solid">properties</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5 col-sm-12">
+                        <div class="heading-button">
+                            <a href="with-sidebar.html" class="heading-btn">View All Properties</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-5">
+                        <div class="rent-box1 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="single-listing1.html"><img src="{% static 'HomListi/img/blog/property1.jpg' %}" alt="property" width="630" height="430"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Rent</div>
+                                </div>
+                            </div>
+                            <div class="item-content">
+                                <h3 class="item-title"><a href="single-listing1.html">Triple Story House for Rent</a></h3>
+                                <div class="location-area"><i class="flaticon-maps-and-flags"></i>Downey, California</div>
+                                <p>
+                                    Massa tempor nec feugiat nisl pretium. Egestas fringilla phasellus faucibus scelerisque eleifend donec. Porta nibh venenatis cras sed felis eget velit aliquet. Neque volutpat ac tincidunt vitae semper quis lectus.
+                                </p>
+                                <div class="item-categoery3">
+                                    <ul>
+                                        <li><i class="flaticon-bed"></i>Beds: 03</li>
+                                        <li><i class="flaticon-shower"></i>Baths: 02</li>
+                                        <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-7 wow fadeInUp" data-wow-delay=".4s">
+                        <div class="rent-feature1">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="rent-box2">
+                                        <div class="item-img">
+                                            <a href="with-sidebar.html"><img src="{% static 'HomListi/img/blog/property2.jpg' %}" alt="property" height="170" width="220"></a>
+                                            <div class="item-category">
+                                                <a href="single-listing1.html">For Rent</a>
+                                            </div>
+                                        </div>
+                                        <div class="item-content">
+                                            <h3 class="item-title"><a href="single-listing1.html">
+                                                Brand New Shopping Mall for Sale </a></h3>
+                                            <div class="location-area"><i class="flaticon-maps-and-flags"></i>Downey, California</div>
+                                            <div class="item-categoery3">
+                                                <ul>
+                                                    <li><i class="flaticon-bed"></i>Beds: 03</li>
+                                                    <li><i class="flaticon-shower"></i>Baths: 02</li>
+                                                    <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                                </ul>
+                                            </div>
+                                            <div class="rent-price">
+                                                <div class="item-price">$15,000<span><i>/</i>mo</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rent-feature1">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="rent-box2">
+                                        <div class="item-img">
+                                            <a href="with-sidebar.html"><img src="{% static 'HomListi/img/blog/property3.jpg' %}" alt="property" height="170" width="220"></a>
+                                            <div class="item-category">
+                                                <a href="single-listing1.html">For Rent</a>
+                                            </div>
+                                        </div>
+                                        <div class="item-content">
+                                            <h3 class="item-title"><a href="single-listing1.html">Northwest Office Space</a></h3>
+                                            <div class="location-area"><i class="flaticon-maps-and-flags"></i>Downey, California</div>
+                                            <div class="item-categoery3">
+                                                <ul>
+                                                    <li><i class="flaticon-bed"></i>Beds: 03</li>
+                                                    <li><i class="flaticon-shower"></i>Baths: 02</li>
+                                                    <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                                </ul>
+                                            </div>
+                                            <div class="rent-price">
+                                                <div class="item-price">$15,000<span><i>/</i>mo</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rent-feature1">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="rent-box2">
+                                        <div class="item-img">
+                                            <a href="with-sidebar.html"><img src="{% static 'HomListi/img/blog/property4.jpg' %}" alt="property" height="170" width="220"></a>
+                                            <div class="item-category">
+                                                <a href="single-listing1.html">For Rent</a>
+                                            </div>
+                                        </div>
+                                        <div class="item-content">
+                                            <h3 class="item-title"><a href="single-listing1.html">Diamond Manco Apartment</a></h3>
+                                            <div class="location-area"><i class="flaticon-maps-and-flags"></i>Downey, California</div>
+                                            <div class="item-categoery3">
+                                                <ul>
+                                                    <li><i class="flaticon-bed"></i>Beds: 03</li>
+                                                    <li><i class="flaticon-shower"></i>Baths: 02</li>
+                                                    <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                                </ul>
+                                            </div>
+                                            <div class="rent-price">
+                                                <div class="item-price">$15,000<span><i>/</i>mo</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!--=====================================-->
+    <!--=   Progress     Start              =-->
+    <!--=====================================-->
+
+        <section class="progress-bar-wrap1 counter-appear">
+            <div class="shape-img1 wow fadeInLeft" data-wow-delay=".4s">
+                <img src="{% static 'HomListi/img/figure/counter-bg-2.png' %}" alt="progress">
+            </div>
+            <div class="container">
+                <div class="item-heading-bar">
+                    <h2 class="item-title">Real Estate by the Numbers</h2>
+                    <p>In 2021 things look like this percentage</p>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="80">80</span>%</div>
+                                    <label>已完成的房地產</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".3s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="27">27</span>%</div>
+                                    <label>房地產稅</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".4s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="99">99</span>%</div>
+                                    <label>滿意的客戶</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="55">55</span>%</div>
+                                    <label>擁有住房</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!--=====================================-->
+    <!--=   Team     Start                  =-->
+    <!--=====================================-->
+
+        <section class="team-wrap1">
+            <div class="container">
+                <div class="item-heading-center mb-20">
+                    <span class="section-subtitle">Expertise Is Here</span>
+                    <h2 class="section-title">Our Exclusive Agetns</h2>
+                    <div class="bg-title-wrap" style="display: block;">
+                        <span class="background-title solid">Our Agents</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-3 col-lg-6 col-md-6">
+                        <div class="team-box1 wow fadeInUp" data-wow-delay=".6s">
+                            <div class="item-img">
+                                <a href="agent-lists1.html">
+                                    <img src="{% static 'HomListi/img/team/team17.png' %}" alt="team" width="475" height="511">
+                                </a>
+                                <ul class="team-social-1">
+                                    <li class="social-item">
+                                        <a href="https://radiustheme.com/" target="_blank" class="social-hover-icon social-link"><i
+                                                class="fas fa-share-alt"></i></a>
+                                        <ul class="team-social-dropdown">
+                                            <li class="social-item">
+                                                <a href="https://www.facebook.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-facebook-f"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social-item">
+                                                <a href="https://twitter.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social-item">
+                                                <a href="https://www.linkedin.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-linkedin-in"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div class="category-box">
+                                    <div class="item-category"><a href="agent-lists1.html">08 Listings</a></div>
+                                </div>
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">
+                                    <h3><a href="agent-lists1.html">Andren Willium</a></h3>
+                                    <h4 class="item-subtitle"><a href="agency-lists1.html">Sunshine</a></h4>
+                                </div>
+                                <div class="item-contact">
+                                    <div class="item-icon"><i class="fas fa-phone-alt"></i></div>
+                                    <div class="item-phn-no">Call: +123 699 7700</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6">
+                        <div class="team-box1 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="item-img">
+                                <a href="agent-lists1.html">
+                                    <img src="{% static 'HomListi/img/team/team18.png' %}" alt="team" width="475" height="511">
+                                </a>
+                                <ul class="team-social-1">
+                                    <li class="social-item">
+                                        <a href="https://radiustheme.com/" target="_blank" class="social-hover-icon social-link"><i
+                                                class="fas fa-share-alt"></i></a>
+                                        <ul class="team-social-dropdown">
+                                            <li class="social-item">
+                                                <a href="https://www.facebook.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-facebook-f"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social-item">
+                                                <a href="https://twitter.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social-item">
+                                                <a href="https://www.linkedin.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-linkedin-in"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div class="category-box">
+                                    <div class="item-category"><a href="agent-lists1.html">09 Listings</a></div>
+                                </div>
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">
+                                    <h3><a href="agent-lists1.html">Sarah Boysen</a></h3>
+                                    <h4 class="item-subtitle"><a href="agency-lists1.html">Sunshine</a></h4>
+                                </div>
+                                <div class="item-contact">
+                                    <div class="item-icon"><i class="fas fa-phone-alt"></i></div>
+                                    <div class="item-phn-no">Call: +123 699 7700</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6">
+                        <div class="team-box1 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="agent-lists1.html">
+                                    <img src="{% static 'HomListi/img/team/team19.png' %}" alt="team" width="475" height="511">
+                                </a>
+                                <ul class="team-social-1">
+                                    <li class="social-item">
+                                        <a href="https://radiustheme.com/" target="_blank" class="social-hover-icon social-link"><i
+                                                class="fas fa-share-alt"></i></a>
+                                        <ul class="team-social-dropdown">
+                                            <li class="social-item">
+                                                <a href="https://www.facebook.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-facebook-f"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social-item">
+                                                <a href="https://twitter.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social-item">
+                                                <a href="https://www.linkedin.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-linkedin-in"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div class="category-box">
+                                    <div class="item-category"><a href="agent-lists1.html">10 Listings</a></div>
+                                </div>
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">
+                                    <h3><a href="agent-lists1.html">Polly Matzinger</a></h3>
+                                    <h4 class="item-subtitle"><a href="agency-lists1.html">Sunshine</a></h4>
+                                </div>
+                                <div class="item-contact">
+                                    <div class="item-icon"><i class="fas fa-phone-alt"></i></div>
+                                    <div class="item-phn-no">Call: +123 699 7700</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6">
+                        <div class="team-box1 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="agent-lists1.html">
+                                    <img src="{% static 'HomListi/img/team/team20.png' %}" alt="team" width="475" height="511">
+                                </a>
+                                <ul class="team-social-1">
+                                    <li class="social-item">
+                                        <a href="https://radiustheme.com/" target="_blank" class="social-hover-icon social-link"><i
+                                                class="fas fa-share-alt"></i></a>
+                                        <ul class="team-social-dropdown">
+                                            <li class="social-item">
+                                                <a href="https://www.facebook.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-facebook-f"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social-item">
+                                                <a href="https://twitter.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li class="social-item">
+                                                <a href="https://www.linkedin.com/" target="_blank" class="social-link">
+                                                    <i class="fab fa-linkedin-in"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div class="category-box">
+                                    <div class="item-category"><a href="agent-lists1.html">08 Listings</a></div>
+                                </div>
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">
+                                    <h3><a href="agent-lists1.html">Patty Watson</a></h3>
+                                    <h4 class="item-subtitle"><a href="agency-lists1.html">Sunshine</a></h4>
+                                </div>
+                                <div class="item-contact">
+                                    <div class="item-icon"><i class="fas fa-phone-alt"></i></div>
+                                    <div class="item-phn-no">Call: +123 699 7700</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

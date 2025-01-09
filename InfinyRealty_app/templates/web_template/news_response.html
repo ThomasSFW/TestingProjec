@@ -1,0 +1,127 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+
+	{% if action == "news_list" %}
+            {% for displaydata in content_detail|dictsortreversed:"create_date" %}
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <div class="blog-box1 blog-box2" data-wow-delay=".4s">
+                        <!--<div class="item-img">
+                            <a href="blog1.html"><img src="{% static 'dist/img-web/news/1/hongkong.jpg' %}" alt="blog" width="520" height="350"></a>
+                        </div>-->
+                        <div class="thumbnail-date">
+                            <div class="popup-date">
+                                <span class="day">{{displaydata.create_date|date:"d"}}</span><span class="month">{{displaydata.create_date|date:"m"}}月</span>
+                            </div>
+                        </div>
+                        <div class="item-content">
+                            <!--<div class="entry-meta">
+                                <ul>
+                                    <li><a href="blog2.html">Apartment, Room</a></li>
+                                    <li><a href="blog2.html">5 min</a></li>
+                                </ul>
+                            </div>-->
+                            <div class="heading-title news_content_link" news_id="{{displaydata.content_detail_id}}">
+                                <a href="#"" news_id="{{displaydata.content_detail_id}}"><h5 style="color:#330066;font=weight:600;-webkit-line-clamp: 1!important;-webkit-box-orient: vertical;">{{displaydata.content_detail_title|default_if_none:""|remove_p_tags|safe}}</h5></a>
+                                <div class="display: -webkit-box !important;font=weight:600;overflow: hidden!important;-webkit-line-clamp: 1!important;-webkit-box-orient: vertical;">{{displaydata.content_detail_name|safe|slice:"40"}}...</div>
+                            </div>
+                            <div class="blog-button news_content_link" news_id="{{displaydata.content_detail_id}}">
+                                <!--<a href="/news_detail/{{displaydata.content_detail_id}}" class="item-btn">更多<i class="fas fa-arrow-right"></i></a>-->
+                                <a href="#" class="item-btn"" news_id="{{displaydata.content_detail_id}}">{{"更多"|showlang:request.session.lang}}<i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-lg-12 col-md-12">
+                    <center>
+                        <div class="blog-box1 blog-box2 wow fadeInUp" data-wow-delay=".4s">
+                            {{"沒有"|showlang:request.session.lang}}<b>{{start_date}}</b>{{"至"|showlang:request.session.lang}}<b>{{end_date}}</b>{{"研究與新聞記錄"|showlang:request.session.lang}}
+                        </div>
+                    </center>
+                </div>
+            {% endfor %}
+    {% endif %}
+
+	{% if action == "news_content" %}
+        <div class="col-lg-12">
+            <div class="blog-box1 blog-box2 wow fadeInUp" data-wow-delay=".4s">
+                <!--<div class="item-img img-style-2">
+                    <a href="blog1.html"><img src="{% static 'dist/img-web/news/1/hongkong.jpg' %}" alt="blog" width="100%" height="399"></a>
+                </div>-->
+                <div class="item-content content-style-2">
+                    {% for displaydata in content_detail %}
+                    <div class="entry-meta">
+                        <ul>
+                            <!--<li class="theme-cat"><a href="single-listing1.html"><img src="img/theme1.png" alt="theme">by radiustheme</a></li>-->
+                            <li class="calendar-icon"><a href="/news/{{displaydata.create_date|date:'Y-m-d'}}"><i class="far fa-calendar-alt"></i>{{displaydata.create_date|date:'Y年m月d日'}}</a></li>
+                            <!--<li><a href="single-listing1.html">Apartment, Room</a></li>
+                            <li><a href="single-listing1.html">5 mins</a></li>-->
+                        </ul>
+                    </div>
+                    <div class="heading-title title-style-2">
+                        <h5 style="color:#330066;font=weight:600">{{displaydata.content_detail_title|default_if_none:""|remove_p_tags|safe}}</h5>
+                        <p>{{displaydata.content_detail_name|safe}}
+                        </p>
+                    </div>
+                    {% endfor %}
+                    <div class="blog-button-style2 news_list">
+                        <a href="#" class="item-btn">{{"返回"|showlang:request.session.lang}}<i class="fas fa-arrow-left"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(".news_list").on("click", function() {
+        news_content = $("#searchinput").val();
+        report_range = $("#reportrange").val();
+        const dates = report_range.split(' - ');
+        const start_date = dates[0]; // "2024-10-04"
+        const end_date = dates[1];   // "2024-10-10"
+        action = "news_list"
+        $.ajax({
+            url:'{% url 'news_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, news_content:news_content, start_date:start_date, end_date:end_date},
+        })
+        .done(function(response){
+            $("#news_info").html(response);
+        })
+        .fail(function(xhr, status, error){
+            $('#news_info').html(xhr.responseText);
+        })
+    });
+    $(".news_content_link").on("click", function() {
+        news_content = $("#searchinput").val();
+        report_range = $("#reportrange").val();
+        const dates = report_range.split(' - ');
+        const start_date = dates[0]; // "2024-10-04"
+        const end_date = dates[1];   // "2024-10-10"
+        news_id =  $(this).attr("news_id");
+        action = "news_content"
+        $.ajax({
+            url:'{% url 'news_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, news_id:news_id, start_date:start_date, end_date:end_date},
+        })
+        .done(function(response){
+            $("#news_info").html(response);
+        })
+        .fail(function(xhr, status, error){
+            $('#news_info').html(xhr.responseText);
+        })
+    });
+</script>
+{% endblock custom_js %}

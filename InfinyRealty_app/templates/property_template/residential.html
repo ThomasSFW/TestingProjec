@@ -1,0 +1,377 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">住宅管理</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="index.html" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+    .modal-dialog {
+              width: 80% !important;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <!-- Zero Configuration  Starts-->
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="row g-3">
+                        <div class="col-md-3" style="display:none">
+                            <label class="form-label" for="cboTeam">用途</label>
+                            <select id="cboUsage" class="form-select">
+                            {% if 1400 in request.session.accessright %}<option value="" {% if user_usage == "" %}selected{% endif %}>- 所有用途 -</option>{% endif %}
+                            {% for usages in usagelist %}
+                                <option value="{{usages.code_detail_name}}" {% if user_usage == usages.code_detail_name %}selected{% endif %}>{{usages.code_detail_name}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script type="text/javascript">
+    var table;
+
+    $("#cboUsage").on('change', function(){
+        var val = $(this).val();
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        var propertyEditElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+        var propertyEditElement = document.getElementById('property_edits'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+        var propertyEditElement = document.getElementById('request_reviews'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+
+		$('a[href="#property_view"]').trigger('click');
+    });
+
+    function change_usage() {
+        var val = "住宅";
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        var propertyEditElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+        var propertyEditElement = document.getElementById('property_edits'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+        var propertyEditElement = document.getElementById('request_reviews'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+		$('a[href="#property_view"]').trigger('click');
+    }
+
+	function load_menu() {
+		action = "menutab";
+		usage = $("#cboUsage").val();
+		$('#contentBody').html("<br/><center><div class=\"loader-7\"></div></center>");
+		$.ajax({
+			url:'{% url 'property_response' %}',
+			type:'POST',
+			data:{action:action, usage:usage},
+		})
+
+		.done(function(response){
+			$('#contentBody').html(response);
+			change_usage();
+		})
+
+		.fail(function(xhr, status, error){
+            $('.box-header').html(xhr.responseText);
+			//alert(xhr.responseText);
+		})
+	}
+
+	function refresh_table() {
+        table = $('#contentTable').DataTable({
+            destroy: true,
+            //"paging": false,
+            "dom": '<"toolbar">fBrtip',
+            order: [[ 0, "desc" ]],
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+               language: {
+                   "sProcessing": "處理中...",
+                   "sLengthMenu": "顯示 _MENU_ 項結果",
+                   "sZeroRecords": "沒有匹配結果",
+                   "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                   "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                   "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                   "sInfoPostFix": "",
+                   "sSearch": "搜索：",
+                   "sUrl": "",
+                   "oPaginate": {
+                       "sFirst": "首頁",
+                       "sPrevious": "上一頁",
+                       "sNext": "下一頁",
+                       "sLast": "末頁"
+                   },
+               },
+        });
+	}
+
+    $(document).on("click", "#request_button", function(){
+        var $this = $(this)
+        team = $("#cboTeam").val();
+        lock = $this.attr('lock');
+        if (lock == 1) {
+            alert("\u26A0 沒有存取該頁面的權限，請聯絡系統管理員！");
+            return false;
+        }
+        var v = "";
+        var x = "";
+        $('#contentTable-access_control input:checkbox.chkRight').each(function(){
+            e = this.value;
+            var parentTdClass = $(this).closest('td').attr('class');
+            if (parentTdClass == "bg-danger") {
+                if (this.checked) {
+                    v = v + e + ';';
+                } else {
+                    x = x + e + ';';
+                }
+            }
+        });
+        if (window.confirm("更新用戶權限記錄，你確定嗎？")) {
+            //alert(v+x+team)
+            $.ajax({
+                url:'{% url 'property_response' %}',
+                type:'POST',
+                data:{action:'access_control_update', access_data_add:v, access_data_delete:x, team:team},
+            })
+
+            .done(function(response){
+                $.notify({
+                    message: "您的申請已收到，稍等系統管理員審批。"
+                    },{
+                        type: 'warning',
+                        allow_dismiss: true,
+                        positon: 'top right',
+                        offset: 20,
+                        spacing: 10,
+                        z_index: 1031,
+                });
+                //alert("Your request has been received.");
+                //refresh_table();
+            })
+
+            .fail(function(xhr, status, error){
+                //alert(xhr.responseText)
+                $("#contentBody").html(xhr.responseText);
+            })
+
+            var tabContent = document.querySelector('.tab-content');
+            var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+            $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+        }
+    })
+
+    $(document).on("click", "#print_button", function(){
+        //Disabling the Button while data is being saved in Server
+        //$(this).attr("disabled", "disabled")
+        //$(this).text("Confirming...")
+
+        var buttontype = $(this).attr("buttontype");
+
+        if (buttontype == 'print') {
+            //my_window= window.open ("","mywindow1");
+
+            sRestricted = '';
+
+            var sheader = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+            sheader = sheader + '<style>';
+            sheader = sheader + 'body{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'table tr td{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'body { margin: 0; padding: 15;  box-sizing: border-box;}';
+            sheader = sheader + '</style>';
+
+            var sstyle = '<link rel="stylesheet" href="{% static 'dist/css/Adminlte.css' %}" /><link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.css' %}"/>';
+
+            //my_window.document.write( sheader );
+            var tabobj = $('<div width=780px></div>').html($('#contentTable-access_control').html() );
+            tabobj.find('button').hide();
+
+            shtml = tabobj.html();
+            tabobj.printThis();
+
+            //my_window.document.write( '<html><head>' +sheader + '</head>' + sstyle + '<body>' + shtml + '</body></html>');
+        }
+    })
+
+    $(document).on("click", "#copy_button", function(){
+        var elm = document.getElementById(selectTab);
+        // for Internet Explorer
+        if(document.body.createTextRange) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(elm);
+            range.select();
+            document.execCommand("Copy");
+            alert("Copied Content to clipboard.\nTry to paste the content (e.g. ctrl+v) afterwards in a different application (e.g. Excel/Word), to see the effect.(A)");
+        }
+        else if(window.getSelection) {
+            // other browsers
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(elm);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand("Copy");
+            alert("Copied Content to clipboard.\nTry to paste the content (e.g. ctrl+v) afterwards in a different application (e.g. Excel/Word), to see the effect.(B)");
+        }
+    })
+
+	$("#btnGenerate").click(function(){
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+		$('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+	});
+
+    $(document).ready(function(){
+        document.getElementById("upload-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var clickedButton = event.submitter;
+            var clickedButtonID = clickedButton.id
+            var functionid = $("#functionid").val();
+            var subcatid = $("#subcatid").val();
+            var action = $("#"+clickedButtonID).attr("action");
+            var functionname = $("#TxtFunctionName").val();
+            var sequence = $("#TxtSequence").val();
+            if ($("#radioActive").is(':checked')) isactive = 1;
+            if ($("#radioInActive").is(':checked')) isactive = 0;
+            if ((action == "add") || (action == "edit")) {
+                if (functionname == '') {
+                    alert('Please enter Function Name.');
+                    return false;
+                }
+                if (sequence == '') {
+                    alert('Please enter Sequence.');
+                    return false;
+                }
+                if (action == "add") {
+                    if (!(window.confirm("新增子功能記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                } else {
+                    if (!(window.confirm("更新子功能記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("functionid", functionid);
+                formData.append("subcatid", subcatid);
+                formData.append("functionname", functionname);
+                formData.append("sequence", sequence);
+                formData.append("isactive", isactive);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'property_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功更新"
+                            },{
+                                type: 'success',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        var tabContent = document.querySelector('.tab-content');
+                        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+                        $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "delete") {
+                if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("functionid", functionid);
+                formData.append("subcatid", subcatid);
+                formData.append("functionname", functionname);
+                formData.append("sequence", sequence);
+                formData.append("isactive", isactive);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'property_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功刪除"
+                            },{
+                                type: 'danger',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        var tabContent = document.querySelector('.tab-content');
+                        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+                        $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+
+        });
+    })
+
+    // Initial page
+    load_menu()
+
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

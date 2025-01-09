@@ -1,0 +1,527 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+	<section class="content-header">
+		<h3 style="font-weight:600">超過30天沒更新物業</h3>
+	</section>
+<!--httpreferer : {{request.session.httpreferer}}<br>
+httpreferer1 : {{request.session.httpreferer1}}<br>-->
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home"></i>{{displayitem.tabName}}</a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid default-page">
+      <div class="row">
+                 <div id="errormessage"></div>
+        <div class="col-xl-12 col-lg-12">
+          <div class="card">
+            <div class="card-header pb-0 d-flex" style="justify-content: space-between;">
+              <h3>超過30天沒更新<font style="font-weight:600;color:#B23839">放售</font>物業</h3>
+              <h3><a href="/propertyEnquiry/1" style="cursor:pointer">顯示更多...</a></h3>
+            </div>
+            <div class="table-responsive">
+                  <table class="display table-hover table-bordered table-striped" cellpadding="6" width="100%">
+                      <thead>
+                          <tr style="background-color:#330066;color:#FFFFFF">
+                              <th style="text-align:center;" width="50">精選</th>
+                              <th>地址</th>
+                              <th style="text-align:center;" width="80">物業編號</th>
+                              <th style="text-align:center;" width="80">用途</th>
+                              <th width="80">建築面積</th>
+                              <th width="80">實用面積</th>
+                              <th style="text-align:center;" width="80">盤類</th>
+                              <th style="text-align:center;" width="80">業主叫價</th>
+                              <th style="text-align:center;" width="70">管理費</th>
+                              <th style="text-align:center;" width="70">差餉</th>
+                              <th style="text-align:center;" width="80">物業狀況</th>
+                              <th style="text-align:center;" width="70">現租金</th>
+                              <th style="text-align:center;" width="50">租期</th>
+                              <th style="text-align:center;" width="70">回報率</th>
+                              <th style="text-align:center;" width="40">圖</th>
+                              <th style="text-align:center;" width="80">操作</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for displaydata in property_sell_view_list %}
+                          <tr valign="top">
+                              <td style="text-align:center;">
+                                  {% if displaydata.Highlight is not NULL %}
+                                    <div class="favourite-icon favourite_0 add_highlight" property_id="{{ displaydata.PropertyID }}" flag="sell"><i class="fa fa-star"></i></div>
+                                  {% else %}
+                                    <div class="favourite-icon favourite_0 add_highlight" property_id="{{ displaydata.PropertyID }}" flag="sell"><i class="fa fa-star-o"></i></div>
+                                  {% endif %}
+                              </td>
+                              <td data-filter="{{ displaydata.PropertyName }}">{{ displaydata.PropertyName }}</td>
+                              <td valign="top" style="text-align:center;" data-filter="{{ displaydata.PropertyNo }}">{{ displaydata.PropertyNo|safe }}</td>
+                              <td valign="top" style="text-align:center;" data-filter="{{ displaydata.Usage }}">{{ displaydata.Usage|safe }}</td>
+                              <td style="text-align:right;">{{ displaydata.GrossArea|default_if_none:""|format_number_with_commas }}</td>
+                              <td style="text-align:right;">{{ displaydata.NetArea|default_if_none:""|format_number_with_commas }}</td>
+                              <td style="text-align:center;">{{ displaydata.OfferType }}</td>
+                              <td style="text-align:right;">{{ displaydata.SellingPrice|format_numeric }}</td>
+                              <td style="text-align:right;">{{ displaydata.ManagementFee|format_numeric }}</td>
+                              <td style="text-align:right;">{% if displaydata.Rates|default_if_none:0 != 0 %}{{ displaydata.Rates|default_if_none:0|format_numeric }}{% endif %}</td>
+                              <td style="text-align:center;">
+                                  {% if displaydata.Possession == "現吉" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "商議" %}<span class="badge badge-warning text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "連租約" %}<span class="badge badge-danger text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "已售" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "已租" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "封盤" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                              </td>
+                              <td style="text-align:right;">{{ displaydata.CurrentRent|default_if_none:"" }}</td>
+                              <td style="text-align:right;">{{ displaydata.RentPeriod|default_if_none:"" }}</td>
+                              <td style="text-align:right;">{{ displaydata.Yield|format_numeric }}</td>
+                              <td style="text-align:center;">
+                                   {% if displaydata.FileName is not NULL %}<span class="badge badge-success text-md">O</span>
+                                   {% endif %}
+                              </td>
+                              <td style="text-align:center;">
+                                  <a href="#" class="open_modal_info" data-bs-toggle="modal" data-bs-target="#InfoModal" action="edit" formtype="property_info" formname="Information" property_id="{{ displaydata.PropertyID }}" status="{{ displaydata.Possession }}"><i class="icon-eye"></i></a>&nbsp;&nbsp;
+                                  {% if 1476 in request.session.accessright or 1461 in request.session.accessright %}<a href="/property/{{ displaydata.PropertyID }}" class="open_edit" action="edit" formtype="property_info" formname="Property Information" propertyid="{{ displaydata.PropertyID }}" propertyno="{{ displaydata.PropertyNo }}" propertyname="{{ displaydata.PropertyName }}" usage="{{ displaydata.Usage }}" district="{{ displaydata.District }}" subdistrict="{{ displaydata.SubDistrict }}" street="{{ displaydata.Street }}" streetno="{{ displaydata.StreetNo }}" building="{{ displaydata.Building }}" floor="{{ displaydata.Floor }}" unit="{{ displaydata.Unit }}" yield_field="{{ displaydata.Yield }}"><i class="icon-pencil-alt"></i></a>{% endif %}
+                              </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+            </div>
+            <div class="card-header pb-0">
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-12 col-lg-12">
+          <div class="card">
+            <div class="card-header pb-0 d-flex" style="justify-content: space-between;">
+              <h3>超過30天沒更新<font style="font-weight:600;color:#B23839">放租</font>物業</h3>
+              <h3><a href="/propertyEnquiry/2" style="cursor:pointer">顯示更多...</a></h3>
+            </div>
+            <div class="table-responsive">
+                  <table class="display table-hover table-bordered table-striped" cellpadding="6" width="100%">
+                      <thead>
+                          <tr style="text-align:center;background-color:#330066;color:#FFFFFF">
+                              <th style="text-align:center;" width="50">精選</th>
+                              <th>地址</th>
+                              <th style="text-align:center;" width="80">物業編號</th>
+                              <th style="text-align:center;" width="80">用途</th>
+                              <th width="80">建築面積</th>
+                              <th width="80">實用面積</th>
+                              <th style="text-align:center;" width="80">盤類</th>
+                              <th style="text-align:center;" width="80">業主叫租</th>
+                              <th style="text-align:center;" width="70">管理費</th>
+                              <th style="text-align:center;" width="70">差餉</th>
+                              <th style="text-align:center;" width="80">物業狀況</th>
+                              <th style="text-align:center;" width="70">現租金</th>
+                              <th style="text-align:center;" width="50">租期</th>
+                              <th style="text-align:center;" width="70">回報率</th>
+                              <th style="text-align:center;" width="40">圖</th>
+                              <th style="text-align:center;" width="80">操作</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for displaydata in property_rent_view_list %}
+                          <tr valign="top">
+                              <td style="text-align:center;">
+                                  {% if displaydata.Highlight is not NULL %}
+                                    <div class="favourite-icon favourite_0 add_highlight" property_id="{{ displaydata.PropertyID }}" flag="rent"><i class="fa fa-star"></i></div>
+                                  {% else %}
+                                    <div class="favourite-icon favourite_0 add_highlight" property_id="{{ displaydata.PropertyID }}" flag="rent"><i class="fa fa-star-o"></i></div>
+                                  {% endif %}
+                              </td>
+                              <td data-filter="{{ displaydata.PropertyName }}">{{ displaydata.PropertyName }}</td>
+                              <td valign="top" style="text-align:center;" data-filter="{{ displaydata.PropertyNo }}">{{ displaydata.PropertyNo|safe }}</td>
+                              <td valign="top" style="text-align:center;" data-filter="{{ displaydata.Usage }}">{{ displaydata.Usage|safe }}</td>
+                              <td style="text-align:right;">{{ displaydata.GrossArea|default_if_none:""|format_number_with_commas }}</td>
+                              <td style="text-align:right;">{{ displaydata.NetArea|default_if_none:""|format_number_with_commas }}</td>
+                              <td style="text-align:center;">{{ displaydata.OfferType }}</td>
+                              <td style="text-align:right;">{{ displaydata.Rent|format_numeric }}</td>
+                              <td style="text-align:right;">{{ displaydata.ManagementFee|format_numeric }}</td>
+                              <td style="text-align:right;">{% if displaydata.Rates|default_if_none:0 != 0 %}{{ displaydata.Rates|default_if_none:0|format_numeric }}{% endif %}</td>
+                              <td style="text-align:center;">
+                                  {% if displaydata.Possession == "現吉" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "商議" %}<span class="badge badge-warning text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "連租約" %}<span class="badge badge-danger text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "已售" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "已租" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "封盤" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                              </td>
+                              <td style="text-align:right;">{{ displaydata.CurrentRent|default_if_none:"" }}</td>
+                              <td style="text-align:right;">{{ displaydata.RentPeriod|default_if_none:"" }}</td>
+                              <td style="text-align:right;">{{ displaydata.Yield|format_numeric }}</td>
+                              <td style="text-align:center;">
+                                   {% if displaydata.FileName is not NULL %}<span class="badge badge-success text-md">O</span>
+                                   {% endif %}
+                              </td>
+                              <td style="text-align:center;">
+                                  <a href="#" class="open_modal_info" data-bs-toggle="modal" data-bs-target="#InfoModal" action="edit" formtype="property_info" formname="Information" property_id="{{ displaydata.PropertyID }}" status="{{ displaydata.Possession }}"><i class="icon-eye"></i></a>&nbsp;&nbsp;
+                                  {% if 1476 in request.session.accessright or 1461 in request.session.accessright %}<a href="/property/{{ displaydata.PropertyID }}" class="open_edit" action="edit" formtype="property_info" formname="Property Information" propertyid="{{ displaydata.PropertyID }}" propertyno="{{ displaydata.PropertyNo }}" propertyname="{{ displaydata.PropertyName }}" usage="{{ displaydata.Usage }}" district="{{ displaydata.District }}" subdistrict="{{ displaydata.SubDistrict }}" street="{{ displaydata.Street }}" streetno="{{ displaydata.StreetNo }}" building="{{ displaydata.Building }}" floor="{{ displaydata.Floor }}" unit="{{ displaydata.Unit }}" yield_field="{{ displaydata.Yield }}"><i class="icon-pencil-alt"></i></a>{% endif %}
+                              </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+            </div>
+            <div class="card-header pb-0">
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-12 col-lg-12">
+          <div class="card">
+            <div class="card-header pb-0 d-flex" style="justify-content: space-between;">
+              <h3>超過30天沒更新<font style="font-weight:600;color:#B23839">租售</font>物業</h3>
+              <h3><a href="/propertyEnquiry/3" style="cursor:pointer">顯示更多...</a></h3>
+            </div>
+            <div class="table-responsive">
+                  <table class="display table-hover table-bordered table-striped" cellpadding="6" width="100%">
+                      <thead>
+                          <tr style="text-align:center;background-color:#330066;color:#FFFFFF">
+                              <th style="text-align:center;" width="50">精選</th>
+                              <th>地址</th>
+                              <th style="text-align:center;" width="80">物業編號</th>
+                              <th style="text-align:center;" width="80">用途</th>
+                              <th width="80">建築面積</th>
+                              <th width="80">實用面積</th>
+                              <th style="text-align:center;" width="80">盤類</th>
+                              <th style="text-align:center;" width="80">業主叫租</th>
+                              <th style="text-align:center;" width="80">業主叫價</th>
+                              <th style="text-align:center;" width="70">管理費</th>
+                              <th style="text-align:center;" width="70">差餉</th>
+                              <th style="text-align:center;" width="80">物業狀況</th>
+                              <th style="text-align:center;" width="70">現租金</th>
+                              <th style="text-align:center;" width="50">租期</th>
+                              <th style="text-align:center;" width="70">回報率</th>
+                              <th style="text-align:center;" width="40">圖</th>
+                              <th style="text-align:center;" width="80">操作</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for displaydata in property_rentsell_view_list %}
+                          <tr valign="top">
+                              <td style="text-align:center;">
+                                  {% if displaydata.Highlight is not NULL %}
+                                    <div class="favourite-icon favourite_0 add_highlight" property_id="{{ displaydata.PropertyID }}" flag="sell"><i class="fa fa-star"></i></div>
+                                  {% else %}
+                                    <div class="favourite-icon favourite_0 add_highlight" property_id="{{ displaydata.PropertyID }}" flag="sell"><i class="fa fa-star-o"></i></div>
+                                  {% endif %}
+                              </td>
+                              <td data-filter="{{ displaydata.PropertyName }}">{{ displaydata.PropertyName }}</td>
+                              <td valign="top" style="text-align:center;" data-filter="{{ displaydata.PropertyNo }}">{{ displaydata.PropertyNo|safe }}</td>
+                              <td valign="top" style="text-align:center;" data-filter="{{ displaydata.Usage }}">{{ displaydata.Usage|safe }}</td>
+                              <td style="text-align:right;">{{ displaydata.GrossArea|default_if_none:""|format_number_with_commas }}</td>
+                              <td style="text-align:right;">{{ displaydata.NetArea|default_if_none:""|format_number_with_commas }}</td>
+                              <td style="text-align:center;">{{ displaydata.OfferType }}</td>
+                              <td style="text-align:right;">{{ displaydata.Rent|format_numeric }}</td>
+                              <td style="text-align:right;">{{ displaydata.SellingPrice|format_numeric }}</td>
+                              <td style="text-align:right;">{{ displaydata.ManagementFee|format_numeric }}</td>
+                              <td style="text-align:right;">{% if displaydata.Rates|default_if_none:0 != 0 %}{{ displaydata.Rates|default_if_none:0|format_numeric }}{% endif %}</td>
+                              <td style="text-align:center;">
+                                  {% if displaydata.Possession == "現吉" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "商議" %}<span class="badge badge-warning text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "連租約" %}<span class="badge badge-danger text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "已售" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "已租" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "封盤" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                              </td>
+                              <td style="text-align:right;">{{ displaydata.CurrentRent|default_if_none:"" }}</td>
+                              <td style="text-align:right;">{{ displaydata.RentPeriod|default_if_none:"" }}</td>
+                              <td style="text-align:right;">{{ displaydata.Yield|format_numeric }}</td>
+                              <td style="text-align:center;">
+                                   {% if displaydata.FileName is not NULL %}<span class="badge badge-success text-md">O</span>
+                                   {% endif %}
+                              </td>
+                              <td style="text-align:center;">
+                                  <a href="#" class="open_modal_info" data-bs-toggle="modal" data-bs-target="#InfoModal" action="edit" formtype="property_info" formname="Information" property_id="{{ displaydata.PropertyID }}" status="{{ displaydata.Possession }}"><i class="icon-eye"></i></a>&nbsp;&nbsp;
+                                  {% if 1476 in request.session.accessright or 1461 in request.session.accessright %}<a href="/property/{{ displaydata.PropertyID }}" class="open_edit" action="edit" formtype="property_info" formname="Property Information" propertyid="{{ displaydata.PropertyID }}" propertyno="{{ displaydata.PropertyNo }}" propertyname="{{ displaydata.PropertyName }}" usage="{{ displaydata.Usage }}" district="{{ displaydata.District }}" subdistrict="{{ displaydata.SubDistrict }}" street="{{ displaydata.Street }}" streetno="{{ displaydata.StreetNo }}" building="{{ displaydata.Building }}" floor="{{ displaydata.Floor }}" unit="{{ displaydata.Unit }}" yield_field="{{ displaydata.Yield }}"><i class="icon-pencil-alt"></i></a>{% endif %}
+                              </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+            </div>
+            <div class="card-header pb-0">
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-12 col-lg-12">
+          <div class="card">
+            <div class="card-header pb-0 d-flex" style="justify-content: space-between;">
+              <h3>超過30天沒更新<font style="font-weight:600;color:#B23839">連租約售</font>物業</h3>
+              <h3><a href="/propertyEnquiry/4" style="cursor:pointer">顯示更多...</a></h3>
+            </div>
+            <div class="table-responsive">
+                  <table class="display table-hover table-bordered table-striped" cellpadding="6" width="100%">
+                      <thead>
+                          <tr style="text-align:center;background-color:#330066;color:#FFFFFF">
+                              <th style="text-align:center;" width="50">精選</th>
+                              <th>地址</th>
+                              <th style="text-align:center;" width="80">物業編號</th>
+                              <th style="text-align:center;" width="80">用途</th>
+                              <th width="80">建築面積</th>
+                              <th width="80">實用面積</th>
+                              <th style="text-align:center;" width="80">盤類</th>
+                              <th style="text-align:center;" width="80">業主叫租</th>
+                              <th style="text-align:center;" width="80">業主叫價</th>
+                              <th style="text-align:center;" width="70">管理費</th>
+                              <th style="text-align:center;" width="70">差餉</th>
+                              <th style="text-align:center;" width="80">物業狀況</th>
+                              <th style="text-align:center;" width="70">現租金</th>
+                              <th style="text-align:center;" width="50">租期</th>
+                              <th style="text-align:center;" width="70">回報率</th>
+                              <th style="text-align:center;" width="40">圖</th>
+                              <th style="text-align:center;" width="80">操作</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for displaydata in property_rentsell_tenant_view_list %}
+                          <tr valign="top">
+                              <td style="text-align:center;">
+                                  {% if displaydata.Highlight is not NULL %}
+                                    <div class="favourite-icon favourite_0 add_highlight" property_id="{{ displaydata.PropertyID }}" flag="sell"><i class="fa fa-star"></i></div>
+                                  {% else %}
+                                    <div class="favourite-icon favourite_0 add_highlight" property_id="{{ displaydata.PropertyID }}" flag="sell"><i class="fa fa-star-o"></i></div>
+                                  {% endif %}
+                              </td>
+                              <td data-filter="{{ displaydata.PropertyName }}">{{ displaydata.PropertyName }}</td>
+                              <td valign="top" style="text-align:center;" data-filter="{{ displaydata.PropertyNo }}">{{ displaydata.PropertyNo|safe }}</td>
+                              <td valign="top" style="text-align:center;" data-filter="{{ displaydata.Usage }}">{{ displaydata.Usage|safe }}</td>
+                              <td style="text-align:right;">{{ displaydata.GrossArea|default_if_none:""|format_number_with_commas }}</td>
+                              <td style="text-align:right;">{{ displaydata.NetArea|default_if_none:""|format_number_with_commas }}</td>
+                              <td style="text-align:center;">{{ displaydata.OfferType }}</td>
+                              <td style="text-align:right;">{{ displaydata.Rent|format_numeric }}</td>
+                              <td style="text-align:right;">{{ displaydata.SellingPrice|format_numeric }}</td>
+                              <td style="text-align:right;">{{ displaydata.ManagementFee|format_numeric }}</td>
+                              <td style="text-align:right;">{% if displaydata.Rates|default_if_none:0 != 0 %}{{ displaydata.Rates|default_if_none:0|format_numeric }}{% endif %}</td>
+                              <td style="text-align:center;">
+                                  {% if displaydata.Possession == "現吉" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "商議" %}<span class="badge badge-warning text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "連租約" %}<span class="badge badge-danger text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "已售" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "已租" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                                  {% if displaydata.Possession == "封盤" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                              </td>
+                              <td style="text-align:right;">{{ displaydata.CurrentRent|default_if_none:"" }}</td>
+                              <td style="text-align:right;">{{ displaydata.RentPeriod|default_if_none:"" }}</td>
+                              <td style="text-align:right;">{{ displaydata.Yield|format_numeric }}</td>
+                              <td style="text-align:center;">
+                                   {% if displaydata.FileName is not NULL %}<span class="badge badge-success text-md">O</span>
+                                   {% endif %}
+                              </td>
+                              <td style="text-align:center;">
+                                  <a href="#" class="open_modal_info" data-bs-toggle="modal" data-bs-target="#InfoModal" action="edit" formtype="property_info" formname="Information" property_id="{{ displaydata.PropertyID }}" status="{{ displaydata.Possession }}"><i class="icon-eye"></i></a>&nbsp;&nbsp;
+                                  {% if 1476 in request.session.accessright or 1461 in request.session.accessright %}<a href="/property/{{ displaydata.PropertyID }}" class="open_edit" action="edit" formtype="property_info" formname="Property Information" propertyid="{{ displaydata.PropertyID }}" propertyno="{{ displaydata.PropertyNo }}" propertyname="{{ displaydata.PropertyName }}" usage="{{ displaydata.Usage }}" district="{{ displaydata.District }}" subdistrict="{{ displaydata.SubDistrict }}" street="{{ displaydata.Street }}" streetno="{{ displaydata.StreetNo }}" building="{{ displaydata.Building }}" floor="{{ displaydata.Floor }}" unit="{{ displaydata.Unit }}" yield_field="{{ displaydata.Yield }}"><i class="icon-pencil-alt"></i></a>{% endif %}
+                              </td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+            </div>
+            <div class="card-header pb-0">
+
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+    <!-- Container-fluid Ends-->
+<!-- Modal -->
+<div class="modal fade" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="property_id">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group" id="property_info">
+
+                </div>
+
+				<div class="form-group">
+					<label>物業狀況：</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio1" name="r1">
+								<label for="radio1" value="1">商議</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio2" name="r1">
+								<label for="radio2" value="1">現吉</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio3" name="r1">
+								<label for="radio3" value="1">連租約</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio4" name="r1">
+								<label for="radio4" value="1">已租</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio5" name="r1">
+								<label for="radio5" value="1">已售</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio6" name="r1">
+								<label for="radio6" value="1">封盤</label>
+							</div>
+						</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="add_button" action="add"><i class="icon-plus"></i>&nbsp;&nbsp;新增</button>
+                {% if 1455 in request.session.accessright %}
+                <button type="button" class="btn btn-warning" id="edit_button" action="edit"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                {% endif %}
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            <div class="modal-message">
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(".open_modal_info").click(function(){
+        // Adding the Value from Table to Modal form
+        $(".modal-header").css('color', '#FFFFFF');
+        $("#property_id").val($(this).attr("property_id"));
+        $("#action").val($(this).attr("action"));
+        if ($(this).attr("status") == "商議") $("#radio1").prop("checked", true);
+        if ($(this).attr("status") == "現吉") $("#radio2").prop("checked", true);
+        if ($(this).attr("status") == "連租約") $("#radio3").prop("checked", true);
+        if ($(this).attr("status") == "已租") $("#radio4").prop("checked", true);
+        if ($(this).attr("status") == "已售") $("#radio5").prop("checked", true);
+        if ($(this).attr("status") == "封盤") $("#radio6").prop("checked", true);
+
+        var property_id = $(this).attr("property_id");
+        var action = $(this).attr("action");
+        var formtype = $(this).attr("formtype");
+        if (action == 'add') {
+            $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增物業內容</b>");
+            $(".modal-header").css('background-color', '#DD4B39');
+            $("#add_button").show();
+            $("#edit_button").hide();
+            $("#remove_button").hide();
+        } else {
+            $("#FunctionTitle").html("<i class='icon-eye'></i>&nbsp;&nbsp;<b>查詢物業內容</b>");
+            $(".modal-header").css('background-color', '#F39C12');
+            $("#add_button").hide();
+            $("#edit_button").show();
+            $("#remove_button").show();
+        }
+        if (formtype == "property_info") {
+            $.ajax({
+                url:'{% url 'propertyEnquiry_response' %}',
+                type:'POST',
+                data:{action:'property_info', property_id:property_id},
+            })
+            .done(function(response){
+                $("#InfoModal #property_info").html(response);
+            })
+            .fail(function(xhr, status, error){
+                $('#InfoModal .modal-message').html(xhr.responseText);
+                //alert(xhr.responseText);
+            })
+        }
+    });
+
+    $(document).on("click", ".add_highlight", function(){
+        action = "add_highlight"
+        var property_id = $(this).attr("property_id");
+        var flag = $(this).attr("flag");
+        $.ajax({
+            url:'{% url 'home_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, property_id:property_id, flag:flag},
+        })
+        .done(function(response){
+            location.reload();
+        })
+        .fail(function(xhr, status, error){
+            $('#errormessage').html(xhr.responseText);
+        })
+    })
+
+    $(document).on("click", "#rent_view_more", function(){
+        action = "rent_view_page_size"
+        $.ajax({
+            url:'{% url 'home_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action},
+        })
+        .done(function(response){
+            location.reload();
+        })
+        .fail(function(xhr, status, error){
+            $('#errormessage').html(xhr.responseText);
+        })
+    })
+
+    $(document).on("click", "#sell_view_more", function(){
+        action = "sell_view_page_size"
+        $.ajax({
+            url:'{% url 'home_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action},
+        })
+        .done(function(response){
+            location.reload();
+        })
+        .fail(function(xhr, status, error){
+            $('#errormessage').html(xhr.responseText);
+        })
+    })
+
+    $(document).on("click", "#rentsell_view_more", function(){
+        action = "rentsell_view_page_size"
+        $.ajax({
+            url:'{% url 'home_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action},
+        })
+        .done(function(response){
+            location.reload();
+        })
+        .fail(function(xhr, status, error){
+            $('#errormessage').html(xhr.responseText);
+        })
+    })
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

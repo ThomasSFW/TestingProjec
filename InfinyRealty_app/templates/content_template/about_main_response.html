@@ -1,0 +1,124 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "content_detail_list" %}
+        <div class="table-responsive">
+            <table class="display table-hover table-bordered table-striped" id="contentTable">
+                <thead>
+                    <tr style="text-align:center;background-color:#330066;color:#FFFFFF">
+                        <!--<th width="20">ID</th>-->
+                        <th>內容</th>
+                        <th style="text-align:center;" width="80">次序</th>
+                        <th style="text-align:center;" width="50">狀態</th>
+                        <th style="text-align:center;" width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in content_detail_list %}
+                    <tr>
+                        <!--<td style="text-align:center;">{{ displaydata.content_detail_id }}</td>-->
+                        <td data-filter="{{ displaydata.content_detail_name }}" valign="top">{{ displaydata.content_detail_name|safe }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.sequence }}" valign="top">{{ displaydata.sequence }}</td>
+                        <td style="text-align:center;" valign="top">
+                            {% if displaydata.status == 1 %}
+                            <span class="badge rounded-pill badge-success">正常</span>
+                            {% else %}
+                            <span class="badge rounded-pill badge-danger">失效</span>
+                            {% endif %}
+                        </td>
+                        <td align="center" valign="top">
+                            <ul class="action">
+                            {% if 1468 not in request.session.accessright %}
+                                <li class="edit"> <i class="icon-lock"></i></li>
+                            {% else %}
+                                <li class="edit"> <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="edit" formtype="content_info" formname="Code Information" content_detail_id="{{ displaydata.content_detail_id }}" content_id="{{ displaydata.content_id }}" content_detail_name="{{ displaydata.content_detail_name }}" content_detail_name_s="{{ displaydata.content_detail_name_s }}" content_detail_name_e="{{ displaydata.content_detail_name_e }}" sequence="{{ displaydata.sequence }}" status="{{ displaydata.status }}"><i class="icon-pencil-alt"></i></a></li>
+                            {% endif %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td align="center" colspan="4">沒有記錄</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "content_detail_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                var content_detail_name = $(this).attr("content_detail_name");
+                var content_detail_name_s = $(this).attr("content_detail_name_s");
+                var content_detail_name_e = $(this).attr("content_detail_name_e");
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#action").val($(this).attr("action"));
+                $("#content_detail_id").val($(this).attr("content_detail_id"));
+                $("#content_id").val($(this).attr("content_id"));
+                if (editor) {
+                    editor.setData(content_detail_name);
+                } else {
+                    console.log("Editor is not initialized yet.");
+                }
+                if (editor1) {
+                    editor1.setData(content_detail_name_s);
+                } else {
+                    console.log("Editor is not initialized yet.");
+                }
+                if (editor2) {
+                    editor2.setData(content_detail_name_e);
+                } else {
+                    console.log("Editor is not initialized yet.");
+                }
+                //$("#TxtContentDetailName").val($(this).attr("content_detail_name"));
+                //$("#TxtContentDetailNameE").val($(this).attr("content_detail_name_e"));
+                $("#TxtSequence").val($(this).attr("sequence"));
+                if ($(this).attr("status") == "1")
+                    $("#radioActive").prop("checked", true);
+                else
+                    $("#radioInActive").prop("checked", true);
+                var id = $(this).attr("recordid");
+
+                var action = $(this).attr("action");
+
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增內容</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    //showuploadname.style.display = "";
+                    //showfilename.style.display = "none";
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                } else {
+                    $("#FunctionTitle").html("<i class='icon-pencil-alt'></i>&nbsp;&nbsp;<b>編輯內容</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    //showuploadname.style.display = "none";
+                    //showfilename.style.display = "";
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

@@ -1,0 +1,66 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">系統運作</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb" style="float:right">
+    <li><i class="fa fa-dashboard"></i></li>
+    <li class="active">系統運作</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+.phone-input-container {
+  display: flex;
+  align-items: center;
+}
+
+.phone-input-container input:first-child {
+  margin-right: 10px;
+}
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <!-- /.card-header -->
+                <div class="box-header with-border">
+					<div class="col-md-3 nopadding">
+                        <span class="label label-primary">過濾</span>
+                        <b>關鍵字</b>&nbsp;&nbsp;
+                        <div class="input-group">
+                            <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                                <span class="input-group-btn">
+									<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                </span>
+						</div>
+                    </div>
+                 </div>
+            </div>
+
+            <div class="box box-warning">
+                <div id="contentBody" class="box-body">執行完成</center>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

@@ -1,0 +1,444 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Koho admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Koho admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="pixelstrap">
+    <link rel="icon" href="{% static 'Koho/assets/images/favicon/favicon.png' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'dist/img-web/main/favicon_cms.ico' %}" type="image/x-icon">
+    <title>InfinyRealty 管理系統</title>
+    <!-- Google font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/font-awesome.css' %}">
+    <!-- ico-font-->
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/icofont.css' %}">
+    <!-- Themify icon-->
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/themify.css' %}">
+    <!-- Flag icon-->
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/flag-icon.css' %}">
+    <!-- Feather icon-->
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/photoswipe.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/feather-icon.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/scrollbar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/select2.css' %}">
+
+    <!-- noUIrangle slider -->
+    <link rel="stylesheet" type="text/css" href="{% static 'Homlisti/vendor/noUiSlider/nouislider.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Homlisti/css/animate.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/owlcarousel.css' %}">
+    <!-- Swiper Css Start Here -->
+    <link rel="stylesheet" type="text/css" href="{% static 'Homlisti/css/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/dropzone.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/datatables.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/daterange-picker.css' %}">
+    <!-- Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/bootstrap.css' %}">
+    <!-- App css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/style.css' %}">
+    <link id="color" rel="stylesheet" href="{% static 'Koho/assets/css/color-1.css' %}" media="screen">
+    <!-- Responsive css-->
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/responsive.css' %}">
+    <link type="text/css" href="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+    <!-- Loader starts-->
+    <div class="loader-wrapper">
+      <div class="loader-7"></div>
+    </div>
+    <!-- Loader ends-->
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <!-- Page Header Start-->
+      <div class="page-header">
+        <div class="header-wrapper row m-0">
+          <form class="form-inline search-full col" action="#" method="get">
+            <div class="form-group w-100">
+              <div class="Typeahead Typeahead--twitterUsers">
+                <div class="u-posRelative">
+                  <input class="demo-input Typeahead-input form-control-plaintext w-100" type="text" placeholder="Search Koho .." name="q" title="" autofocus>
+                  <div class="spinner-border Typeahead-spinner" role="status"><span class="sr-only">Loading...</span></div><i class="close-search" data-feather="x"></i>
+                </div>
+                <div class="Typeahead-menu"></div>
+              </div>
+            </div>
+          </form>
+          <div class="header-logo-wrapper col-auto p-0">
+            <div class="logo-wrapper"><a href="/home"><img class="img-fluid for-light" src="{% static 'dist/img/infinyrealty.png' %}" alt=""><img class="img-fluid for-dark" src="{% static 'dist/img/infinyrealty_dark.png' %}" alt=""></a></div>
+            <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i></div>
+          </div>
+          <div class="left-header col horizontal-wrapper ps-0">
+            <!--<div class="input-group">
+              <input class="form-control" type="text" placeholder="搜尋........"><span class="input-group-text mobile-search"><i data-feather="search"></i></span>
+            </div>-->&nbsp;
+          </div>
+          <div class="nav-right col-6 pull-right right-header p-0">
+            <ul class="nav-menus">
+              <li class="language-nav">
+                <div class="translate_wrapper">
+                  <div class="current_lang">
+                    <div class="lang"><i class="flag-icon flag-icon-hk"></i><span class="lang-txt">HK</span></div>
+                  </div>
+                  <div class="more_lang">
+                    <div class="lang selected" data-value="hk"><i class="flag-icon flag-icon-hk"></i><span class="lang-txt">繁體中文<span></span></span></div>
+                    <div class="lang" data-value="cn"><i class="flag-icon flag-icon-cn"></i><span class="lang-txt">简体中文</span></div>
+                    <div class="lang" data-value="en"><i class="flag-icon flag-icon-us"></i><span class="lang-txt">English<span> (US)</span></span></div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="mode"><i data-feather="moon"></i></div>
+              </li>
+              <!--
+              <li class="onhover-dropdown">
+                <div class="notification-box"><i data-feather="star"></i></div>
+                <div class="onhover-show-div bookmark-flip">
+                  <div class="flip-card">
+                    <div class="flip-card-inner">
+                      <div class="front">
+                        <ul class="droplet-dropdown bookmark-dropdown">
+                          <li class="gradient-primary"><i data-feather="star"></i>
+                            <h3 class="mb-0">Bookmark</h3>
+                          </li>
+                          <li>
+                            <div class="row">
+                              <div class="col-4 text-center"><a href="file-manager.html"><i data-feather="file-text"></i></a></div>
+                              <div class="col-4 text-center"><a href="general-widget.html"><i data-feather="activity"></i></a></div>
+                              <div class="col-4 text-center"><a href="user-profile.html"><i data-feather="users"></i></a></div>
+                              <div class="col-4 text-center"><a href="clipboard.html"><i data-feather="clipboard"></i></a></div>
+                              <div class="col-4 text-center"><a href="to-do.html"><i data-feather="anchor"></i></a></div>
+                              <div class="col-4 text-center"><a href="internationalization.html"><i data-feather="settings"></i></a></div>
+                            </div>
+                          </li>
+                          <li class="text-center">
+                            <button class="flip-btn" id="flip-btn">Add New Bookmark</button>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="back">
+                        <ul>
+                          <li>
+                            <div class="droplet-dropdown bookmark-dropdown flip-back-content">
+                              <input type="text" placeholder="search...">
+                            </div>
+                          </li>
+                          <li class="pb-0">
+                            <button class="d-block flip-back" id="flip-back">Back          </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              -->
+              <!--
+              <li class="onhover-dropdown">
+                <div class="notification-box"><i data-feather="bell"></i><span class="badge rounded-pill badge-primary">4                                </span></div>
+                <ul class="notification-dropdown onhover-show-div">
+                  <li><i data-feather="bell">            </i>
+                    <h3 class="mb-0">通知</h3>
+                  </li>
+                  <li><a href="#">
+                      <p><i class="fa fa-circle-o me-3 font-primary"> </i>傳送中<span class="pull-right">10 min.</span></p></a></li>
+                  <li><a href="#">
+                      <p><i class="fa fa-circle-o me-3 font-success"></i>訂單完成<span class="pull-right">1 hr</span></p></a></li>
+                  <li><a href="#">
+                      <p><i class="fa fa-circle-o me-3 font-danger"></i>交付完成<span class="pull-right">6 hr</span></p></a></li>
+                  <li><a class="btn btn-primary" href="#">檢查所有通知</a></li>
+                </ul>
+              </li>
+              -->
+              <!--
+              <li class="onhover-dropdown"><i data-feather="message-square"></i>
+                <ul class="chat-dropdown onhover-show-div">
+                  <li><i data-feather="message-square"></i>
+                    <h3 class="mb-0">Message Box</h3>
+                  </li>
+                  <li>
+                    <div class="d-flex"><img class="img-fluid rounded-circle me-3" src="{% static 'Koho/assets/images/user/6.jpg' %}" alt="">
+                      <div class="status-circle online"></div>
+                      <div class="flex-grow-1"><a href="user-profile.html"><span>Ain Chavez</span>
+                          <p>Do you want to go see movie?</p></a></div>
+                      <p class="f-12 font-success">2 mins ago</p>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="d-flex"><img class="img-fluid rounded-circle me-3" src="{% static 'Koho/assets/images/user/1.jpg' %}" alt="">
+                      <div class="status-circle online"></div>
+                      <div class="flex-grow-1"><a href="user-profile.html"><span>Erica Hughes</span>
+                          <p>Thank you for rating us.</p></a></div>
+                      <p class="f-12 font-success">5 mins ago</p>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="d-flex"><img class="img-fluid rounded-circle me-3" src="{% static 'Koho/assets/images/user/7.jpg' %}" alt="">
+                      <div class="status-circle offline"></div>
+                      <div class="flex-grow-1"><a href="user-profile.html"><span>Kori Thomas</span>
+                          <p>What`s the project report update?</p></a></div>
+                      <p class="f-12 font-danger">9 mins ago</p>
+                    </div>
+                  </li>
+                  <li class="text-center"> <a class="btn btn-primary" href="chat.html">View All     </a></li>
+                </ul>
+              </li>
+              -->
+              <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
+              <li class="profile-nav onhover-dropdown p-0 me-0">
+                <div class="d-flex profile-media"><img class="b-r-50" src="{% static 'Koho/assets/images/dashboard/profile.png' %}" alt="">
+                  <div class="flex-grow-1"><span>{{ request.session.loginnamedesc }}</span>
+                    <p class="mb-0 font-roboto">{{ request.session.rankdesc }} <i class="middle fa fa-angle-down"></i></p>
+                  </div>
+                </div>
+                <ul class="profile-dropdown onhover-show-div">
+                  <li><a href="#" class="open_modal_user" data-bs-toggle="modal" data-original-title="test" data-bs-target="#UserModal" action="update" formtype="user_info" formname="User Information" recordid="{{ displaydata.recordid }}" loginid="{{ request.session.loginid }}" username="{{ request.session.username }}" loginnamedesc="{{ request.session.loginnamedesc }}" email="{{ request.session.email }}" team="{{ request.session.team }}" rank="{{ request.session.rankdesc }}" status="{{ displaydata.isActive }}"><i data-feather="user"></i><span>更改戶口資料</span></a></li>
+                  <!--<li><a href="email_inbox.html"><i data-feather="mail"></i><span>Inbox</span></a></li>
+                  <li><a href="kanban.html"><i data-feather="file-text"></i><span>Taskboard</span></a></li>-->
+                  <li><a href="/logout"><i data-feather="log-in"> </i><span>登出</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <script class="result-template" type="text/x-handlebars-template">
+            <div class="ProfileCard u-cf">
+            <div class="ProfileCard-avatar"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay m-0"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path><polygon points="12 15 17 21 7 21 12 15"></polygon></svg></div>
+            <div class="ProfileCard-details">
+            <div class="ProfileCard-realName">{{name}}</div>
+            </div>
+            </div>
+          </script>
+          <script class="empty-template" type="text/x-handlebars-template"><div class="EmptyMessage">Your search turned up 0 results. This most likely means the backend is down, yikes!</div></script>
+        </div>
+      </div>
+      <!-- Page Header Ends                              -->
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <!-- Page Sidebar Start-->
+{% include 'common_template/sidebar_template_2.html' %}
+      {% block side_content %}
+      {% endblock side_content %}
+        <!-- Page Sidebar Ends-->
+
+
+        <div class="page-body">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-6">
+                  <h3>{% block page_title %}{% endblock page_title %}</h3>
+                </div>
+                <div class="col-6">
+                  {% block breadcrumb %}{% endblock breadcrumb %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid basic_table">
+            {% block main_content %}
+            {% endblock main_content %}
+          </div>
+          <!-- Container-fluid Ends-->
+        </div>
+        <!-- footer start-->
+    {% include 'common_template/footer_2.html' %}
+        <!-- footer end -->
+      </div>
+    </div>
+<div class="modal fade" id="UserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#F39C12">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>更改戶口資料</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form1" method="post">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="loginid">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group">
+					<label for="TxtLoginNameDesc">姓名</label>
+						<input type="text" class="form-control" id="TxtLoginNameDesc" placeholder="輸入姓名" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtPostDesc">用戶名稱</label>
+						<input type="text" class="form-control" id="TxtPostDesc" placeholder="輸入用戶名稱" value="" disabled>
+			    </div>
+				<div class="form-group">
+					<label for="TxtOldPassword">用戶現行密碼</label>
+						<input type="password" class="form-control" id="TxtOldPassword" placeholder="輸入用戶現行密碼" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtNewPassword">用戶新密碼</label>
+						<input type="password" class="form-control" id="TxtNewPassword" placeholder="輸入用戶新密碼" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtEmail">電郵地址</label>
+						<input type="text" class="form-control" id="TxtEmail" placeholder="輸入電郵地址" value="">
+			    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="edit_user_button" action="update"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- latest jquery-->
+    <script src="{% static 'Koho/assets/js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/bootstrap/popper.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <!-- feather icon js-->
+    <script src="{% static 'Koho/assets/js/icons/feather-icon/feather.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/icons/feather-icon/feather-icon.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/scrollbar/simplebar.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/scrollbar/custom.js' %}"></script>
+    <!-- Sidebar jquery-->
+    <script src="{% static 'Koho/assets/js/config.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/sidebar-menu.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/dropzone/dropzone.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/dropzone/dropzone-script.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/owlcarousel/owl.carousel.js' %}"></script>
+    <script src="{% static 'Homlisti/js/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/tooltip-init.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/datatable/datatables/jquery.dataTables.min.js' %}"></script>
+
+    <script src="{% static 'Koho/assets/js/chart/knob/knob.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/chart/knob/knob-chart.js' %}"></script>
+    <!--<script src="{% static 'Koho/assets/js/chart/apex-chart/apex-chart.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/chart/apex-chart/stock-prices.js' %}"> </script>-->
+    <script src="{% static 'Koho/assets/js/prism/prism.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/clipboard/clipboard.min.js' %}"></script>
+
+    <!--<script src="{% static 'Koho/assets/js/datatable/datatables/datatable.custom.js' %}"></script>-->
+    <!-- Theme js-->
+    <script src="{% static 'Koho/assets/js/script.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/theme-customizer/customizer.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/photoswipe/photoswipe.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/photoswipe/photoswipe-ui-default.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/photoswipe/photoswipe.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/select2/select2.full.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/select2/select2-custom.js' %}"></script>
+
+    <script src="{% static 'Koho/assets/js/datepicker/daterange-picker/moment.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/datepicker/daterange-picker/daterangepicker.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/datepicker/daterange-picker/daterange-picker.custom.js' %}"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/classic/ckeditor.js"></script>
+    <!-- jquery printThis -->
+    <script src="{% static 'jquery-printThis/printThis.js' %}"></script>
+    <!-- Common js-->
+    <script src="{% static 'common/checkCommon.js' %}"></script>
+    <!-- bootstrap-notify -->
+    <!--<script src="{% static 'bootstrap-notify/bootstrap-notify.js' %}"></script>-->
+    <script src="{% static 'Koho/assets/js/notify/bootstrap-notify.min.js' %}"></script>
+    <!--<script src="{% static 'Koho/assets/js/dashboard/default.js' %}"></script>-->
+    <script src="{% static 'Koho/assets/js/notify/index.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/typeahead/handlebars.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/typeahead/typeahead.bundle.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/typeahead/typeahead.custom.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/typeahead-search/handlebars.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/typeahead-search/typeahead-custom.js' %}"></script>
+
+    <script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-html2canvas@latest/dist/jspdf-html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/jspdf-autotable"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        $(document).ready(function(){
+            $(".open_modal_user").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#recordid").val($(this).attr("recordid"));
+                $("#action").val($(this).attr("action"));
+                $("#loginid").val($(this).attr("loginid"));
+                $("#TxtPostDesc").val($(this).attr("username"));
+                $("#TxtLoginNameDesc").val($(this).attr("loginnamedesc"));
+                $("#TxtEmail").val($(this).attr("email"));
+                $("#TxtPhoto").html($(this).attr("photoicon"));
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                //var showuploadname = document.getElementById("showuploadname");
+                //var showfilename = document.getElementById("showfilename");
+
+                $("#FunctionTitle").html("<i class='icon-pencil-alt'></i>&nbsp;&nbsp;<b>更改戶口資料</b>");
+                $("#edit_button").show();
+            });
+            $(document).on("click", "#edit_user_button", function(){
+                var recordid = $("#recordid").val();
+                var action = $("#action").val();
+                var loginid = $("#loginid").val();
+                var username = $("#TxtPostDesc").val();
+                var oldpassword = $("#TxtOldPassword").val();
+                var newpassword = $("#TxtNewPassword").val();
+                var loginnamedesc = $("#TxtLoginNameDesc").val();
+                var email = $("#TxtEmail").val();
+
+                if (action == 'update') {
+                    if (!(window.confirm("更改戶口資料，你確定嗎？"))) {
+                        return false;
+                    }
+                }
+
+                // Saving Data into Database
+                //alert('|action:' + action + '|loginid:' + loginid + '|username:' + username + '|oldpassword:' + oldpassword + '|newpassword:' + newpassword + '|loginnamedesc:' + loginnamedesc + '|email:' + email)
+                $.ajax({
+                    url:'{% url 'userList_response' %}',
+                    type:'POST',
+                    data:{action:action, loginid:loginid, username:username, oldpassword:oldpassword, newpassword:newpassword, loginnamedesc:loginnamedesc, email:email },
+                })
+
+                .done(function(response){
+                    if (response == "The old password is not correct.") {
+                        var messageText = "用戶現行密碼不正確，戶口未能更新成功！"
+                        var messageType = "danger"
+                    } else {
+                        var messageText = "戶口已成功更新"
+                        var messageType = "success"
+                    }
+                    $.notify({
+                        message: messageText
+                        },{
+                            type: messageType,
+                            allow_dismiss: true,
+                            positon: 'top right',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    $("#UserModal").modal("hide");
+                })
+
+                .fail(function(xhr, status, error){
+                    // alert the error if any error occured
+                    alert(xhr.responseText);
+                    $("#errormessage").html(xhr.responseText);
+                })
+            })
+
+        })
+    </script>
+
+{% comment %} For Custom JS {% endcomment %}
+{% block custom_js %}
+
+{% endblock custom_js %}
+  </body>
+</html>

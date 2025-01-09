@@ -1,0 +1,39 @@
+
+<div>idToken : {{ idToken|safe }}</div>
+{% for key1,value1 in adfsKey.items %}
+    <div class="section">
+        <h4><a href="#" class="section_toggle"></a>  {{ key1|title }}:{{ value1|safe }}</h4>
+        <table class="table table-condensed">
+            {% for value2 in value1 %}
+                {% for key3,value3 in value2.items %}
+                    {{ key3 }}:{{ value3|safe }}<br>
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </div>
+{% endfor %}
+<br><br>
+=== Extract ===
+<div>jwtHeaderByte: {{ jwtHeaderByte }}</div>
+<div>jwtHeader: {{ jwtHeader }}</div>
+<div>jwtHashAlgorithm: {{ jwtHashAlgorithm }}</div>
+<div>adfsKeyAlgorithm: {{ adfsKeyAlgorithm }}</div>
+<div>adfsCertStr: {{ adfsCertStr }}</div>
+<div>encodedCert: {{ encodedCert }}</div>
+<div>decodedCert: {{ decodedCert }}</div>
+<div>uid: {{ uid }}</div>
+<div>post: {{ post }}</div>
+<div>{{ tempStr }}</div>
+
+{% for key1,value1 in jwtHeaderByte.items %}
+    <div class="section">
+        <h4><a href="#" class="section_toggle"></a>  {{ key1|title }}:{{ value1|safe }}</h4>
+        <table class="table table-condensed">
+            {% for value2 in value1 %}
+                {% for key3,value3 in value2.items %}
+                    {{ key3 }}:{{ value3|safe }}<br>
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </div>
+{% endfor %}

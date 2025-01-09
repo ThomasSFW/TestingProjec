@@ -1,0 +1,233 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"我的最愛"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+      <!--=====================================-->
+      <!--=   Single Listing     Start        =-->
+      <!--=====================================-->
+        <section class="grid-wrap3">
+            <div class="container">
+                <div class="row gutters-40">
+                    <div class="col-lg-12">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-12 col-md-12">
+                                <div class="item-shorting-box">
+                                    <div class="shorting-title">
+                                        <h2 class="item-title">{{"我的最愛"|showlang:request.session.lang}} ({{"共"|showlang:request.session.lang}} {{total_records}} {{"個物業"|showlang:request.session.lang}})</h2>
+                                    </div>
+                                    <div class="item-shorting-box-2">
+                                        <div class="by-shorting">
+                                            <div class="shorting">{{"排序方式"|showlang:request.session.lang}}：</div>
+                                            <select class="select single-select" width="200px" id="property-sorting">
+                                                <option value="">{{"預設"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                <option value="1"{% if sorting_mode == "1" %} selected{% endif %}>{{"售價由低至高"|showlang:request.session.lang}}</option>
+                                                <option value="2"{% if sorting_mode == "2" %} selected{% endif %}>{{"售價由高至低"|showlang:request.session.lang}}</option>
+                                                <option value="3"{% if sorting_mode == "3" %} selected{% endif %}>{{"租金由低至高"|showlang:request.session.lang}}</option>
+                                                <option value="4"{% if sorting_mode == "4" %} selected{% endif %}>{{"租金由高至低"|showlang:request.session.lang}}</option>
+                                                <option value="5"{% if sorting_mode == "5" %} selected{% endif %}>{{"實用呎數由小至大"|showlang:request.session.lang}}</option>
+                                                <option value="6"{% if sorting_mode == "6" %} selected{% endif %}>{{"實用呎數由大至小"|showlang:request.session.lang}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="grid-button">
+                                            <ul>
+                                                {% if request.session.display_mode == "list" %}
+                                                <li id="list-view" viewtype="list"><a href="#" class="active bg-white"><i class="fas fa-list-ul"></i></a></li>
+                                                <li class="without-border" id="grid-view" viewtype="grid"><a href="#" class="bg-white"><i class="fas fa-th"></i></a></li>
+                                                {% else %}
+                                                <li class="without-border" id="list-view" viewtype="list"><a href="#" class="bg-white"><i class="fas fa-list-ul"></i></a></li>
+                                                <li id="grid-view" viewtype="grid"><a href="#" class="active bg-white"><i class="fas fa-th"></i></a></li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="data-placeholder">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).on("click", "#search_button", function(){
+        var buttontype = $(this).attr("buttontype");
+
+        if (buttontype == 'search') {
+            propertyname = $("#search-propertyname").val();
+            propertyno = $("#search-propertyno").val();
+            usage = $("#search-usage").val();
+            areacode = $("#search-areacode").val();
+            offertype = "";
+            if (usage == "售盤" || usage == "租盤") {
+                offertype = usage;
+                usage = "";
+            }
+            var action = 'search';
+            $.ajax({
+                url:'{% url 'main_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, propertyname:propertyname, propertyno:propertyno, usage:usage, areacode:areacode, offertype:offertype},
+            })
+            .done(function(response){
+                document.location.href = "/property_search";
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+        }
+    })
+
+    function toggleFavorites(propertyID) {
+      // Get the current value of the cookie (if it exists)
+      var existingValue = document.cookie.replace(/(?:(?:^|.*;\s*)favorites\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+
+      // Convert the existing value to an array (or create an empty array if it doesn't exist)
+      var favorites = existingValue ? existingValue.split(",") : [];
+
+      // Check if the PropertyID is already in the favorites list
+      var index = favorites.indexOf(propertyID);
+
+      if (index === -1) {
+        // Add the PropertyID to the favorites list
+        favorites.push(propertyID);
+        console.log("Added PropertyID " + propertyID + " to favorites!");
+      } else {
+        // Remove the PropertyID from the favorites list
+        favorites.splice(index, 1);
+        console.log("Removed PropertyID " + propertyID + " from favorites!");
+      }
+
+      // Convert the array back to a string
+      var updatedValue = favorites.join(",");
+
+      // Set the modified cookie with the updated value
+      document.cookie = "favorites=" + updatedValue + "; expires=Thu, 31 Dec 2025 23:59:59 UTC; path=/";
+    }
+
+    function isPropertyIDInFavorites(propertyID) {
+      var existingValue = document.cookie.replace(/(?:(?:^|.*;\s*)favorites\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+      var favorites = existingValue ? existingValue.split(",") : [];
+      return favorites.includes(propertyID);
+    }
+
+    function updateFavorites(propertyID) {
+      var favoriteIcon = document.getElementById(".favorite-add");
+      if (isPropertyIDInFavorites(propertyID)) {
+        favoriteIcon.classList.add("highlighted");
+      } else {
+        favoriteIcon.classList.remove("highlighted");
+      }
+    }
+
+    $(document).on("change", "#property-sorting", function(){
+        var sortingtype = $(this).val();
+        action = "sorting_mode"
+        $.ajax({
+            url:'{% url 'main_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, sortingtype:sortingtype},
+        })
+        .done(function(response){
+            location.reload();
+        })
+        .fail(function(xhr, status, error){
+            $('#errormessage').html(xhr.responseText);
+        })
+    })
+
+    $(document).on("click", "#list-view, #grid-view", function(){
+        var viewtype = $(this).attr("viewtype");
+        action = "display_mode"
+        $.ajax({
+            url:'{% url 'main_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, viewtype:viewtype},
+        })
+        .done(function(response){
+            location.reload();
+        })
+        .fail(function(xhr, status, error){
+            $('#errormessage').html(xhr.responseText);
+        })
+    })
+
+    $(document).ready(function() {
+      var isLoading = false; // Flag to prevent multiple simultaneous requests
+      var currentPage = 1; // Current page number
+      var pageSize = 12; // Number of items to load per page
+
+      function loadData() {
+        if (isLoading) return; // Exit if a request is already in progress
+
+        isLoading = true;
+        // Make an AJAX request to fetch the data
+        $.ajax({
+          url: '{% url 'favourite_data' %}',
+          type: 'POST',
+          data: {
+            page: currentPage,
+            pageSize: pageSize
+          },
+          success: function(response) {
+            var data = response; // The loaded data from the server
+            // Append the loaded data to the placeholder
+            $('#data-placeholder').append(data);
+
+            isLoading = false; // Reset the loading flag
+            currentPage++; // Increment the page number for the next request
+          },
+          error: function() {
+            isLoading = false; // Reset the loading flag in case of an error
+          }
+        });
+      }
+
+      // Detect scroll event
+      $(window).scroll(function() {
+        var scrollPosition = $(window).scrollTop();
+        var windowHeight = $(window).height();
+        var documentHeight = $(document).height();
+        // Load more data when the user reaches the bottom of the page
+        if (scrollPosition + windowHeight >= documentHeight - 50) {
+          loadData();
+        }
+      });
+
+      // Initial data load
+      loadData();
+    });
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

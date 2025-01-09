@@ -1,0 +1,522 @@
+{% extends 'common_template/base_template.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">枱面設定</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb" style="float:right">
+    {% for displayitem in menuitem %}
+    <li><i class="fa fa-dashboard"></i></li>
+    <li>{{displayitem.tabName}}</li>
+    <li>{{displayitem.catName}}</li>
+    <li class="active">{{displayitem.subCatName}}</li>
+    {% endfor %}
+    </ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+.phone-input-container {
+  display: flex;
+  align-items: center;
+}
+
+.phone-input-container input:first-child {
+  margin-right: 10px;
+}
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <!-- /.card-header -->
+                <div class="box-header with-border">
+					<div class="col-md-3 nopadding">
+                        <span class="label label-primary">過濾</span>
+                        <b>關鍵字</b>&nbsp;&nbsp;
+                        <div class="input-group">
+                            <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                                <span class="input-group-btn">
+									<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                </span>
+						</div>
+                    </div>
+                    <div class="col-md-2">
+                        <b>店鋪</b>&nbsp;&nbsp;
+						<select id="cboTeam" class="selectpicker" data-style="btn-primary" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%"{% if not 1426 in request.session.accessright %} disabled{% endif %}>
+						<option value="" {% if user_team == teams.teamdesc %}selected{% endif %}>- 所有店鋪 -</option>
+						{% for teams in teamlist %}
+							<option value="{{teams.teamdesc}}" {% if user_team == teams.teamdesc %}selected{% endif %}>{{teams.teamfulldesc|teamtosection}}</option>
+						{% endfor %}
+						</select>
+                    </div>
+                    <div class="col-md-7">
+                    </div>
+                </div>
+            </div>
+
+            <div class="box box-warning">
+                <div id="contentBody" class="box-body"><br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Modal -->
+
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="ModalTitle"><span id="FunctionTitle"><i class="fa fa-edit"></i>&nbsp;&nbsp;<b>Edit</b></span><button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button></h4>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="table_id">
+                <input type="hidden" class="form-control" id="action">
+                <input type="hidden" class="form-control" id="shop">
+				<div class="form-group">
+					<label>店舖</label>
+					<select id="SelectTeam" class="form-control" {% if user_team != "" %} disabled{% endif %}>
+                    {% for teams in teamlist %}
+                        <option value="{{teams.teamdesc}}" {% if user_team == teams.teamdesc %}selected{% endif %}>{{teams.teamfulldesc}}</option>
+                    {% endfor %}
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="TxtTableKey">編碼</label>
+						<input type="text" class="form-control" id="TxtTableKey" placeholder="輸入編碼" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtTableName">名稱</label>
+						<input type="text" class="form-control" id="TxtTableName" placeholder="輸入名稱" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtTableNameE">名稱(英)</label>
+						<input type="text" class="form-control" id="TxtTableNameE" placeholder="輸入名稱(英)" value="">
+			    </div>
+                <div class="form-group">
+                    <div class="col-sm-4 nopadding">
+                        <label for="TxtTableSeat">座位數目</label>
+                        <input type="number" class="form-control" id="TxtTableSeat" placeholder="輸入座位數目" value="12">
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="TxtTableShape">枱面形狀</label>
+                        <input type="text" class="form-control" id="TxtTableShape" placeholder="輸入枱面形狀" value="圓枱">
+                    </div>
+                    <div class="col-sm-4 nopadding">
+                        <label for="TxtLocation">位置</label>
+                        <input type="text" class="form-control" id="TxtLocation" placeholder="輸入位置" value="">
+                    </div>
+                </div>
+				<div class="form-group">
+					<label for="TxtTimePeriod">有效時間</label>
+						<input type="text" class="form-control" id="TxtTimePeriod" placeholder="輸入有效時間，例如：0900-2300" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtCharge">附加費(%)</label>
+						<input type="number" class="form-control" id="TxtCharge" placeholder="輸入附加費(%)" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtSequence">次序</label>
+						<input type="number" class="form-control" id="TxtSequence" placeholder="輸入次序，例如1,2,3,..." value="">
+			    </div>
+				<div class="form-group">
+					<label>狀態</label>
+						<div class="form-group clearfix">
+							<div class="icheck-success d-inline" style="margin-right:20px">
+								<input type="radio" id="radioActive" name="r1">
+								<label for="radioActive" value="1">正常</label>
+							</div>
+							<div class="icheck-success d-inline" style="margin-right:20px">
+								<input type="radio" id="radioInActive" name="r1">
+								<label for="radioInActive" value="1">失效</label>
+							</div>
+						</div>
+                </div>
+				<div class="form-group dropzone" style="display:none">
+                    <table border="2" cellpadding="3" class="table" bordercolor="grey">
+                       <tbody><tr><td bgcolor="#FFFFEE">
+                            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tbody><tr><td><label for="TxtTablePhoto">相片</label></td></tr>
+                                <tr><td>
+                                    {% csrf_token %}
+                                     <div style="float:left"><input type="file" class="" id="TxtTablePhoto" placeholder="請選擇圖片" value="" width="200"></div>&nbsp;&nbsp;&nbsp;<div style="float:right"><button type="submit" class="btn btn-xs btn-warning" id="upload_button" action="upload"><i class="fa fa-upload"></i>&nbsp;&nbsp;上傳</button></div>
+                                </td></tr>
+                                <tr><td style="padding-top:10px">
+                                    <img src="/static/dist/img/male-160x160.jpg" class="img-circle" width="80" id="preview_icon">
+                                </td></tr>
+                            </tbody></table>
+                       </td></tr>
+                    </tbody></table>
+			    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="add_button" action="add"><i class="fa fa-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="submit" class="btn btn-warning" id="edit_button" action="edit"><i class="fa fa-edit"></i>&nbsp;&nbsp;更新</button>
+                {% if 82 in request.session.accessright %}
+                <button type="submit" class="btn btn-danger" id="remove_button"><i class="fa fa-trash"></i>&nbsp;&nbsp;刪除</button>
+                {% endif %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" action="close"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        var table;
+
+        $("#searchinput").on("keyup", function() {
+			var oTable = $('#contentTable').dataTable();
+			oTable.fnFilter($(this).val());
+        });
+
+        $("#cboTeam, #cboCode").on('change', function(){
+            load_table();
+        });
+
+        function load_table() {
+            $("#contentTable").html('<br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>');
+            var team = $("#cboTeam").val();
+            $.ajax({
+                url:'{% url 'tableSetting_response' %}',
+                type:'POST',
+                data:{action:'table_list', team:team},
+            })
+
+            .done(function(response){
+                $("#contentBody").html(response);
+                refresh_table();
+            })
+
+            .fail(function(xhr, status, error){
+                $("#contentBody").html(xhr.responseText);
+            })
+        }
+
+        function refresh_table() {
+            table = $('#contentTable').DataTable({
+                "paging": true,
+                "dom": '<"toolbar">Brtip',
+                "order": [[ 8, "asc" ],[ 6, "asc" ]],
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                   language: {
+                       "sProcessing": "處理中...",
+                       "sLengthMenu": "顯示 _MENU_ 項結果",
+                       "sZeroRecords": "沒有匹配結果",
+                       "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                       "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                       "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                       "sInfoPostFix": "",
+                       "sSearch": "搜索：",
+                       "sUrl": "",
+                       "oPaginate": {
+                           "sFirst": "首頁",
+                           "sPrevious": "上一頁",
+                           "sNext": "下一頁",
+                           "sLast": "末頁"
+                       },
+                       buttons: {
+                           copy: "複製到剪貼簿"
+                       }
+                   },
+                buttons: [
+                    {   extend: "copy",
+                        text: '<i class="fa fa-copy"></i>&nbsp;&nbsp;複製',
+                        className: 'btn-warning'
+                    },
+                    {
+                        extend: "print",
+                        text: '<i class="fa fa-print"></i>&nbsp;&nbsp;列印',
+                        customize: function(win)
+                        {
+                            var last = null;
+                            var current = null;
+                            var bod = [];
+
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+
+                            style.type = 'text/css';
+                            style.media = 'print';
+
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+                            head.appendChild(style);
+                        },
+                        className: 'btn-primary'
+                    },
+                    {% if 81 in request.session.accessright %}
+                    {
+                        text: '<i class="fa fa-plus"></i>&nbsp;&nbsp;新增枱面',
+                        action: function(e, dt, node, config) {
+                            $('#EditModal').modal('show');
+                            $("#FunctionTitle").html("<i class='fa fa-plus'></i>&nbsp;&nbsp;<b>新增枱面</b>");
+                            $(".modal-header").css('background-color', '#DD4B39');
+            				$(".modal-header").css('color', '#FFFFFF');
+                            $("#add_button").show();
+                            $("#edit_button").hide();
+                            $("#remove_button").hide();
+                            $("#print_button").hide();
+                            $("#action").val($(this).attr("action"));
+                            $("#table_id").val($(this).attr("table_id"));
+                            $("#TxtTableKey").val($(this).attr("table_key"));
+                            $("#TxtTableName").val($(this).attr("table_name"));
+                            $("#TxtTableNameE").val($(this).attr("table_name_e"));
+                            $("#TxtTableSeat").val($(this).attr("table_seat"));
+                            $("#TxtTableShape").val($(this).attr("table_shape"));
+                            $("#TxtLocation").val($(this).attr("location"));
+                            $("#TxtTimePeriod").val($(this).attr("time_period"));
+                            $("#TxtCharge").val($(this).attr("charge"));
+                            $("#TxtSequence").val($(this).attr("sequence"));
+                            $("#TxtTablePhoto").html($(this).attr("table_photo"));
+                            $("#TxtTableIcon").html($(this).attr("table_icon"));
+                            $("#radioActive").prop("checked", true);
+                            if ($("#cboTeam").val() == "") {
+                                $("#SelectTeam").prop("disabled", false);
+                            } else {
+                                $("#SelectTeam").val($("#cboTeam").val());
+                                $("#SelectTeam").prop("disabled", true);
+                            }
+                        },
+                        className: 'btn-danger'
+                    },
+                    {% endif %}
+                ],
+            });
+    		$("div.toolbar").css("padding-bottom", "10px");
+            $("div.toolbar").html('<b><font size=3>枱面列表</font></b>&nbsp;&nbsp;&nbsp;');
+        }
+
+        $("#upload_button").click(function(){
+            $("#action").val($("#upload_button").attr("action"));
+        });
+
+        $("#add_button").click(function(){
+            $("#action").val("add");
+        });
+
+        $("#edit_button").click(function(){
+            $("#action").val("edit");
+        });
+
+        $("#remove_button").click(function(){
+            $("#action").val("delete");
+        });
+
+        document.getElementById("upload-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var fileInput = document.getElementById("TxtTablePhoto");
+            var file = fileInput.files[0];
+            var action = $("#action").val();
+            var shop = $("#SelectTeam").val();
+            var table_id = $("#table_id").val();
+            var table_key = $("#TxtTableKey").val();
+            var table_name = $("#TxtTableName").val();
+            var table_name_e = $("#TxtTableNameE").val();
+            var table_seat = $("#TxtTableSeat").val();
+            var table_shape = $("#TxtTableShape").val();
+            var location = $("#TxtLocation").val();
+            var time_period = $("#TxtTimePeriod").val();
+            var charge = $("#TxtCharge").val();
+            var table_photo = $("#TxtTablePhoto").val();
+            var table_icon = $("#TxtTableIcon").val();
+            var sequence = $("#TxtSequence").val();
+            if ($("#radioActive").is(':checked')) status = 1;
+            if ($("#radioInActive").is(':checked')) status = 0;
+            if ((action == "add") || (action == "edit")) {
+                if (fileInput.files.length == 0) {
+                    //alert("Please browse relevant inspection report file to upload")
+                    //return false;
+                }
+                if (table_key == '') {
+                    alert('請輸入編碼');
+                    return false;
+                }
+                if (table_name == '') {
+                    alert('請輸入枱面名稱');
+                    return false;
+                }
+                if (time_period == '') {
+                    alert('請輸入有效時間');
+                    return false;
+                }
+                if (charge == '') {
+                    alert('請輸入附加費(%)');
+                    return false;
+                }
+                if (sequence == '') {
+                    alert('請輸入次序');
+                    return false;
+                }
+
+                if (action == "add") {
+                    if (!(window.confirm("新增枱面記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                } else {
+                    if (!(window.confirm("更新枱面記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("shop", shop);
+                formData.append("table_id", table_id);
+                formData.append("table_key", table_key);
+                formData.append("table_name", table_name);
+                formData.append("table_name_e", table_name_e);
+                formData.append("table_seat", table_seat);
+                formData.append("table_shape", table_shape);
+                formData.append("location", location);
+                formData.append("time_period", time_period);
+                formData.append("charge", charge);
+                formData.append("table_photo", table_photo);
+                formData.append("table_icon", table_icon);
+                formData.append("sequence", sequence);
+                formData.append("status", status);
+                formData.append("file", file);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'tableSetting_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功更新"
+                            },{
+                                type: 'success',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "delete") {
+                if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("table_id", table_id);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'tableSetting_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功刪除"
+                            },{
+                                type: 'danger',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "upload") {
+                if (fileInput.files.length == 0) {
+                    alert("Please browse relevant inspection report file to upload")
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("table_id", table_id);
+                formData.append("table_key", table_key);
+                formData.append("table_name", table_name);
+                formData.append("table_name_e", table_name_e);
+                formData.append("table_seat", table_seat);
+                formData.append("table_shape", table_shape);
+                formData.append("location", location);
+                formData.append("time_period", time_period);
+                formData.append("charge", charge);
+                formData.append("shop", '{{user_team}}');
+                formData.append("table_photo", table_photo);
+                formData.append("table_icon", table_icon);
+                formData.append("sequence", sequence);
+                formData.append("status", status);
+                formData.append("file", file);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'tableSetting_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        alert("File was uploaded successfully")
+                        //load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+        });
+
+        load_table()
+
+    })
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

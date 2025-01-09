@@ -1,0 +1,91 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block breadcrumb %}
+
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+	
+        <div class="col-md-12">
+           
+		   
+            <!-- /.box-header -->
+            <div class="box-body">
+               <table width=auto border=0 cellspacing=0 cellpadding=3 style='border-collapse: collapse'>
+					<tr>
+						<td valign=middle width=40><label for="txtSchoolName">School</label></td>
+						<td><input type=text id="txtSchoolName" name="txtSchoolName" class="ui-textinput" maxlength=255 size=40  onkeyup="javascript:loadSchoolName();" value=""><input type=button value="->" class="btnSubmit" onclick="javascript:loadSchoolNameTranslate();"></td>
+					</tr>
+					<tr>
+						<td valign=middle></td>
+						<td><div id=schoolSelect name=schoolSelect></div></td>
+					</tr>
+				</table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+   
+
+{% endblock main_content %}
+
+{% block custom_js %}
+    <script>
+			function loadSchoolName() { 
+				if (window.XMLHttpRequest) {
+					var oHttp= new XMLHttpRequest();
+				} else {
+					var oHttp= new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				try {
+					//var strSchoolName = encodeURI(document.getElementById('txtSchoolName').value);
+					var strSchoolName = encodeURI($('#txtSchoolName').val());
+				} catch(e){
+					var strSchoolName = "";
+				}
+				if (strSchoolName.length < 3) return false;
+				nocache = Math.random();
+				szUrl = "logEnquiryResponse.asp?responseType=schoolname&schoolName="+strSchoolName+"&nocache="+nocache;
+				oHttp.open("GET", szUrl, false);
+				oHttp.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+				oHttp.send();
+				$('#schoolSelect').html(oHttp.responseText);
+				$('#cboSchoolID').selectmenu({style:'dropdown',width:'300px'}).selectmenu("menuWidget").addClass( "overflow" );
+				$('#cboSchoolID').selectmenu().selectmenu('refresh', true);
+				$('#cboSchoolID').on('selectmenuchange', function(){
+					document.frmItem.txtSchoolName.value = $('#cboSchoolID').val();
+				});	
+			}
+			function loadSchoolNameTranslate() { 
+				if (window.XMLHttpRequest) {
+					var oHttp= new XMLHttpRequest();
+				} else {
+					var oHttp= new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				try {
+					var strSchoolName = encodeURI(document.getElementById('txtSchoolName').value);
+				} catch(e){
+					var strSchoolName = "";
+				}
+				nocache = Math.random();
+				szUrl = "logEnquiryResponse.asp?responseType=schoolnametranslate&schoolName="+strSchoolName+"&nocache="+nocache;
+				oHttp.open("GET", szUrl, false);
+				oHttp.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+				oHttp.send();
+				//if ((oHttp.readyState == 4) && (oHttp.status == 200)) {
+				document.frmItem.txtSchoolName.value = oHttp.responseText;
+					//document.frmItem.txtSchoolName.value = oHttp.responseText;
+				//}
+			}
+    </script>
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

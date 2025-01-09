@@ -1,0 +1,221 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+<link rel="stylesheet" href="{% static 'common/formCommon.css' %}">
+	{% if action == "visit_tour_list" %}
+        <button type="button" class="btn btn-primary" id="btn_action_list" action="list" data-bs-original-title="" title="">申請列表</button>
+        <button type="button" class="btn btn-primary" id="btn_action_edit" action="edit" data-bs-original-title="" title="">表格更新</button>
+        <br />
+        <br />
+        <div class="table-bordered data-table">
+            <table id="contentTable-{{action}}" class="display" id="contentTable" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th style="text-align:center;" width="100">申請時間</th>
+                        <th>姓名</th>
+                        <th style="text-align:center;" width="100">電話</th>
+                        <th style="text-align:center;" width="200">電郵地址</th>
+                        <th style="text-align:center;" width="150">參加導賞團日期</th>
+                        <th style="text-align:center;" width="120">參加導賞團時間</th>
+                        <th style="text-align:center;" width="100">同行總人數</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in visit_tour_list %}
+                        <tr>
+                            <td style="text-align:center;">{{displaydata.create_date|date:'Y-m-d H:i'}}</td>
+                            <td>{{displaydata.last_name}} {{displaydata.first_name}}</td>
+                            <td align="center">{{displaydata.phone_area_code}} {{displaydata.phone_number}}</td>
+                            <td>{{displaydata.email}}</td>
+                            <td align="center">{{displaydata.date_of_visit|date:'Y-m-d'}}</td>
+                            <td align="center">{{displaydata.time_of_visit}}</td>
+                            <td align="center">{{displaydata.total_guest}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="form_edit">
+            <p style="padding-left:160px">
+                <h3 class="mt-4" style="font-weight:600;padding-left:20px">編輯導賞團</h3>
+            </p>
+            <div class="container-fluid" id="editTable">
+                <form action="POST" class="form_edit_visitTourForm">
+                    <input type="hidden" name="id" id="visit_tour_form_id" value="{{visit_tour_form.id}}" />
+                    <div class="form-group">
+                        <label for="input_title">導賞團名稱</label>
+                        <input class="form-control" placeholder="導賞團名稱" type="text" id="input_title" name="title" value="{{visit_tour_form.title}}"><span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="input_title_sc">導賞團名稱 (簡)</label>
+                        <input class="form-control" placeholder="導賞團名稱" type="text" id="input_title_sc" name="title_sc" value="{{visit_tour_form.title_sc}}"><span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="input_title_en">導賞團名稱 (英)</label>
+                        <input class="form-control" placeholder="導賞團名稱" type="text" id="input_title_en" name="title_en" value="{{visit_tour_form.title_en}}"><span class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="input_desc">內容</label>
+                        <textarea id="input_desc" name="desc" class="form-control" rows="5" placeholder="輸入內容">{{visit_tour_form.desc}}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="input_desc_sc">內容(簡)</label>
+                        <textarea id="input_desc_sc" name="desc_sc" class="form-control" rows="5" placeholder="輸入內容(簡)">{{visit_tour_form.desc_sc}}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="input_desc_en">內容(英)</label>
+                        <textarea id="input_desc_en" name="desc_en" class="form-control" rows="5" placeholder="輸入內容(英)">{{visit_tour_form.desc_en}}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="input_date_min">日期 (由)</label>
+                            <input class="form-control" placeholder="" type="date" id="input_date_min" name="date_min" value="{{visit_tour_form.date_min|date:'Y-m-d'}}"{% if 1461 in request.session.accessright or 1476 in request.session.accessright %}{% else %} disabled{% endif %}><span class="text-danger"></span>
+                        </div>
+                        </div>
+                        <div class="col-sm-4">
+                        <div class="mb-3">
+                            <label for="input_date_max">日期 (到)</label>
+                            <input class="form-control" placeholder="" type="date" id="input_date_max" name="date_max" value="{{visit_tour_form.date_max|date:'Y-m-d'}}"{% if 1461 in request.session.accessright or 1476 in request.session.accessright %}{% else %} disabled{% endif %}><span class="text-danger"></span>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input_time">時間 (請使用 ";" 分隨,例如: 11am;2pm)</label>
+                        <input class="form-control" placeholder="導賞團名稱" type="text" id="input_time" name="time" value="{{visit_tour_form.time}}"><span class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4 text-end">
+                            <button type="button" class="btn btn-warning" id="edit_button" action="visitTourForm_save" data-bs-original-title="" title=""><i class="icon-pencil-alt"></i>&nbsp;&nbsp; 更新</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+{% if action == "visit_tour_list" %}
+
+    var editor_desc, editor_desc_sc, editor_desc_en;
+    ClassicEditor
+        .create( document.querySelector( '#input_desc' ) , {
+        toolbar: [ 'heading', '|', 'bold', 'italic', 'underline' ],
+        })
+        .then( newEditor => {
+            editor_desc = newEditor;
+            editor_desc.ui.view.editable.element.style.height = '100px';
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+    ClassicEditor
+        .create( document.querySelector( '#input_desc_sc' ) , {
+        toolbar: [ 'heading', '|', 'bold', 'italic', 'underline' ],
+        })
+        .then( newEditor => {
+            editor_desc_sc = newEditor;
+            editor_desc_sc.ui.view.editable.element.style.height = '100px';
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+    ClassicEditor
+        .create( document.querySelector( '#input_desc_en' ) , {
+        toolbar: [ 'heading', '|', 'bold', 'italic', 'underline' ],
+        })
+        .then( newEditor => {
+            editor_desc_en = newEditor;
+            editor_desc_en.ui.view.editable.element.style.height = '100px';
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+
+    $(document).ready(function(){
+        $("#btn_action_list").click(function(){
+            $(".form_edit").hide();
+            $(".data-table").show();
+        });
+        $("#btn_action_edit").click(function(){
+            $(".data-table").hide();
+            $(".form_edit").show();
+        });
+
+        // visitTourForm_save
+        $("#edit_button").click(function(){
+            editor_desc.updateSourceElement();
+            editor_desc_sc.updateSourceElement();
+            editor_desc_en.updateSourceElement();
+            var action = $(this).attr("action");
+            var id = $("#visit_tour_form_id").val();
+            var title = $("#input_title").val();
+            var title_sc = $("#input_title_sc").val();
+            var title_en = $("#input_title_en").val();
+            var desc = $("#input_desc").val();
+            var desc_sc = $("#input_desc_sc").val();
+            var desc_en = $("#input_desc_en").val();
+            var date_min = $("#input_date_min").val();
+            var date_max = $("#input_date_max").val();
+            var time = $("#input_time").val();
+
+            if (!(window.confirm("更新表格，你確定嗎？"))) return false;
+
+            $.ajax({
+                url:'{% url "visitTourForm_save" %}',
+                type:'POST',
+                data:{
+                    action:action, 
+                    id:id, 
+                    title:title, 
+                    title_sc:title_sc, 
+                    title_en:title_en, 
+                    desc:desc, 
+                    desc_sc:desc_sc, 
+                    desc_en:desc_en, 
+                    desc:desc, 
+                    date_min: date_min, 
+                    date_max: date_max, 
+                    time: time, 
+                },
+            }).done(function(response){
+                if (response == "Success")
+                    var messagetype = "success"
+                else
+                    var messagetype = "danger"
+                
+                $.notify({
+                    message: "資料已成功更新"
+                    },{
+                        type: messagetype,
+                        allow_dismiss: true,
+                        positon: 'top right',
+                        offset: 20,
+                        spacing: 10,
+                        z_index: 1031,
+                });
+                currentPage = table.page();
+                $('a[href="#btn_action_list"]').trigger('click');
+                //if (action == "delete") $('a[href="#customer_list"]').trigger('click');
+            })
+            .fail(function(xhr, status, error){
+                // alert the error if any error occured
+                alert(xhr.responseText);
+                $("#EditModal").html(xhr.responseText);
+            })
+        })
+    })
+{% endif %}
+</script>
+{% endblock custom_js %}

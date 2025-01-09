@@ -1,0 +1,198 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"研究與新聞"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+<style>
+.datepicker-here .today {
+  background-color: #007bff;
+  color: #fff;
+}
+.datepicker-here .selected {
+  background-color: #007bff;
+  color: #fff;
+}
+</style>
+    <!--=====================================-->
+    <!--=   Terms     Start                 =-->
+    <!--=====================================-->
+        <div class="article-head"><br>
+		    <h5 class="text-center" style="font-weight:600"> {{"研究與新聞"|showlang:request.session.lang}}</h5>
+		</div>
+        <section class="blog-wrap5">
+            <div class="container">
+                <div class="row g-3 date-range-picker">
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <input type="text" name="searchinput" id="searchinput" class="form-control" placeholder="{{"搜尋研究與新聞內容"|showlang:request.session.lang}}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group" style="width:280px">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon2">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                            <div>
+                                <input class="form-control" style="border: none; outline: none; box-shadow: none;" id="reportrange" type="text" size="20">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="row gutters-40">
+                    <div class="col-lg-12">
+                        <div class="row" id="news_info">
+
+                        </div>
+                        <!--
+                        <div class="pagination-style-1">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="with-sidebar2.html" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"><a class="page-link active" href="/news/1">1</a></li>
+                                <li class="page-item"><a class="page-link" href="/news/2">2</a></li>
+                                <li class="page-item"><a class="page-link" href="/news/3">3</a></li>
+                                <li class="page-item"><a class="page-link" href="/news/4">4</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="with-sidebar2.html" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        -->
+                    </div>
+                    <!--
+                    <div class="col-lg-4 widget-break-lg sidebar-widget">
+                        <div class="widget widget-categoery-box">
+                            <h3 class="widget-subtitle">搜索日期</h3>
+                            <div class="d-flex justify-content-between mb-3">
+                                <button id="prev-month" class="btn btn-sm btn-secondary">上個月</button>
+                                <button id="next-month" class="btn btn-sm btn-secondary">下個月</button>
+                            </div>
+                            <div class="datepicker-here" data-language="en" width="100%"></div>
+                            <button id="get-date" style="display:none">Get Selected Date</button>
+                            <div id="selected-date" style="display:none">{{ select_date }}</div>
+                            <br>
+                        </div>
+                    </div>
+        `            -->
+                </div>
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $("#searchinput, #reportrange").on("keyup change", function() {
+        news_content = $("#searchinput").val();
+        report_range = $("#reportrange").val();
+        const dates = report_range.split(' - ');
+        const start_date = dates[0]; // "2024-10-04"
+        const end_date = dates[1];   // "2024-10-10"
+        action = "news_list"
+        $.ajax({
+            url:'{% url 'news_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, news_content:news_content, start_date:start_date, end_date:end_date},
+        })
+        .done(function(response){
+            $("#news_info").html(response);
+        })
+        .fail(function(xhr, status, error){
+            $('#news_info').html(xhr.responseText);
+        })
+    });
+
+    // Function to update the selected date display and redirect
+    function updateSelectedDate(date) {
+        var $selectedDate = $('#selected-date');
+        if (date instanceof Date && !isNaN(date)) {
+            var formattedDate = date.toLocaleDateString('en-CA', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            $selectedDate.text('Selected date: ' + formattedDate);
+
+            // Redirect to the proper URL with the selected date
+            location.href = "/news/" + formattedDate.replace(/\//g, '-');
+        } else {
+            $selectedDate.text('No date selected');
+        }
+    }
+
+    // Function to set the selected date in the UI
+    function setSelectedDate(date) {
+        var $selectedDate = $('#selected-date');
+        if (date instanceof Date && !isNaN(date)) {
+            var formattedDate = date.toLocaleDateString('en-CA', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            $selectedDate.text('Selected date: ' + formattedDate);
+
+            // Make sure the datepicker reflects the correct month and highlights the selected date
+            $datepicker.datepicker('setDate', date);
+
+            // Force the datepicker to update the visible month/year and days
+            $datepicker.data('datepicker').nav._render();  // Refresh the navigation (month/year)
+            $datepicker.data('datepicker').views[$datepicker.data('datepicker').view]._render();  // Refresh the days
+        } else {
+            $selectedDate.text('No date selected');
+        }
+    }
+
+    // Handle Previous Month button click
+    $('#prev-month').on('click', function() {
+        // Trigger the datepicker's built-in method to navigate to the previous month
+        $datepicker.data('datepicker').prev();
+    });
+
+    // Handle Next Month button click
+    $('#next-month').on('click', function() {
+        // Trigger the datepicker's built-in method to navigate to the next month
+        $datepicker.data('datepicker').next();
+    });
+
+    // Button click event to get the selected date
+    $('#get-date').on('click', function() {
+        var selectedDate = $datepicker.data('datepicker').getDate();
+        updateSelectedDate(selectedDate);
+    });
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

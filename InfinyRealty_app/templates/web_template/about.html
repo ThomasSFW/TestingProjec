@@ -1,0 +1,161 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"關於我們"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   About     Start                 =-->
+    <!--=====================================-->
+
+        <!--<div class="article-head"><br>
+		    <h5 class="text-center" style="font-weight:600">關於我們</h5>
+			<p class="mb-1 text-center">最後更新：{{content_detail.0.modify_date|date:'Y年m月d日'}}</p>
+		</div>-->
+
+        <section class="about-wrap">
+            <div class="container">
+                <div class="row flex-row-reverse flex-lg-row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="about-box3 wow fadeInUp" data-wow-delay=".2s">
+                            {% if request.session.lang == "tc" %}
+                            <p>{{content_detail.0.content_detail_name|safe}}</p>
+                            {% endif %}
+                            {% if request.session.lang == "sc" %}
+                            <p>{{content_detail.0.content_detail_name_s|safe}}</p>
+                            {% endif %}
+                            {% if request.session.lang == "en" %}
+                            <p>{{content_detail.0.content_detail_name_e|safe}}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!--
+        <section class="about-wrap2">
+            <div class="container">
+                <div class="row flex-row-reverse flex-lg-row">
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="about-img">
+                            <img src="{% static 'Homlisti/img/blog/about8.jpg' %}" alt="about" width="746" height="587">
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="about-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <span class="item-subtitle">關於我們</span>
+                            <h2 class="item-title">我們的使命是改變房地產領域的看法。</h2>
+                            <p>中原集團擁有強大的網路資源優勢和品牌資源互補優勢，不斷延展的市場佈局和不斷拓寬的業務範圍，令中原集團在資源儲備及調配使用方面具備非凡能力，中原集團集房地產代理業務及相關綜合性業務於一體，能有效提供一體化服務，不同業務類型間資源互動，令中原集團更具有無可比擬的優越性。近年來中原集團更在其主營業務房地產代理方面不斷刷新紀錄，創下市場奇跡，成為真正的強者。
+                            </p>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="about-layout1">
+                                        <div class="item-img">
+                                            <img src="{% static 'Homlisti/img/figure/shape14.svg' %}" alt="shape" width="60" height="57">
+                                        </div>
+                                        <h3 class="item-sm-title">現代別墅</h3>
+                                        <p>中原集團重視企業的行業責任和社會責任，堅守行業準則，堅持以正確方法引領行業規範發展，並設立專業研究機構，向市場提供客觀真實的第一手資訊。
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="about-layout1">
+                                        <div class="item-img">
+                                            <img src="{% static 'Homlisti/img/figure/shape15.svg' %}" alt="shape" width="62" height="57">
+                                        </div>
+                                        <h3 class="item-sm-title">安全支付</h3>
+                                        <p>中原集團更主張來源於社會，服務於社會，長期積極參與社會公益事業和慈善活動，旗下分公司成立的中原愛心社、精英會等組織多年來通過各種方式，以實際行動回饋社會。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row flex-row flex-lg-row-reverse" >
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="about-layout3">
+                            <div class="item-img">
+                                <img src="{% static 'Homlisti/img/blog/about9.jpg' %}" alt="about" width="809" height="587">
+                                <div class="play-button">
+                                    <div class="item-icon">
+                                        <a href="http://www.youtube.com/watch?v=1iIZeIy7TqM" class="play-btn play-btn-big">
+                                            <span class="play-icon style-2">
+                                                <i class="fas fa-play"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="about-layout2">
+                            <span class="item-subtitle">Company Power</span>
+                            <h2 class="item-title">The Core Company Values Of Our main Goal.</h2>
+                            <p>when an unknown printer took a galley of type and scrambled it to make
+                                type specimen bookt has survived.
+                            </p>
+                            <div class="skills-wrap-layout-2 counter-appear">
+                                <div class="single-skill">
+                                    <div class="title-bar">
+                                        <h4 class="title"> Modern Technology </h4>
+
+                                    </div>
+                                    <div class="skill-bar">
+                                        <div class="skill-per" data-per="59"></div>
+                                    </div>
+                                </div>
+
+                                <div class="single-skill">
+                                    <div class="title-bar">
+                                        <h4 class="title">Tax Solution Area</h4>
+
+                                    </div>
+                                    <div class="skill-bar">
+                                        <div class="skill-per" data-per="79"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        -->
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

@@ -1,0 +1,1011 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+	{% if action == "menutab" %}
+        <style>
+            .element-class {
+              cursor: pointer;
+            }
+        </style>
+		<div class="col-md-12">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs nav-primary">
+				  <!--<li class="active"><a href="#overview" data-toggle="tabajax" action="overview" year="{{year}}" start_date="{{start_date}}" end_date="{{end_date}}"><b>Overview</b></a></li>-->
+				  <li class="nav-item active"><a class="nav-link active" href="#usage_view" data-toggle="tabajax" action="usage_view" usage="{{usage}}" loginid="{{user_loginid}}"{% if 1406 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>用途列表</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#property_view" id="property_views" data-toggle="tabajax" action="property_view" usage="{{usage}}" loginid="{{user_loginid}}"{% if 1410 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>物業列表</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#property_oddsheet" id="property_oddsheets" data-toggle="tabajax" action="property_oddsheet" usage="{{usage}}" loginid="{{user_loginid}}" propertyid="0"{% if 1410 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>盤紙(單項)</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#property_oddsheet_multi" id="property_oddsheets_multi" data-toggle="tabajax" action="property_oddsheet_multi" usage="{{usage}}" loginid="{{user_loginid}}" propertyid="0" propertyid_list=""{% if 1410 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>盤紙列表(多項)</b></a></li>
+                  <!--<li class="nav-item">
+                        <div class="input-group">
+                            <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                                <span class="input-group-btn">
+									<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                </span>
+						</div>
+                  </li>-->
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane fade show active" id="usage_view"></div>
+					<div class="tab-pane fade" id="property_view"></div>
+					<div class="tab-pane fade" id="property_oddsheet"></div>
+					<div class="tab-pane fade" id="property_oddsheet_multi"></div>
+				</div>
+				<div id="errormessage"></div>
+			</div>
+		</div>
+	{% endif %}
+	{% if action == "usage_view" %}
+        <br>
+		<div class="row">
+        {% for displaydata in usage_view_list %}
+          <div class="col-lg-2 col-md-6 col-sm-6">
+            <div class="card sale-chart">
+              <div class="card-body">
+                <div class="d-flex">
+                  <div class="flex-shrink-0">
+                    <div class="sale-detail">
+                      <div class="icon">
+                          {% if displaydata.Usage == "住宅" %}
+                            <a href="#" class="open_view" usage="住宅"><i class="icofont icofont-building-alt fa-2x"></i></a>
+                          {% elif displaydata.Usage == "商業" %}
+                            <a href="#" class="open_view" usage="商業"><i class="icofont icofont-bank-alt fa-2x"></i></a>
+                          {% elif displaydata.Usage == "商舖" %}
+                            <a href="#" class="open_view" usage="商舖"><i class="icofont icofont-briefcase-alt-2 fa-2x"></i></a>
+                          {% elif displaydata.Usage == "工業" %}
+                            <a href="#" class="open_view" usage="工業"><i class="icon-server fa-2x"></i></a>
+                          {% elif displaydata.Usage == "車位" %}
+                            <a href="#" class="open_view" usage="車位"><i class="icon-car fa-2x"></i></a>
+                          {% else %}
+                            <a href="#" class="open_view" usage="全部"><i class="icon-face-smile fa-2x"></i></a>
+                          {% endif %}
+                      </div>
+                      <div class="sale-content">
+                        <h3>
+                            {% if displaydata.Usage is None %}
+                                <a href="#" class="open_view" usage="全部">全部</a>
+                            {% else %}
+                                <a href="#" class="open_view" usage="{{displaydata.Usage}}">{{displaydata.Usage}}</a>
+                            {% endif %}
+                        </h3>
+                        <h2>{{displaydata.UsageCount}}</h2>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="small-chart-view sales-chart" id="sales-chart"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+		</div>
+    {% endif %}
+	{% if action == "property_view" %}
+        <div class="row g-3">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <select id="cboUsage1" class="form-select">
+                <option value="" {% if user_usage == "" %}selected{% endif %}>- 所有用途 -</option>
+                {% for usages in usage_list %}
+                    <option value="{{usages.usage_name}}" {% if user_usage == usages.usage_name %}selected{% endif %}>{{usages.usage_name}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="cboOfferType" class="form-select">
+                <option value="" {% if user_offer == "" %}selected{% endif %}>- 所有盤類 -</option>
+                {% for offertype in offertype_list %}
+                    <option value="{{offertype.code_detail_name}}" {% if user_offertype == offertype.code_detail_name %}selected{% endif %}>{{offertype.code_detail_name}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="cboPossession" class="form-select">
+                <option value="" {% if user_offer == "" %}selected{% endif %}>- 所有物業狀況 -</option>
+                {% for possession in possession_list %}
+                    <option value="{{possession.code_detail_name}}" {% if user_possession == possession.code_detail_name %}selected{% endif %}>{{possession.code_detail_name}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-2">
+                <select id="cboArea" class="form-select">
+                <option value="" {% if user_area == "" %}selected{% endif %}>- 所有地區 -</option>
+                {% for area in area_list %}
+                    <option value="{{area.code_detail_name}}" {% if user_area == area.code_detail_name %}selected{% endif %}>{{area.code_detail_name}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="cboSubDistrict" class="form-select">
+                <option value="" {% if user_subdistrict == "" %}selected{% endif %}>- 所有分區 -</option>
+                {% for subdistrict in subdistrict_list %}
+                    <option value="{{subdistrict.SubDistrict}}" {% if user_subdistrict == subdistrict.SubDistrict %}selected{% endif %}>{{subdistrict.SubDistrict}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="cboStreet" class="form-select">
+                <option value="" {% if user_street == "" %}selected{% endif %}>- 所有街道 -</option>
+                {% for street in street_list %}
+                    <option value="{{street.Street}}" {% if user_street == street.Street %}selected{% endif %}>{{street.Street}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="cboBuilding" class="form-select">
+                <option value="" {% if user_building == "" %}selected{% endif %}>- 所有大廈 -</option>
+                {% for building in building_list %}
+                    <option value="{{building.Building}}" {% if user_building == building.Building %}selected{% endif %}>{{building.Building}}</option>
+                {% endfor %}
+                </select>
+            </div>
+
+        </div>
+        <div class="table-responsive">
+            <table class="display" id="contentTable" data-page-length="15">
+                <thead>
+                    <tr style="text-align:center;" class="bg-success">
+                        <th width="20"></th>
+                        <th width="60">物業編號</th>
+                        <th width="60">用途</th>
+                        <th width="200">地址</th>
+                        <th width="60">建築面積</th>
+                        <th width="60">實用面積</th>
+                        <th width="60">盤類</th>
+                        <th style="text-align:center;" width="50">業主叫價</th>
+                        <!--<th style="text-align:center;" width="70">呎價</th>-->
+                        <th style="text-align:center;" width="50">業主叫租</th>
+                        <!--<th style="text-align:center;" width="70">呎租</th>-->
+                        <th style="text-align:center;" width="50">管理費</th>
+                        <th style="text-align:center;" width="50">差餉</th>
+                        <th style="text-align:center;" width="60">物業狀況</th>
+                        <th style="text-align:center;" width="50">現租金</th>
+                        <th style="text-align:center;" width="50">租期</th>
+                        <th style="text-align:center;" width="50">回報率</th>
+                        <th style="text-align:center;" width="110">更新日期</th>
+                        <th style="text-align:center;" width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in property_view_list %}
+                    <tr valign="top">
+                        <td data-filter="{{ displaydata.PropertyID }}">{{ displaydata.PropertyID }}</td>
+                        <td data-filter="{{ displaydata.PropertyNo }}">{{ displaydata.PropertyNo }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.Usage }}">{{ displaydata.Usage }}</td>
+                        <td data-filter="{{ displaydata.PropertyName }}">{{ displaydata.PropertyName }}</td>
+                        <td style="text-align:right;">{{ displaydata.GrossArea|default_if_none:""|format_number_with_commas }}</td>
+                        <td style="text-align:right;">{{ displaydata.NetArea|default_if_none:""|format_number_with_commas }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.OfferType }}">{{ displaydata.OfferType }}</td>
+                        <td style="text-align:right;">{{ displaydata.SellingPrice|format_numeric }}</td>
+                        <!--<td style="text-align:center;">{{ displaydata.UnitPrice }}</td>-->
+                        <td style="text-align:right;">{{ displaydata.Rent|format_numeric }}</td>
+                        <!--<td style="text-align:center;">{{ displaydata.UnitRent }}</td>-->
+                        <td style="text-align:right;">{{ displaydata.ManagementFee|format_numeric }}</td>
+                        <td style="text-align:right;">{{ displaydata.Rates|format_numeric }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.Possession }}">
+                            {% if displaydata.Possession == "現吉" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                            {% if displaydata.Possession == "商議" %}<span class="badge badge-warning text-md">{{displaydata.Possession}}</span>{% endif %}
+                            {% if displaydata.Possession == "連租約" %}<span class="badge badge-danger text-md">{{displaydata.Possession}}</span>{% endif %}
+                            {% if displaydata.Possession == "已售" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                            {% if displaydata.Possession == "已租" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                            {% if displaydata.Possession == "業主轉軚" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                        </td>
+                        <td style="text-align:right;">{{ displaydata.Rates|format_numeric }}</td>
+                        <td style="text-align:right;">{{ displaydata.Rates|format_numeric }}</td>
+                        <td style="text-align:right;">{{ displaydata.Yield|format_numeric }}</td>
+                        <td style="text-align:center;">{{ displaydata.ModifyDate|date:'Y/m/d H:i' }}</td>
+                        <td style="text-align:center;">
+                            <a href="#" class="open_oddsheet" action="edit" formtype="property_oddsheet" formname="Property Information" propertyid="{{ displaydata.PropertyID }}" propertyno="{{ displaydata.PropertyNo }}" propertyname="{{ displaydata.PropertyName }}" usage="{{ displaydata.Usage }}" district="{{ displaydata.District }}" subdistrict="{{ displaydata.SubDistrict }}" street="{{ displaydata.Street }}" streetno="{{ displaydata.StreetNo }}" building="{{ displaydata.Building }}" floor="{{ displaydata.Floor }}" unit="{{ displaydata.Unit }}" yield_field="{{ displaydata.Yield }}"><i class="icofont icofont-ui-clip-board"></i></a></li>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+	{% if action == "property_oddsheet" %}
+        <p style="padding-left:160px">
+        {% if propertyid != "0" %}
+            <h3 class="mt-4" style="font-weight:600;padding-left:20px">盤紙物業 - {{property_list.0.propertyname}}</h3>
+        {% else %}
+            <h3 class="mt-4" style="font-weight:600;padding-left:20px">盤紙物業</h3>
+        {% endif %}
+        </p>
+
+      <div class="container-fluid add-product" id="oddsheetTable">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="product-info">
+                  <h3 class="mt-4" style="font-weight:600">物業資料</h3>
+                  <form>
+                    <input type="hidden" id="propertyid" value="{{property_list.0.propertyid}}">
+                    <input type="hidden" id="propertyno" value="{{property_list.0.propertyno}}">
+                    <input type="hidden" id="propertyname" value="{{property_list.0.propertyname}}">
+                    <div class="product-group">
+                      <div class="row" id="oddsheet" style="width:780px;">
+                        <div class="col-sm-12" style="margin-bottom:20px">
+                            <div style="background-color:#491D79;max-width:740px;display:flex;justify-content: space-between;flex-wrap: nowrap;flex-direction: row;align-items: baseline;">
+                                <div class="item-logo">
+                                    <img src="{% static 'dist/img-web/main/infinyrealty_logo_light.png' %}" alt='logo' width="280" class='img-fluid'/>
+                                </div>
+                                <div class="item">
+                                   <h3 style="font-weight:600;color:white">{{today|date:'Y/m/d'}}&nbsp;&nbsp;</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <style>
+                            body { box-sizing: border-box;height: 100%;margin: 0;}
+                        </style>
+                        <div class="col-sm-3"><label class="form-label"><h4>用途</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.usage}}</h4></div>
+                        <div class="col-sm-3"><label class="form-label"><h4>物業編號</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.propertyno}}</h4></div>
+                        <div class="col-sm-3"><label class="form-label"><h4>物業名稱</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.propertyname}}</h4></div>
+                        {% if property_list.0.grossarea|default_if_none:"" != "" and property_list.0.grossarea|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>建築面積(平方呎，未核實)</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.grossarea|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.netarea|default_if_none:"" != "" and property_list.0.grossarea|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>實用面積(平方呎)</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.netarea|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.atticarea|default_if_none:"" != "" and property_list.0.atticarea|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>閣樓(自建/入則)(平方呎)</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.atticarea|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.platformarea|default_if_none:"" != "" and property_list.0.platformarea|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>平台(平方呎)</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.platformarea|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.rooftoparea|default_if_none:"" != "" and property_list.0.rooftoparea|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>天台(平方呎)</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.rooftoparea|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.gardenarea|default_if_none:"" != "" and property_list.0.gardenarea|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>花園(平方呎)</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.gardenarea|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.sellingprice|default_if_none:"" != "" and property_list.0.sellingprice|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>業主叫價</h4></label></div>
+                        <div class="col-sm-9" id="oddsheet_sell" content="{{property_list.0.sellingprice|default_if_none:""|format_number_with_commas}}"><h4 style="font-weight:600">：港幣${{property_list.0.sellingprice|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.rent|default_if_none:"" != "" and property_list.0.rent|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>業主叫租</h4></label></div>
+                        <div class="col-sm-9" id="oddsheet_rent" content="{{property_list.0.rent|default_if_none:""|format_number_with_commas}}"><h4 style="font-weight:600">：港幣${{property_list.0.rent|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.managementfee|default_if_none:"" != "" and property_list.0.managementfee|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>管理費/月</h4></label></div>
+                        <div class="col-sm-9" id="oddsheet_managementfee" content="{{property_list.0.managementfee|default_if_none:""|format_number_with_commas}}"><h4 style="font-weight:600">：港幣${{property_list.0.managementfee|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.rates|default_if_none:"" != "" and property_list.0.rates|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>差餉地租/月</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：港幣${{property_list.0.rates|default_if_none:""|format_number_with_commas}}</h4></div>
+                        {% endif %}
+
+                        {% if property_list.0.availability|default_if_none:"" != "" and property_list.0.availability|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>物業可用性</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.availability|default_if_none:""}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.availability|default_if_none:"" != "" and property_list.0.availability|default_if_none:"" != "0" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>物業可用性</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.availability|default_if_none:""}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.views|default_if_none:"" != "" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>景觀/ 裝修</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.views|default_if_none:""}}</h4></div>
+                        {% endif %}
+                        {% if property_list.0.remarks|default_if_none:"" != "" %}
+                        <div class="col-sm-3"><label class="form-label"><h4>備註</h4></label></div>
+                        <div class="col-sm-9"><h4 style="font-weight:600">：{{property_list.0.remarks|default_if_none:""}}</h4></div>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                  <h3 class="mt-4" style="font-weight:600">附加資料</h3>
+                  <form>
+                    <div class="product-group">
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <div class="mb-3">
+                            <label class="form-label">項目</label>
+                            <input class="form-control" placeholder="" type="text" list="itemnames" id="itemname" value=""><span class="text-danger"></span>
+                            <datalist id="itemnames">
+                                <option value="預設：最新售價">預設：最新售價</option>
+                                <option value="預設：最新租金">預設：最新租金</option>
+                                <option value="預設：最新管理費">預設：最新管理費</option>
+                                <option value="物業圖片">物業圖片</option>
+                                <option value="門框大小">門框大小</option>
+                                <option value="其他設施">其他設施</option>
+                            </datalist>
+                          </div>
+                        </div>
+                        <div class="col-sm-7">
+                          <div class="mb-3">
+                            <label class="form-label">內容</label>
+                            <input class="form-control" placeholder="" type="text" id="itemcontent" value=""><span class="text-danger"></span>
+                          </div>
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="mb-3">
+                           <br>
+                            <button type="button" class="btn btn-danger mb-3" id="add_item_button" action="add">加入</button>
+                          </div>
+                        </div>
+                      </div>
+                        <div class="mt-4">
+                          <div class="row">
+                            <div class="col-sm-12 text-center">
+                            {% if propertyid != "0" %}
+                                <!--<button type="button" class="btn btn-success me-3" id="create_offer_button" action="create_offer">預覽盤紙</button>
+                                <a href="{% url 'offer_download' propertyid %}"><button type="button" class="btn btn-primary me-3" id="download_oddsheet_button" action="download_oddsheet" buttontype="pdf">儲存盤紙</button></a>-->
+                                <button type="button" class="btn btn-primary me-3" id="reset_oddsheet_button" action="download_oddsheet" buttontype="pdf">重新建立盤紙</button>
+                                <button type="button" class="btn btn-warning me-3" id="download_oddsheet_button" action="download_oddsheet" buttontype="pdf">下載盤紙</button>
+                            {% else %}
+                                <button type="button" class="btn btn-primary me-3" id="save_info_button" action="add">新增盤紙</button>
+                            {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+	{% if action == "property_oddsheet_multi" %}
+        <p style="padding-left:160px">
+            <h3 class="mt-4" style="font-weight:600;padding-left:20px">盤紙(多項)</h3>
+        </p>
+
+      <div class="container-fluid add-product" id="oddsheetTable">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="product-info">
+                  <h3 class="mt-4" style="font-weight:600">物業資料</h3>
+                  <form>
+                    <input type="hidden" id="propertyid" value="{{property_list.0.propertyid}}">
+                    <input type="hidden" id="propertyno" value="{{property_list.0.propertyno}}">
+                    <input type="hidden" id="propertyname" value="{{property_list.0.propertyname}}">
+                    <div class="product-group">
+                      <div class="row" id="oddsheet">
+                        <style>
+                            body { box-sizing: border-box;height: 100%;margin: 0;}
+                        </style>
+                        <div class="col-sm-12" style="margin-bottom:20px">
+                            <div class="footer-logo-area footer-logo-area-2" style="background-color:#491D79;max-width:1040px;display:flex;justify-content: space-between;flex-wrap: nowrap;flex-direction: row;align-items: baseline;">
+                                <div class="item-logo">
+                                    <img src="{% static 'dist/img-web/main/infinyrealty_logo_light.png' %}" alt='logo' width="280" class='img-fluid'/>
+                                </div>
+                                <div class="item">
+                                   <h3 style="font-weight:600;color:white">{{today|date:'Y/m/d'}}&nbsp;&nbsp;</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <table class="display" id="contentTable" data-page-length="15">
+                                <thead>
+                                    <tr style="text-align:center;" class="bg-danger">
+                                        <th width="20"></th>
+                                        <th width="80">物業編號</th>
+                                        <th width="60">用途</th>
+                                        <th width="300">地址</th>
+                                        <th width="80">建築面積</th>
+                                        <th width="80">實用面積</th>
+                                        <th style="text-align:center;" width="60">盤類</th>
+                                        <th style="text-align:center;" width="80">業主叫價</th>
+                                        <th style="text-align:center;" width="80">業主叫租</th>
+                                        <th style="text-align:center;" width="80">管理費</th>
+                                        <th width="100">物業狀況</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for displaydata in property_list %}
+                                    <tr valign="top">
+                                        <td data-filter="{{ displaydata.PropertyID }}">{{ forloop.counter }}</td>
+                                        <td data-filter="{{ displaydata.PropertyNo }}">{{ displaydata.propertyno }}</td>
+                                        <td style="text-align:center;" data-filter="{{ displaydata.Usage }}">{{ displaydata.usage }}</td>
+                                        <td data-filter="{{ displaydata.PropertyName }}">{{ displaydata.propertyname }}</td>
+                                        <td style="text-align:right;">{{ displaydata.grossarea|default_if_none:""|format_number_with_commas }}</td>
+                                        <td style="text-align:right;">{{ displaydata.netarea|default_if_none:""|format_number_with_commas }}</td>
+                                        <td style="text-align:center;" data-filter="{{ displaydata.OfferType }}">{{ displaydata.offertype }}</td>
+                                        <td style="text-align:right;">{{ displaydata.sellingprice|default_if_none:""|format_number_with_commas }}</td>
+                                        <td style="text-align:right;">{{ displaydata.rent|default_if_none:""|format_number_with_commas }}</td>
+                                        <td style="text-align:right;">{{ displaydata.managementfee|default_if_none:""|format_number_with_commas }}</td>
+                                        <td style="text-align:center;" data-filter="{{ displaydata.possession }}">
+                                            {% if displaydata.possession == "現吉" %}<span class="badge badge-success text-md">{{displaydata.possession}}</span>{% endif %}
+                                            {% if displaydata.possession == "商議" %}<span class="badge badge-warning text-md">{{displaydata.possession}}</span>{% endif %}
+                                            {% if displaydata.possession == "連租約" %}<span class="badge badge-danger text-md">{{displaydata.possession}}</span>{% endif %}
+                                            {% if displaydata.possession == "已售" %}<span class="badge badge-success text-md">{{displaydata.possession}}</span>{% endif %}
+                                            {% if displaydata.possession == "已租" %}<span class="badge badge-success text-md">{{displaydata.possession}}</span>{% endif %}
+                                            {% if displaydata.possession == "業主轉軚" %}<span class="badge badge-success text-md">{{displaydata.possession}}</span>{% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+
+                  <form>
+                    <div class="product-group">
+                        <div class="mt-4">
+                          <div class="row">
+                            <div class="col-sm-12 text-end">
+                            {% if propertyid != "0" %}
+                                <!--<button type="button" class="btn btn-success me-3" id="create_offer_button" action="create_offer">預覽盤紙</button>
+                                <a href="{% url 'offer_download' propertyid %}"><button type="button" class="btn btn-primary me-3" id="download_oddsheet_button" action="download_oddsheet" buttontype="pdf">儲存盤紙</button></a>-->
+                                <button type="button" class="btn btn-warning me-3" id="download_oddsheet_multi_button" action="download_oddsheet" buttontype="pdf">下載盤紙</button>
+                            {% else %}
+                                <button type="button" class="btn btn-primary me-3" id="save_info_button" action="add">新增盤紙</button>
+                            {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+	{% if action == "team_list" %}
+        {% setvar "" as tmpTeam %}
+            <option value="">- 所有用戶 -</option>
+        {% for displayuser in userlist|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displayuser.Team %}{% if tmpTeam == "" %}<optgroup label="{{displayuser.teamFullDesc}}">{% else %}</optgroup><optgroup label="{{displayuser.teamFullDesc}}">{% endif %}{% endif %}
+            <option value="{{displayuser.LoginID}}" {% if user_loginid == displayuser.LoginID %} selected {% endif %}>{{displayuser.LoginNameDesc}} ({{displayuser.rankDesc}})</option>
+            {% setvar displayuser.Team as tmpTeam %}
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+
+    $(".open_view").off("click").on("click", function() {
+        usage = $(this).attr("usage");
+        district = $(this).attr("district");
+        subdistrict = $(this).attr("subdistrict");
+        var propertyElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        if (usage == "全部") usage = "";
+        propertyElement.setAttribute('usage', usage);
+        $('a[href="#property_view"]').trigger('click');
+    });
+
+    $(".open_modal_picture").off("click").on("click", function() {
+        $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增圖片</b>");
+        $(".modal-header").css('background-color', '#DD4B39');
+        //$("#action").val($(this).attr("action"));
+        $("#propertyid").val($(this).attr("propertyid"));
+        $("#propertyno_picture").html($(this).attr("propertyno"));
+        $("#propertyname_picture").html($(this).attr("propertyname"));
+        property_id = $(this).attr("propertyid");
+        myDropzone.options.params.property_id = $(this).attr("propertyid");
+    });
+
+    $(".open_contact").off("click").on("click", function() {
+        var action = $(this).attr("action");
+        $("#action").val($(this).attr("action"));
+        $("#contactid").val($(this).attr("contactid"));
+        $("#propertyid").val($(this).attr("propertyid"));
+        if ($(this).attr("contacttype") == "業主") $("#radio1").prop("checked", true);
+        if ($(this).attr("contacttype") == "買家") $("#radio2").prop("checked", true);
+        if ($(this).attr("contacttype") == "租客") $("#radio3").prop("checked", true);
+        if ($(this).attr("contacttype") == "其他") $("#radio4").prop("checked", true);
+        $("#TxtCompany").val($(this).attr("company"));
+        $("#TxtTitle").val($(this).attr("title"));
+        $("#TxtPerson").val($(this).attr("person"));
+        $("#TxtAddress").val($(this).attr("address"));
+        $("#SelectInfoType").val($(this).attr("infotype"));
+        $("#TxtContactInfo").val($(this).attr("contactinfo"));
+        $("#TxtCTCPerson").val($(this).attr("ctcperson"));
+        if (action == "add") {
+            $(".modal-header").css('background-color', '#DD4B39');
+            $("#ContactModal #FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增聯絡資料</b>");
+            $("#add_contact_button").show();
+            $("#edit_contact_button").hide();
+            $("#remove_contact_button").hide();
+            if ($(this).attr("contactid") != "0") {
+                $("#TxtContactInfo").val("");
+                $("#TxtCTCPerson").val("");
+            } else {
+                $("#radio4").prop("checked", true)
+            }
+        } else {
+            $(".modal-header").css('background-color', '#0D4B39');
+            $("#ContactModal #FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>編輯聯絡資料</b>");
+            $("#add_contact_button").hide();
+            $("#edit_contact_button").show();
+            $("#remove_contact_button").show();
+        }
+    });
+
+    $(".open_follow").off("click").on("click", function() {
+        var action = $(this).attr("action");
+        $("#action").val($(this).attr("action"));
+        $("#followid").val($(this).attr("followid"));
+        $("#propertyid").val($(this).attr("propertyid"));
+        if ($(this).attr("status") == "開價") $("#radio5").prop("checked", true);
+        if ($(this).attr("status") == "跟進") $("#radio6").prop("checked", true);
+        if ($(this).attr("status") == "還價") $("#radio7").prop("checked", true);
+        if ($(this).attr("status") == "完成") $("#radio8").prop("checked", true);
+        $("#TxtSellingPrice").val($(this).attr("sellingprice"));
+        $("#TxtUnitPrice").val($(this).attr("unitprice"));
+        $("#TxtRent").val($(this).attr("rent"));
+        $("#TxtUnitRent").val($(this).attr("unitrent"));
+        $("#TxtDescription").val($(this).attr("description"));
+        if (action == "add") {
+            $(".modal-header").css('background-color', '#DD4B39');
+            $("#FollowModal #FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增跟進資料</b>");
+            $("#add_follow_button").show();
+            $("#edit_follow_button").hide();
+            $("#remove_follow_button").hide();
+            if ($(this).attr("followid") == "0") {
+                $("#radio6").prop("checked", true)
+            }
+        } else {
+            $(".modal-header").css('background-color', '#0D4B39');
+            $("#FollowModal #FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>編輯跟進資料</b>");
+            $("#add_follow_button").hide();
+            $("#edit_follow_button").show();
+            $("#remove_follow_button").show();
+        }
+    });
+
+{% if action == "property_view" %}
+    $("#searchinput").on("keyup", function() {
+        var oTable = $('#contentTable').dataTable();
+        oTable.fnFilter($(this).val());
+    });
+
+    $("#cboUsage1").on('change', function(){
+        var val = $(this).val();
+        table.column( 2 )
+            .search(val, true, false)
+            .draw();
+    });
+
+    $("#cboOfferType").on('change', function(){
+        var val = $(this).val();
+        table.column( 6 )
+            .search(val, true, false)
+            .draw();
+    });
+
+    $("#cboPossession").on('change', function(){
+        var val = $(this).val();
+        table.column( 10 )
+            .search(val, true, false)
+            .draw();
+    });
+
+    $("#cboArea").on('change', function(){
+        var val = $(this).val();
+        table.column( 3 )
+            .search(val, true, false)
+            .draw();
+    });
+
+    $("#cboSubDistrict").on('change', function(){
+        var val = $(this).val();
+        table.column( 3 )
+            .search(val, true, false)
+            .draw();
+    });
+
+    $("#cboStreet").on('change', function(){
+        var val = $(this).val();
+        table.column( 3 )
+            .search(val, true, false)
+            .draw();
+    });
+
+    $("#cboBuilding").on('change', function(){
+        var val = $(this).val();
+        table.column( 3 )
+            .search(val, true, false)
+            .draw();
+    });
+
+    $(".open_oddsheet").click(function(){
+        // Adding the Value from Table to Modal form
+        $("#action").val($(this).attr("action"));
+        $("#propertyid").val($(this).attr("propertyid"));
+        $("#usage").val($(this).attr("usage"));
+        $("#district").val($(this).attr("district"));
+        $("#subdistrict").val($(this).attr("subdistrict"));
+
+        var value = $(this).attr("propertyid"); // Set the lock value to the desired value
+        var propertyElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_oddsheets'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var propertyElement = document.getElementById('property_oddsheets_multi'); // Get the element with ID "property_edit"
+        propertyElement.setAttribute('propertyid', value);
+        var selectedValues = table.column(0).checkboxes.selected();
+        // Display the selected values
+        if (selectedValues.length > 0) {
+          var message = "Selected values:\n";
+          var listvalue = "";
+          for (var i = 0; i < selectedValues.length; i++) {
+            message += selectedValues[i] + "\n";
+            listvalue += selectedValues[i] + ","
+          }
+          listvalue = listvalue.slice(0, -1);
+          propertyElement.setAttribute('propertyid_list', listvalue);
+          $('a[href="#property_oddsheet_multi"]').trigger('click');
+        } else {
+          $('a[href="#property_oddsheet"]').trigger('click');
+        }
+    });
+
+    refresh_table();
+{% endif %}
+
+{% if action == "request_review" %}
+    $(document).ready(function(){
+        $(".quick_approval").click(function(){
+            action = $(this).attr("action");
+            propertyid = $(this).attr("propertyid");
+            approve = $(this).attr("approve");
+
+            if (action == "approve") {
+                $.ajax({
+                    url:'{% url 'oddsheet_response' %}',
+                    type:'POST',
+                    data:{action:"request_review_update", propertyid:propertyid, approve:approve},
+                })
+                .done(function(response){
+                    $.notify({
+                        message: "申請已獲批准."
+                        },{
+                            type: 'success',
+                            allow_dismiss: true,
+                            positon: 'top right',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    var tabContent = document.querySelector('.tab-content');
+                    var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+                    $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+                })
+                .fail(function(xhr, status, error){
+                    $('.modal-message').html(xhr.responseText);
+                    alert(xhr.responseText);
+                })
+            }
+
+        });
+    })
+{% endif %}
+{% if action == "menutab" %}
+    action = "usage_view";
+    team = $("#cboTeam").val();
+    loginid = $("#cboUser").val();
+    $.ajax({
+        url:'{% url 'oddsheet_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, team:team, loginid:loginid},
+        beforeSend: function(){
+            $('#usage_view').html('<br/><br/><br/><br/><br/><br/><center><b>輸入中</b></center></p>');
+        },
+    })
+    .done(function(response){
+        $('#usage_view').html(response);
+        refresh_table(action);
+    })
+    .fail(function(xhr, status, error){
+        $('#usage_view').html(xhr.responseText);
+        //alert(xhr.responseText);
+    })
+    var selectTab
+    $('[data-toggle="tabajax"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-target'),
+            action = $this.attr('action');
+            usage = $this.attr('usage');
+            propertyid = $this.attr('propertyid');
+            propertyid_list = $this.attr('propertyid_list');
+
+            lock = $this.attr('lock');
+            if (lock == 1) {
+                alert("\u26A0 沒有存取此頁面的存取權限！欲了解更多信息，請聯絡系統管理員。");
+                return false;
+            }
+
+            $.ajax({
+                url:'{% url 'oddsheet_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, usage:usage, propertyid:propertyid, propertyid_list:propertyid_list},
+                beforeSend: function(){
+                    // Display the loading message with the current time
+                    var startTime = new Date().getTime();
+                    $('#'+action).html('<br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-2\"></div></div><br/><span id="loadingTime"></span><br/><br/><br/><br/><br/></center></p>');
+                    loadingInterval = setInterval(function() {
+                      // Update the loading time every second
+                      var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+                      $('#loadingTime').html('讀取時間: ' + elapsedTime + ' 秒');
+                    }, 1000);
+                },
+            })
+            .done(function(response){
+                // Calculate the loading time and append it to the response message
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#'+action).html(response);
+                $("#cboUsage1").val(usage);
+                var typeElement = document.getElementById('cboUsage1');
+                if (usage == "")
+                    typeElement.disabled = false;
+                else
+                    typeElement.disabled = true;
+                //refresh_table(action);
+                if (action == "usage_view") $("div.toolbar").html('<b><font size=3>用戶列表</font></b>');
+                if (action == "property_view") $("div.toolbar").html('<b><font size=3>物業列表</font></b>');
+                if (action == "request_review") $("div.toolbar").html('<b><font size=3>審批申請列表</font></b>&nbsp;&nbsp;&nbsp;');
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            //$(loadurl).html(loadurl);
+            $this.tab('show');
+        return false;
+    });
+
+    $(document).on("click", "#reset_button", function(){
+        var propertyEditElement = document.getElementById('property_edits'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('propertyid', 0);
+
+        $('a[href="#property_edit"]').trigger('click');
+    })
+
+    $(document).on("click", "#save_button, #edit_button, #delete_button", function(){
+        //Disabling the Button while data is being saved in Server
+        //$(this).attr("disabled", "disabled")
+        //$(this).text("Confirming...")
+        //console.log("SAVE")
+        action = $(this).attr("action");
+        propertyid = $("#propertyid").val();
+        propertyno = $("#propertyno").val();
+        propertyname = $("#propertyname").val();
+        usage = $("#usage").val();
+
+        district = $("#district").val();
+        subdistrict = $("#subdistrict").val();
+        street = $("#street").val();
+        streetno = $("#streetno").val();
+        building = $("#building").val();
+        floor = $("#floor").val();
+        unit = $("#unit").val();
+
+        grossarea = $("#grossarea").val();
+        netarea = $("#netarea").val();
+        offertype = $("#offertype").val();
+        possession = $("#possession").val();
+        sellingprice = $("#sellingprice").val();
+        unitprice = $("#unitprice").val();
+        rent = $("#rent").val();
+        unitrent = $("#unitrent").val();
+        managementfee = $("#managementfee").val();
+        rates = $("#rates").val();
+
+        if (propertyno == "") {
+            alert("請輸入物業編號");
+            $("#propertyno").focus();
+            return false
+        }
+        if (district == "") {
+            alert("請選擇地區");
+            $("#district").focus();
+            return false
+        }
+        if (subdistrict == "") {
+            alert("請輸入分區");
+            $("#subdistrict").focus();
+            return false
+        }
+        if (street == "") {
+            alert("請輸入街道");
+            $("#street").focus();
+            return false
+        }
+
+        if (propertyname == "" || propertyname == "None") {
+            propertyname = "";
+            if (district != "") propertyname += district;
+            if (subdistrict != "") propertyname += subdistrict;
+            if (street != "") propertyname += street;
+            if (streetno != "") propertyname += streetno + "號";
+            if (building != "") propertyname += building;
+            if (floor != "") propertyname += floor + "樓";
+            if (unit != "") propertyname += unit + "室";
+            $("#propertyname").val(propertyname);
+        }
+        if (action == 'add') {
+            if (!(window.confirm("新增物業資料，你確定嗎？"))) {
+                return false;
+            }
+        } else {
+            if (action == 'edit') {
+                if (!(window.confirm("更改物業資料，你確定嗎？"))) {
+                    return false;
+                }
+            } else {
+                if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                    return false;
+                }
+            }
+        }
+
+        // Saving Data into Database
+        //alert('|action:' + action + '|propertyno:' + propertyno + '|propertyname:' + propertyname + '|usage:' + usage + '|district:' + district + '|subdistrict:' + subdistrict + '|street:' + street + '|streetno:' + streetno + '|building:' + building + '|floor:' + floor + '|unit:' + unit + '|offertype:' + offertype + '|possession:' + possession + '|grossarea:' + grossarea + '|netarea:' + netarea + '|sellingprice:' + sellingprice + '|unitprice:' + unitprice + '|rent:' + rent + '|unitrent:' + unitrent + '|managementfee:' + managementfee + '|rates:' + rates)
+        $.ajax({
+            url:'{% url 'property_save' %}',
+            type:'POST',
+            data:{action:action, propertyid:propertyid, propertyno:propertyno, propertyname:propertyname, usage:usage, district:district, subdistrict:subdistrict, street:street, streetno:streetno, building:building, floor:floor, unit:unit, offertype:offertype, possession:possession, grossarea:grossarea, netarea:netarea, sellingprice:sellingprice, unitprice:unitprice, rent:rent, unitrent:unitrent, managementfee:managementfee, rates:rates},
+        })
+
+        .done(function(response){
+            if (response == "Success")
+                var messagetype = "success"
+            else
+                var messagetype = "danger"
+            if (action == "add") messagetext = "物業已成功加入"
+            if (action == "edit") messagetext = propertyno+"物業已成功更新"
+            if (action == "delete") messagetext = propertyno+"物業已成功刪除"
+            $.notify({
+                message: messagetext
+                },{
+                    type: messagetype,
+                    allow_dismiss: true,
+                    positon: 'top right',
+                    offset: 20,
+                    spacing: 10,
+                    z_index: 1031,
+            });
+            if (action == "delete") $('a[href="#property_view"]').trigger('click');
+        })
+
+        .fail(function(xhr, status, error){
+            // alert the error if any error occured
+            //alert(xhr.responseText);
+            $("#editTable").html(xhr.responseText);
+        })
+    })
+
+    $(document).on("click", "#edit_info_button", function(){
+        //Disabling the Button while data is being saved in Server
+        //$(this).attr("disabled", "disabled")
+        //$(this).text("Confirming...")
+        //console.log("SAVE")
+        action = $(this).attr("action");
+        propertyid = $("#propertyid").val();
+        propertyno = $("#propertyno").val();
+
+        availability = $("#availability").val();
+        views = $("#views").val();
+        remarks = $("#remarks").val();
+
+        if (action == 'edit_info') {
+            if (!(window.confirm("更改狀況資料，你確定嗎？"))) {
+                return false;
+            }
+        }
+
+        // Saving Data into Database
+        //alert('|action:' + action + '|propertyno:' + propertyno + '|propertyname:' + propertyname + '|usage:' + usage + '|district:' + district + '|subdistrict:' + subdistrict + '|street:' + street + '|streetno:' + streetno + '|building:' + building + '|floor:' + floor + '|unit:' + unit + '|offertype:' + offertype + '|possession:' + possession + '|grossarea:' + grossarea + '|netarea:' + netarea + '|sellingprice:' + sellingprice + '|unitprice:' + unitprice + '|rent:' + rent + '|unitrent:' + unitrent + '|managementfee:' + managementfee + '|rates:' + rates)
+        $.ajax({
+            url:'{% url 'property_save' %}',
+            type:'POST',
+            data:{action:action, propertyid:propertyid, availability:availability, views:views, remarks:remarks},
+        })
+
+        .done(function(response){
+            if (action == "edit_info") messagetext = propertyno+"狀況資料已成功更新"
+            $.notify({
+                message: messagetext
+                },{
+                    type: 'success',
+                    allow_dismiss: true,
+                    positon: 'top right',
+                    offset: 20,
+                    spacing: 10,
+                    z_index: 1031,
+            });
+        })
+
+        .fail(function(xhr, status, error){
+            // alert the error if any error occured
+            //alert(xhr.responseText);
+            $("#editTable").html(xhr.responseText);
+        })
+    })
+    $(document).on("click", ".availability-option", function(){
+        var optionText = $(this).text();
+        $("#availability").val(optionText);
+    });
+    $(document).on("click", ".views-option", function(){
+        var optionText = $(this).text();
+        $("#views").val(optionText);
+    });
+    $(document).on("keyup", "#sellingprice", function(){
+        var sellingprice = $(this).val();
+        var netarea = $("#netarea").val();
+        $("#unitprice").val(sellingprice / netarea);
+    })
+    $(document).on("keyup", "#unitprice", function(){
+        var unitprice = $(this).val();
+        var netarea = $("#netarea").val();
+        $("#sellingprice").val(unitprice * netarea);
+    })
+    $(document).on("keyup", "#rent", function(){
+        var rent = $(this).val();
+        var netarea = $("#netarea").val();
+        $("#unitrent").val(rent / netarea);
+    })
+    $(document).on("keyup", "#unitrent", function(){
+        var unitrent = $(this).val();
+        var netarea = $("#netarea").val();
+        $("#rent").val(unitrent * netarea);
+    })
+    $(document).on("keyup", "#managementfee", function(){
+        var managementfee = $(this).val();
+        var netarea = $("#netarea").val();
+        $("#unitmanagementfee").val(managementfee / netarea);
+    })
+    $(document).on("keyup", "#unitmanagementfee", function(){
+        var unitmanagementfee = $(this).val();
+        var netarea = $("#netarea").val();
+        $("#managementfee").val(unitmanagementfee * netarea);
+    })
+    $(document).on("keyup", "#rates", function(){
+        var rates = $(this).val();
+        var netarea = $("#netarea").val();
+        $("#unitrates").val(rates / netarea);
+    })
+    $(document).on("keyup", "#unitrates", function(){
+        var unitrates = $(this).val();
+        var netarea = $("#netarea").val();
+        $("#rates").val(unitrates * netarea);
+    })
+    $("#searchinput").on("keyup", function() {
+        var oTable = $('#contentTable').dataTable();
+        oTable.fnFilter($(this).val());
+    });
+
+{% endif %}
+</script>
+{% if action == "property_edit" %}
+    <script src="{% static 'Koho/assets/js/owlcarousel/owl-custom.js' %}"></script>
+{% endif %}
+{% endblock custom_js %}

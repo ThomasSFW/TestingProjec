@@ -1,0 +1,92 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+	{% if action == "qaip_function_list" %}
+        <style>
+            .f2:hover {
+              background-color: PaleGoldenRod;
+            }
+          .full-width-btn {
+            width: 100%;
+            height: 80px;
+            margin: 5px;
+          }
+        </style>
+        <table class="table table-condensed" id="eventlist">
+            {% setvar "" as current_cat %}
+            {% setvar "" as current_tab %}
+            {% for displayfunction in functionlist %}
+                {% if displayfunction.tabID != current_tab %}
+            <tr>
+                <td colspan="4" {% if current_tab == displayfunction.tabID %}bgcolor="orange"{% else %}bgcolor="SeaShell"{% endif %}>&nbsp;&nbsp;<i class="{{ displayfunction.tab_iconclass }}"></i>&nbsp;&nbsp;&nbsp;<b>{{displayfunction.tabName}}</b></td>
+            </tr>
+                    {% if current_tab != "" %}
+                    </div>
+                </td>
+            </tr>
+                    {% endif %}
+            <tr class="f2">
+                    {% if displayfunction.urlType == 2 %}
+                        {% setvar "target=new" as urltype %}
+                    {% else %}
+                        {% setvar "" as urltype %}
+                    {% endif %}
+                <td style="padding-left:31px" colspan="4">
+                    <div class="new-flex-start">
+                {% endif %}
+                        <button type="button" style="width:100px" class="btn bg-grey btn-md btn-block full-width-btn open_modal_order" data-toggle="modal" data-target="#OrderModal" action="confirm_cart" formtype="order_info" order_id="{{displaydinein.order_id}}" order_number="{{displaydinein.order_number}}" number_guests="{{displaydinein.number_guests}}" table_key="{{displaydinein.table_key}}" in_date="{{displaydinein.in_date|time:"H:i"}}"><a href="{{ displayfunction.urlNew }}" style="color:#000000;" {{urltype}}><i class="fa fa-hand-o-right fa-2x"></i> <h5>{{ displayfunction.subCatName }}</h5></a></button>
+                {% setvar displayfunction.tabID as current_tab %}
+                {% setvar displayfunction.CatID as current_cat %}
+
+            {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    {% endif %}
+	{% if action == "qa_user_list" %}
+        <label>QAIP User Access List</label>
+        <select id="cboLoginID" name="cboLoginID" class="form-control">
+        {% for displayuser in userlist|dictsort:"PostDesc"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displayuser.Team %}<optgroup label="{{displayuser.Team}}">{% endif %}
+            <option value="{{displayuser.LoginID}}" {% if request.session.loginid == displayuser.LoginID %} selected {% endif %}>{{displayuser.PostDesc}} - {{displayuser.LoginNameDesc}}</option>
+            {% setvar displayuser.Team as tmpTeam %}
+        {% endfor %}
+        </select>
+    {% endif %}
+
+{% endblock main_content %}
+
+{% block custom_js %}
+	{% if action == "qa_user_list" %}
+	<script>
+	    $(document).ready( function(){
+            $("#cboLoginID").on('change', function(){
+                var loginid = $(this ).val();
+                var post = $("#cboLoginID option:selected").text();
+                $.ajax({
+                    url:'{% url 'home_response_2' %}',
+                    type:'POST',
+                    data:{action:'special_access', loginid:loginid, username:username},
+                })
+
+                .done(function(response){
+                    //alert("xx"+response);
+                    $("#qaip_function_list").html(response);
+                })
+
+                .fail(function(xhr, status, error){
+                    //$("#qaip_function_list").html(xhr.responseText);
+                    alert(xhr.responseText);
+                })
+            });
+		});
+	</script>
+    {% endif %}
+{% endblock custom_js %}

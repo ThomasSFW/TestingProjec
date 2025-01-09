@@ -1,0 +1,118 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "shop_list" %}
+        <div class="table-responsive">
+            <table class="display" id="contentTable">
+                <thead>
+                    <tr>
+                        <th width="20">ID</th>
+                        <th width="80">店舖編碼</th>
+                        <th width="150">店舖名稱</th>
+                        <th>店舖地址</th>
+                        <th width="120">店舖電話</th>
+                        <th style="text-align:center;" width="80">營業時間</th>
+                        <th style="text-align:center;" width="120">建立日期</th>
+                        <th style="text-align:center;" width="50" align="center">狀態</th>
+                        <th width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in shop_list %}
+                    <tr>
+                        <td style = "text-align: center;">{{ displaydata.shop_id }}</td>
+                        <td data-filter="{{ displaydata.shop_code }}">{{ displaydata.shop_code }}</td>
+                        <td data-filter="{{ displaydata.shop_name }}">{{ displaydata.shop_name }}</td>
+                        <td data-filter="{{ displaydata.shop_address }}">{{ displaydata.shop_address }}</td>
+                        <td>{{ displaydata.phone_area_code }} {{ displaydata.phone_number }}</td>
+                        <td>{{ displaydata.opening_hours }}</td>
+                        <td style="text-align:center;">{{ displaydata.createDate|date:'Y/m/d H:i' }}</td>
+                        <td style="text-align:center;">
+                            {% if displaydata.status == 1 %}
+                            <span class="badge rounded-pill badge-success">正常</span>
+                            {% else %}
+                            <span class="badge rounded-pill badge-danger">失效</span>
+                            {% endif %}
+                        </td>
+                        <td align="center">
+                            <ul class="action">
+                            {% if 1424 not in request.session.accessright %}
+                                <li class="edit"> <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal"><i class="icon-lock"></i></a></li>
+                            {% else %}
+                                <li class="edit"> <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="edit" formtype="shop_info" formname="Shop Information" recordid="{{ displaydata.recordid }}" shop_id="{{ displaydata.shop_id }}" shop_code="{{ displaydata.shop_code }}" shop_name="{{ displaydata.shop_name }}" shop_name_e="{{ displaydata.shop_name_e }}" shop_address="{{ displaydata.shop_address }}" phone_area_code="{{ displaydata.phone_area_code }}" phone_number="{{ displaydata.phone_number }}" fax_area_code="{{ displaydata.fax_area_code }}" fax_number="{{ displaydata.fax_number }}" opening_hours="{{ displaydata.opening_hours }}" status="{{ displaydata.status }}" photoicon="{{ displaydata.PhotoIcon }}"><i class="icon-pencil-alt"></i></a></li>
+                            {% endif %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "shop_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#recordid").val($(this).attr("recordid"));
+                $("#action").val($(this).attr("action"));
+                $("#shop_id").val($(this).attr("shop_id"));
+                $("#TxtShopCode").val($(this).attr("shop_code"));
+                $("#TxtShopName").val($(this).attr("shop_name"));
+                $("#TxtShopNameE").val($(this).attr("shop_name_e"));
+                $("#TxtShopAddress").val($(this).attr("shop_address"));
+                $("#TxtPhoneAreaCode").val($(this).attr("phone_area_code"));
+                $("#TxtPhoneNumber").val($(this).attr("phone_number"));
+                $("#TxtFaxAreaCode").val($(this).attr("fax_area_code"));
+                $("#TxtFaxNumber").val($(this).attr("fax_number"));
+                $("#TxtOpeningHours").val($(this).attr("opening_hours"));
+                $("#TxtShopPhoto").html($(this).attr("shop_photo"));
+                $("#TxtShopLogo").html($(this).attr("shop_logo"));
+                if ($(this).attr("status") == "1")
+                    $("#radioActive").prop("checked", true);
+                else
+                    $("#radioInActive").prop("checked", true);
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                //var showuploadname = document.getElementById("showuploadname");
+                //var showfilename = document.getElementById("showfilename");
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='fa fa-trash'></i>&nbsp;&nbsp;<b>新增店舖</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    //showuploadname.style.display = "";
+                    //showfilename.style.display = "none";
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                } else {
+                    $("#FunctionTitle").html("<i class='fa fa-edit'></i>&nbsp;&nbsp;<b>編輯店舖</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    //showuploadname.style.display = "none";
+                    //showfilename.style.display = "";
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

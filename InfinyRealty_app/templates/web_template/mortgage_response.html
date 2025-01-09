@@ -1,0 +1,1126 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+
+	{% if action == "service" %}
+         <div class="row">
+            <div class="col-lg-12 col-sm-12 col-12">
+                <div class="col-md-12 rtcl-login-form-wrap">
+                    <form id="mortgage-form" class="form-horizontal" method="post" novalidate="novalidate">
+                        <div id="messages"></div>
+                        <h3 style="font-weight:600"><b>{{"服務"|showlang:request.session.lang}}</b></h3>
+
+                        <div class="form-group form-row">
+                            <div class="col-md-3 p-3" align="center">
+                                <button type="button" style="height: 100px;margin-bottom:2px" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="mortgage" name="enquiry_button" class="btn btn-primary w-100 open_modal_info" enquirytype="{{"一按"|showlang:request.session.lang}}" message="{{"我想查詢一按資料"|showlang:request.session.lang}}" property_id="{{property_list.0.propertyid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.propertyname}}"><h3 style="font-weight:600;color:white;margin-top:15px;"><i class="flaticon-home"></i>&nbsp;&nbsp;&nbsp;{{"一按"|showlang:request.session.lang}}&nbsp;&nbsp;</h3>
+                                </button>
+
+                                <button type="button" style="height: 100px;margin-bottom:2px" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="mortgage" name="enquiry_button" class="btn btn-primary w-100 open_modal_info" enquirytype="{{"二按"|showlang:request.session.lang}}" message="{{"我想查詢二按資料"|showlang:request.session.lang}}" property_id="{{property_list.0.propertyid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.propertyname}}"><h3 style="font-weight:600;color:white;margin-top:15px;"><i class="flaticon-comment"></i>&nbsp;&nbsp;&nbsp;{{"二按"|showlang:request.session.lang}}&nbsp;&nbsp;</h3>
+                                </button><br>
+
+                                <button type="button" style="height: 100px;margin-bottom:2px" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="mortgage" name="enquiry_button" class="btn btn-primary w-100 open_modal_info" enquirytype="{{"轉按"|showlang:request.session.lang}}" message="{{"我想查詢轉按資料"|showlang:request.session.lang}}" property_id="{{property_list.0.propertyid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.propertyname}}"><h3 style="font-weight:600;color:white;margin-top:15px;"><i class="flaticon-left-and-right-arrows icon-round"></i>&nbsp;&nbsp;&nbsp;{{"轉按"|showlang:request.session.lang}}&nbsp;&nbsp;</h3>
+                                </button><br>
+
+                                <button type="button" style="height: 100px;margin-bottom:2px" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="mortgage" name="enquiry_button" class="btn btn-primary w-100 open_modal_info" enquirytype="{{"工商舖按揭"|showlang:request.session.lang}}" message="{{"我想查詢工商舖按揭資料"|showlang:request.session.lang}}" property_id="{{property_list.0.propertyid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.propertyname}}"><h3 style="font-weight:600;color:white;margin-top:15px;"><i class="flaticon-maps-and-flags"></i>&nbsp;&nbsp;&nbsp;{{"工商舖按揭"|showlang:request.session.lang}}&nbsp;&nbsp;</h3>
+                                </button><br>
+
+                                <button type="button" style="height: 100px;margin-bottom:2px" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="mortgage" name="enquiry_button" class="btn btn-primary w-100 open_modal_info" enquirytype="{{"私人貸款"|showlang:request.session.lang}}" message="{{"我想查詢私人貸款資料"|showlang:request.session.lang}}" property_id="{{property_list.0.propertyid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.propertyname}}"><h3 style="font-weight:600;color:white;margin-top:15px;;margin-top:15px;"><i class="flaticon-two-overlapping-square"></i>&nbsp;&nbsp;&nbsp;{{"私人貸款"|showlang:request.session.lang}}&nbsp;&nbsp;</h3>
+                                </button><br>
+
+                                <button type="button" style="height: 100px;margin-bottom:2px" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="mortgage" name="enquiry_button" class="btn btn-primary w-100 open_modal_info" enquirytype="{{"物業估值"|showlang:request.session.lang}}" message="{{"我想查詢物業估值資料"|showlang:request.session.lang}}" property_id="{{property_list.0.propertyid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.propertyname}}"><h3 style="font-weight:600;color:white;margin-top:15px;"><i class="flaticon-pencil"></i>&nbsp;&nbsp;&nbsp;{{"物業估值"|showlang:request.session.lang}}&nbsp;&nbsp;</h3>
+                                </button>
+                            </div>
+                            <div class="col-md-9 p-3" align="center">
+
+                            </div>
+                            <!-- <div class="col-md-3 p-3" align="center"> -->
+                                <!-- <button type="button" style="height: 100px;" id="enquiry_button" data-toggle="modal" data-target="#InfoModal" action="mortgage" name="enquiry_button" class="btn btn-primary w-100 open_modal_info" enquirytype="{{"加按"|showlang:request.session.lang}}" message="{{"我想查詢加按資料"|showlang:request.session.lang}}" property_id="{{property_list.0.propertyid}}" property_no="{{property_list.0.propertyno}}" property_name="{{property_list.0.propertyname}}"><h3 style="font-weight:600;color:white;margin-top:15px;"><i class="flaticon-clock"></i>&nbsp;&nbsp;&nbsp;{{"加按"|showlang:request.session.lang}}&nbsp;&nbsp;</h3> -->
+                                <!-- </button> -->
+                            <!-- </div> -->
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+	{% if action == "interest" %}
+        <style>
+        .el-card.is-always-shadow {
+            box-shadow: 0 3px 6px rgba(0,0,0,.10196078431372549);
+            border-radius: 8px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        img {
+            vertical-align: middle;
+            border-style: none;
+        }
+        .bank {
+            width: 100%;
+            padding-bottom: 30px;
+        }
+        .bank .wrap {
+            width: 100%;
+            margin: 0 auto;
+        }
+        .bank .bankInfo .bankName_s {
+            width: 25%;
+            flex-shrink: 0;
+            text-align: center;
+            min-height: 160px;
+            padding: 30px 0;
+            display: flex;
+            /*align-items: center;*/
+            flex-direction: column;
+        }
+        .bank .bankInfo .bankName_s .logo {
+            display: inline-block;
+            margin: 20px;
+        }
+        .bank .box-card {
+            margin-bottom: 50px;
+        }
+        .el-card.is-always-shadow, .el-card.is-hover-shadow:focus, .el-card.is-hover-shadow:hover {
+            -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        }
+        .el-card.is-always-shadow, .el-card.is-hover-shadow:focus, .el-card.is-hover-shadow:hover {
+            -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        }
+        .el-card {
+            border: 1px solid #ebeef5;
+            background-color: #fff;
+            color: #303133;
+            -webkit-transition: .3s;
+            transition: .3s;
+        }
+        .el-card, .el-message {
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .bank .bankInfo {
+            display: flex;
+            flex-direction: row;
+        }
+        .bank .bankInfo .content {
+            width: 75%;
+        }
+        .el-card__body {
+            padding: 0;
+        }
+        .bank .bankInfo .content ul {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+        }
+        ol, ul {
+            list-style: none;
+        }
+        .bank .bankInfo .content ul .c2 {
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+        .bank .bankInfo .content ul li {
+            width: 33.333333333333%;
+            flex-shrink: 0;
+            padding: 20px 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            line-height: 20px;
+            text-wrap: wrap;
+        }
+
+        </style>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-12">
+                <div class="col-md-12 rtcl-login-form-wrap">
+                    <form id="mortgage-form" class="form-horizontal" method="post" novalidate="novalidate">
+                        <div id="message"></div>
+                        <h3 style="font-weight:600"><b>{{"按息"|showlang:request.session.lang}}</b></h3>
+
+                        <div class="form-row">
+                            <div class="col-md-6 align-items-center">
+                                <table class="display table-hover table-bordered" cellpadding="6" width="100%">
+                                    <tr>
+                                        <td><label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"銀行"|showlang:request.session.lang}}</div></label></td>
+                                        <td align="center" width="25%"><label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"最優惠利率"|showlang:request.session.lang}}</div></label></td>
+                                        <td align="center" width="25%"><label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"P-利率"|showlang:request.session.lang}}</div></label></td>
+                                        <td align="center" width="25%"><label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"利率"|showlang:request.session.lang}}</div></label></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6 align-items-center">
+                                <table class="display table-hover table-bordered" cellpadding="6" width="100%">
+                                    <tr>
+                                        <td><label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"銀行"|showlang:request.session.lang}}</div></label></td>
+                                        <td align="center" width="25%"><label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"最優惠利率"|showlang:request.session.lang}}</div></label></td>
+                                        <td align="center" width="25%"><label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"P-利率"|showlang:request.session.lang}}</div></label></td>
+                                        <td align="center" width="25%"><label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"利率"|showlang:request.session.lang}}</div></label></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            {% for displayinterest in interest_list %}
+                                {% if forloop.counter != 1 %}
+                                <div class="col-md-6 align-items-center">
+                                    <table class="display table-hover table-bordered" cellpadding="6" width="100%">
+                                        <tr>
+                                            <td>
+                                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                            {{displayinterest.bank_name}}
+                                        {% elif request.session.lang == "sc" %}
+                                            {{displayinterest.bank_name_s}}
+                                        {% else %}
+                                            {{displayinterest.bank_name_e}}
+                                        {% endif %}
+					    </td>
+                                            <td align="center" width="25%">{{displayinterest.p_rate}}</td>
+                                            <td align="center" width="25%">{{displayinterest.p_score}}</td>
+                                            <td align="center" width="25%">{{displayinterest.interest_rate}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <br>
+
+                        <div class="form-row">
+                            <div class="col-md-3 align-items-center">
+                                <label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"銀行"|showlang:request.session.lang}}</div></label>
+                            </div>
+                            <div class="col-md-3 align-items-center">
+                                <label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"計劃名稱"|showlang:request.session.lang}}</div></label>
+                            </div>
+                            <div class="col-md-3 align-items-center">
+                                <label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"按揭優惠"|showlang:request.session.lang}}</div></label>
+                            </div>
+                            <div class="col-md-3 align-items-center">
+                                <label for="info_1" class="control-label"><div style="color: var(--rt-primary-color)">{{"現金回贈"|showlang:request.session.lang}}</div></label>
+                            </div>
+                        </div>
+                        <div class="bank">
+                            <div class="wrap">
+                        {{webpage_content|safe}}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+	{% endif %}
+
+	{% if action == "calculator" %}
+        <style>
+            #signature-pad {
+              border: 1px solid #ccc;
+            }
+            .div-table {
+              display: table;
+              width: 100%;
+              border-collapse: collapse;
+            }
+
+            .div-table-row {
+              display: table-row;
+            }
+
+            .div-table-cell {
+              display: table-cell;
+              padding: 10px;
+              border: 1px solid #ccc;
+            }
+            .div-table-cell.colspan-2 {
+              colspan: 2;
+            }
+        </style>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-12">
+                <div class="col-md-12 rtcl-login-form-wrap">
+                    <form id="mortgage-form" class="form-horizontal" method="post" novalidate="novalidate">
+                        <div id="message"></div>
+                        <h3 style="font-weight:600"><b>{{"按揭計算機"|showlang:request.session.lang}}</b></h3>
+
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="application_info_1" class="control-label">
+                                    <div style="color: var(--rt-primary-color)">{{"按揭資料"|showlang:request.session.lang}}</div>
+                                </label>
+                                <br>
+                                <label for="property_value" class="control-label">
+                                    {{"樓價"|showlang:request.session.lang}}：
+                                    <strong class="rtcl-required">*</strong>
+                                </label>
+                                <input type="text" id="property_value" name="property_value" autocomplete="property_value" value="5000000" id="property_value" placeholder="{{"例如"|showlang:request.session.lang}}：HK$ 5,000,000" class="form-control" required=""/>
+                                <label for="title" class="control-label">
+                                    {{"貸款額"|showlang:request.session.lang}}：
+                                </label>
+                                <input type="text" id="loan_amount" name="loan_amount" autocomplete="loan_amount" value="3000000" id="loan_amount" placeholder="HK$ 3,000,000" class="form-control" required=""/>
+                                <label for="liv" class="control-label">
+                                    {{"供款入息比率"|showlang:request.session.lang}}：
+                                </label>
+                                <input type="text" id="liv" name="liv" autocomplete="liv" value="60" id="liv" placeholder="60%"  class="form-control" required=""/>
+                                <label for="term" class="control-label">
+                                    {{"供款年期"|showlang:request.session.lang}}：
+                                    <strong class="rtcl-required">*</strong>
+                                </label>
+                                <input type="text" id="term" name="term" autocomplete="term" value="30" id="term" placeholder="30 年期" class="form-control" required=""/>
+                                <br>
+                                <label for="application_info_1" class="control-label">
+                                    <div style="color: var(--rt-primary-color)">{{"利率"|showlang:request.session.lang}}</div>
+                                </label>
+                                <br>
+                                <label for="bank_name" class="control-label">
+                                    {{"銀行"|showlang:request.session.lang}}：
+                                    <strong class="rtcl-required">*</strong>
+                                </label>
+                                <select id="bank_name" class="form-control">
+                                {% for displayinterest in interest_list %}
+                                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                    <option value="{{displayinterest.bank_name}}"{% if forloop.counter == 1 %} selected{% endif %} p_rate="{{displayinterest.p_rate}}" p_score="{{displayinterest.p_score}}" interest_rate="{{displayinterest.interest_rate}}">{{displayinterest.bank_name}}</option>
+                                        {% elif request.session.lang == "sc" %}
+                                    <option value="{{displayinterest.bank_name}}"{% if forloop.counter == 1 %} selected{% endif %} p_rate="{{displayinterest.p_rate}}" p_score="{{displayinterest.p_score}}" interest_rate="{{displayinterest.interest_rate}}">{{displayinterest.bank_name_s}}</option>
+                                        {% else %}
+                                    <option value="{{displayinterest.bank_name}}"{% if forloop.counter == 1 %} selected{% endif %} p_rate="{{displayinterest.p_rate}}" p_score="{{displayinterest.p_score}}" interest_rate="{{displayinterest.interest_rate}}">{{displayinterest.bank_name_e}}</option>
+                                        {% endif %}
+                                {% endfor %}
+                                </select>
+                                <div id="p_area">
+                                    <label for="title" class="control-label">
+                                        {{"最優惠利率"|showlang:request.session.lang}}：
+                                    </label>
+                                    <input type="text" name="p_rate" autocomplete="p_rate" value="" id="p_rate" placeholder="5.375 %" class="form-control" required=""/>
+                                    <label for="title" class="control-label">
+                                        {{"P-利率"|showlang:request.session.lang}}：
+                                    </label>
+                                    <input type="text" name="p_score" autocomplete="p_score" value="" id="p_score" placeholder="3" class="form-control" required=""/>
+                                </div>
+                                <label for="title" class="control-label">
+                                    {{"利率"|showlang:request.session.lang}}：
+                                </label>
+                                <input type="text" name="interest_rate" autocomplete="interest_rate" value="" id="interest_rate" placeholder="2.375 %" class="form-control" required=""/>
+                                <!--<br>
+                                <label for="first_property" class="control-label">
+                                    首次置業？
+                                </label>
+                                <div class="form-group clearfix">
+                                    <div class="radio radio-primary d-inline" style="margin-right:20px">
+                                        <input type="radio" name="first_property">
+                                        <label for="first_property" value="1">是</label>
+                                    </div>
+                                    <div class="radio radio-primary d-inline" style="margin-right:20px">
+                                        <input type="radio" name="first_property">
+                                        <label for="first_property" value="0">否</label>
+                                    </div>
+                                </div>
+                                <label for="title" class="control-label">
+                                    自用？
+                                </label>
+                                <div class="form-group clearfix">
+                                    <div class="radio radio-primary d-inline" style="margin-right:20px">
+                                        <input type="radio" id="radioActive" name="r1">
+                                        <label for="radioActive" value="1">是</label>
+                                    </div>
+                                    <div class="radio radio-primary d-inline" style="margin-right:20px">
+                                        <input type="radio" id="radioInActive" name="r1">
+                                        <label for="radioInActive" value="1">否</label>
+                                    </div>
+                                </div>
+                                <label for="title" class="control-label">
+                                    你的收入主要來自香港嗎？
+                                </label>
+                                <div class="form-group clearfix">
+                                    <div class="radio radio-primary d-inline" style="margin-right:20px">
+                                        <input type="radio" id="radioActive" name="r1">
+                                        <label for="radioActive" value="1">是</label>
+                                    </div>
+                                    <div class="radio radio-primary d-inline" style="margin-right:20px">
+                                        <input type="radio" id="radioInActive" name="r1">
+                                        <label for="radioInActive" value="1">否</label>
+                                    </div>
+                                </div>
+                                <label for="title" class="control-label">
+                                    你還有未償還的按揭貸款嗎？
+                                </label>
+                                <div class="form-group clearfix">
+                                    <div class="radio radio-primary d-inline" style="margin-right:20px">
+                                        <input type="radio" id="radioActive" name="r1">
+                                        <label for="radioActive" value="1">是</label>
+                                    </div>
+                                    <div class="radio radio-primary d-inline" style="margin-right:20px">
+                                        <input type="radio" id="radioInActive" name="r1">
+                                        <label for="radioInActive" value="1">否</label>
+                                    </div>
+                                </div>-->
+                                <br>
+                                <div class="form-group align-items-center">
+                                    <button type="button" id="calculate_button" name="calculate_button" class="btn btn-primary w-100" action="calculate">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{"計算"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="application_info_1" class="control-label">
+                                    <div style="color: var(--rt-primary-color)">{{"這是你的每月供款總開支"|showlang:request.session.lang}}</div>
+                                </label>
+                              <div class="div-table">
+                                <div class="div-table-row flex bg-success">
+                                  <div class="div-table-cell"><h5 style="font-weight: bold; color: white;">{{"每月總供款"|showlang:request.session.lang}}</h5></div>
+                                  <div class="div-table-cell" align="right" id="total_monthly_installment"><h5 style="font-weight: bold; color: white;">HK$11,659.57</h5></div>
+                                </div>
+                                <div class="div-table-row flex">
+                                  <div class="div-table-cell">{{"首期"|showlang:request.session.lang}}</div>
+                                  <div class="div-table-cell" align="right" id="down_payment">HK$2,000,000</div>
+                                </div>
+                                <div class="div-table-row flex">
+                                  <div class="div-table-cell">{{"供款年期"|showlang:request.session.lang}}</div>
+                                  <div class="div-table-cell" align="right" id="years_of_term">30 {{"年"|showlang:request.session.lang}}</div>
+                                </div>
+                                <div class="div-table-row flex">
+                                  <div class="div-table-cell">{{"每月供款"|showlang:request.session.lang}}</div>
+                                  <div class="div-table-cell" align="right" id="monthly_installment">HK$11,659.57</div>
+                                </div>
+                                <div class="div-table-row flex">
+                                  <div class="div-table-cell">{{"最低每月入息要求"|showlang:request.session.lang}}</div>
+                                  <div class="div-table-cell" align="right" id="monthly_income_requirement">HK$27,998.55</div>
+                                </div>
+                              </div>
+                                <br>
+<!--
+                              <label for="application_info_1" class="control-label">
+                                  <div style="color: var(--rt-primary-color)">供款表</div>
+                              </label>
+                              <div id="accordion" class="accordion">
+                                <div class="card">
+                                  <div class="card-header">
+                                    <div class="heading-title" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" role="button">
+                                      <span>第1期</span>
+                                    </div>
+                                  </div>
+                                  <div id="collapse1" class="collapse show" data-parent="#accordion">
+                                    <div class="card-body">
+                                      <div class="div-table">
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">本金還款</div>
+                                          <div class="div-table-cell">HK$5,722.08</div>
+                                        </div>
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">本期利息</div>
+                                          <div class="div-table-cell">HK$5,937.50</div>
+                                        </div>
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">每月供款</div>
+                                          <div class="div-table-cell">HK$11,659.58</div>
+                                        </div>
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">本金欠款</div>
+                                          <div class="div-table-cell">HK$2,994,277.92</div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="card">
+                                  <div class="card-header">
+                                    <div class="heading-title collapsed" data-toggle="collapse" data-target="#heading2" aria-expanded="true" role="button">
+                                      <span>第2期</span>
+                                    </div>
+                                  </div>
+                                  <div id="heading2" class="collapse" data-parent="#accordion">
+                                    <div class="card-body">
+                                      <div class="div-table">
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">本金還款</div>
+                                          <div class="div-table-cell">HK$5,722.08</div>
+                                        </div>
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">本期利息</div>
+                                          <div class="div-table-cell">HK$5,937.50</div>
+                                        </div>
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">每月供款</div>
+                                          <div class="div-table-cell">HK$11,659.58</div>
+                                        </div>
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">本金欠款</div>
+                                          <div class="div-table-cell">HK$2,994,277.92</div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="card">
+                                  <div class="card-header">
+                                    <div class="heading-title collapsed" data-toggle="collapse" data-target="#heading3" aria-expanded="true" role="button">
+                                      <span>第3期</span>
+                                    </div>
+                                  </div>
+                                  <div id="heading3" class="collapse" data-parent="#accordion">
+                                    <div class="card-body">
+                                      <div class="div-table">
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">本金還款</div>
+                                          <div class="div-table-cell">HK$5,722.08</div>
+                                        </div>
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">本期利息</div>
+                                          <div class="div-table-cell">HK$5,937.50</div>
+                                        </div>
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">每月供款</div>
+                                          <div class="div-table-cell">HK$11,659.58</div>
+                                        </div>
+                                        <div class="div-table-row flex">
+                                          <div class="div-table-cell">本金欠款</div>
+                                          <div class="div-table-cell">HK$2,994,277.92</div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+-->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+	{% if action == "transfer" %}
+        <style>
+            #signature-pad {
+              border: 1px solid #ccc;
+            }
+        </style>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-12">
+                <div class="col-md-12 rtcl-login-form-wrap">
+                    <form id="mortgage-form" class="form-horizontal" method="post" novalidate="novalidate">
+                        <div id="message"></div>
+                        <h3 style="font-weight:600"><b>{{"按揭轉介服務"|showlang:request.session.lang}}</b>{{"網上申請表格"|showlang:request.session.lang}}</h3>
+                        <label for="application_info_1" class="control-label">
+                            <div style="color: var(--rt-primary-color)">{{"申請人(一)資料"|showlang:request.session.lang}}</div>
+                        </label>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="english_name" class="control-label">
+                                    {{"英文姓名"|showlang:request.session.lang}}：
+                                    <strong class="rtcl-required">*</strong>
+                                </label>
+                                <input type="text" name="english_name" autocomplete="english_name" value="" id="english_name" placeholder="{{"請輸入英文姓名"|showlang:request.session.lang}}" class="form-control" required=""/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="title" class="control-label">
+                                    {{"稱謂"|showlang:request.session.lang}}：
+                                </label>
+                                <select id="title" class="form-control">
+                                    <option value="先生" selected>{{"先生"|showlang:request.session.lang}}</option>
+                                    <option value="小姐">{{"小姐"|showlang:request.session.lang}}</option>
+                                    <option value="太太">{{"太太"|showlang:request.session.lang}}</option>
+                                    <option value="公司">{{"公司"|showlang:request.session.lang}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="email" class="control-label">
+                                    {{"電郵地址"|showlang:request.session.lang}}：
+                                </label>
+                                <input type="text" name="email" autocomplete="email" value="" id="email" placeholder="{{"請輸入電郵地址"|showlang:request.session.lang}}" class="form-control" required=""/>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="phone_area_code" class="control-label">{{"區號"|showlang:request.session.lang}}</label><br>
+                                <select id="phone_area_code" class="form-control">
+                                    <option value="+852" selected>+852 ({{"香港"|showlang:request.session.lang}})</option>
+                                    <option value="+853">+853 ({{"澳門"|showlang:request.session.lang}})</option>
+                                    <option value="+86">+86 ({{"中國"|showlang:request.session.lang}})</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="phone_number" class="control-label">{{"流動電話"|showlang:request.session.lang}}：<strong class="rtcl-required">*</strong></label>
+                                <input type="number" class="form-control" id="phone_number" placeholder="{{"請輸入流動電話"|showlang:request.session.lang}}" value="" size="8" maxlength="8">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="id_type" class="control-label">
+                                    {{"證件類型"|showlang:request.session.lang}}：
+                                </label>
+                                <select id="id_type" class="form-control">
+                                    <option value="香港身份證" selected>{{"香港身份證"|showlang:request.session.lang}}</option>
+                                    <option value="其他身份證">{{"其他身份證"|showlang:request.session.lang}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_number" class="control-label">
+                                    {{"身份證號碼"|showlang:request.session.lang}}：
+                                    <strong class="rtcl-required">*</strong>
+                                </label>
+                                <input type="text" name="id_number" autocomplete="id_number" value="" id="id_number" placeholder="{{"例如"|showlang:request.session.lang}} A123456(7)" class="form-control" required=""/>
+                            </div>
+                        </div>
+                        <br>
+                        <label for="application_info_2" class="control-label">
+                            <div style="color: var(--rt-primary-color)">{{"申請人(二)資料"|showlang:request.session.lang}}</div>
+                        </label>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="english_name_2" class="control-label">
+                                    {{"英文姓名"|showlang:request.session.lang}}：
+                                </label>
+                                <input type="text" name="english_name_2" autocomplete="english_name_2" value="" id="english_name_2" placeholder="{{"請輸入英文姓名"|showlang:request.session.lang}}" class="form-control" required=""/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="title_2" class="control-label">
+                                    {{"稱謂"|showlang:request.session.lang}}：
+                                </label>
+                                <select id="title_2" class="form-control">
+                                    <option value="先生" selected>{{"先生"|showlang:request.session.lang}}</option>
+                                    <option value="小姐">{{"小姐"|showlang:request.session.lang}}</option>
+                                    <option value="太太">{{"太太"|showlang:request.session.lang}}</option>
+                                    <option value="公司">{{"公司"|showlang:request.session.lang}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="email_2" class="control-label">
+                                    {{"電郵地址"|showlang:request.session.lang}}：
+                                </label>
+                                <input type="text" name="email_2" autocomplete="email_2" value="" id="email_2" placeholder="{{"請輸入電郵地址"|showlang:request.session.lang}}" class="form-control" required=""/>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="phone_area_code_2" class="control-label">{{"區號"|showlang:request.session.lang}}</label><br>
+                                <select id="phone_area_code_2" class="form-control">
+                                    <option value="+852" selected>+852 ({{"香港"|showlang:request.session.lang}})</option>
+                                    <option value="+853">+853 ({{"澳門"|showlang:request.session.lang}})</option>
+                                    <option value="+86">+86 ({{"中國"|showlang:request.session.lang}})</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="phone_number_2" class="control-label">{{"流動電話"|showlang:request.session.lang}}：<strong class="rtcl-required">*</strong></label>
+                                <input type="number" class="form-control" id="phone_number_2" placeholder="{{"請輸入流動電話"|showlang:request.session.lang}}" value="" size="8" maxlength="8">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="id_type_2" class="control-label">
+                                    {{"證件類型"|showlang:request.session.lang}}：
+                                </label>
+                                <select id="id_type_2" class="form-control">
+                                    <option value="香港身份證" selected>{{"香港身份證"|showlang:request.session.lang}}</option>
+                                    <option value="其他身份證">{{"其他身份證"|showlang:request.session.lang}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_number_2" class="control-label">
+                                    {{"身份證號碼"|showlang:request.session.lang}}：
+                                    <strong class="rtcl-required">*</strong>
+                                </label>
+                                <input type="text" name="id_number_2" autocomplete="id_number_2" value="" id="id_number_2" placeholder="{{"例如"|showlang:request.session.lang}} A123456(7)" class="form-control" required=""/>
+                            </div>
+                        </div>
+
+                        <br>
+                        <label for="property_address" class="control-label">
+                            <div style="color: var(--rt-primary-color)">{{"物業地址(英文)"|showlang:request.session.lang}}</div>
+                        </label>
+                        <div class="card" style="margin-top:10px">
+                          <div class="card-body">
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <label for="unit" class="control-label">{{"單位"|showlang:request.session.lang}}</label>
+                                    <input type="text" class="form-control" id="unit" placeholder="" value="" size="20" maxlength="100">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="floor" class="control-label">{{"樓層"|showlang:request.session.lang}}</label>
+                                    <input type="text" class="form-control" id="floor" placeholder="" value="" size="20" maxlength="100">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="block" class="control-label">{{"座數"|showlang:request.session.lang}}</label>
+                                    <input type="text" class="form-control" id="block" placeholder="" value="" size="20" maxlength="100">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="building" class="control-label">{{"屋苑名稱"|showlang:request.session.lang}}</label>
+                                    <input type="text" class="form-control" id="building" placeholder="" value="" size="20" maxlength="100">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="street" class="control-label">{{"街道"|showlang:request.session.lang}}</label>
+                                    <input type="text" class="form-control" id="street" placeholder="" value="" size="20" maxlength="100">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="area" class="control-label">{{"區域"|showlang:request.session.lang}}</label>
+                                    <select id="area" class="form-control">
+                                        <option value="" selected>{{"選擇"|showlang:request.session.lang}}</option>
+                                        <option value="香港">{{"香港"|showlang:request.session.lang}}</option>
+                                        <option value="九龍">{{"九龍"|showlang:request.session.lang}}</option>
+                                        <option value="新界">{{"新界"|showlang:request.session.lang}}</option>
+                                        <option value="離島">{{"離島"|showlang:request.session.lang}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="district" class="control-label">{{"地區"|showlang:request.session.lang}}</label>
+                                    <select id="district" class="form-control">
+                                        <option value="" selected>{{"選擇"|showlang:request.session.lang}}</option>
+                                        <option value="香港仔/鴨脷洲">香港仔/鴨脷洲</option>
+                                        <option value="銅鑼灣">銅鑼灣</option>
+                                        <option value="銅鑼灣">銅鑼灣</option>
+                                    </select>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <br>
+                        <label for="property_address" class="control-label">
+                            <div style="color: var(--rt-primary-color)">{{"貸款資料"|showlang:request.session.lang}}</div>
+                        </label>
+                        <div class="card" style="margin-top:10px">
+                          <div class="card-body">
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <label for="loan_purpose" class="control-label">{{"貸款目的"|showlang:request.session.lang}}</label>
+                                    <select id="loan_purpose" class="form-control">
+                                        <option value="" selected>{{"選擇"|showlang:request.session.lang}}</option>
+                                        <option value="新按">{{"新按"|showlang:request.session.lang}}</option>
+                                        <option value="轉按">{{"轉按"|showlang:request.session.lang}}</option>
+                                        <option value="加按">{{"加按"|showlang:request.session.lang}}</option>
+                                        <option value="私人貸款">{{"私人貸款"|showlang:request.session.lang}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="purchase_price" class="control-label">{{"購入價"|showlang:request.session.lang}}</label>
+                                    <input type="text" class="form-control" id="purchase_price" placeholder="HK$" value="" size="20" maxlength="100">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="drawdown_date" class="control-label">{{"完成提取貸款日期"|showlang:request.session.lang}}</label>
+                                    <input type="date" class="form-control" id="drawdown_date" placeholder="" value="" size="20" maxlength="100">
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <br>
+                        <label for="other_info" class="control-label">
+                            <div style="color: var(--rt-primary-color)">{{"其他資料"|showlang:request.session.lang}}</div>
+                        </label>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="referral" class="control-label">{{"你是從那個途徑得知承灃按揭轉介之服務?"|showlang:request.session.lang}}</label>
+                                    <select id="referral" class="form-control">
+                                        <option value="" selected>{{"選擇"|showlang:request.session.lang}}</option>
+                                        <option value="推薦人">{{"推薦人"|showlang:request.session.lang}}</option>
+                                        <option value="地產代理">{{"地產代理"|showlang:request.session.lang}}</option>
+                                        <option value="舊客戶">{{"舊客戶"|showlang:request.session.lang}}</option>
+                                        <option value="朋友">{{"朋友"|showlang:request.session.lang}}</option>
+                                        <option value="電台">{{"電台"|showlang:request.session.lang}}</option>
+                                        <option value="電視">{{"電視"|showlang:request.session.lang}}</option>
+                                        <option value="雜誌">{{"雜誌"|showlang:request.session.lang}}</option>
+                                        <option value="報紙">{{"報紙"|showlang:request.session.lang}}</option>
+                                        <option value="社交媒體">{{"社交媒體"|showlang:request.session.lang}}</option>
+                                        <option value="網上廣告">{{"網上廣告"|showlang:request.session.lang}}</option>
+                                        <option value="承灃職員">{{"承灃職員"|showlang:request.session.lang}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="referral_name" class="control-label">{{"名稱"|showlang:request.session.lang}}   </label>
+                                    <input type="text" class="form-control" id="referral_name" placeholder="" value="" size="20" maxlength="100">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="referral_phone_number" class="control-label">{{"電話號碼"|showlang:request.session.lang}}   </label>
+                                    <input type="number" class="form-control" id="referral_phone_number" placeholder="" value="" size="20" maxlength="100">
+                                </div>
+                            </div>
+                        <br>
+                        <div class="form-group d-flex align-items-center">
+                            <div class="form-check">
+                                <input type="checkbox" name="agree1" id="rtcl-agree1" value="agree"/><label class="form-check-label" for="rtcl-agree1">{{"本人(等)已參閱並明白及同意以下"|showlang:request.session.lang}}<u>{{"條款及細則"|showlang:request.session.lang}}</u></label><br>
+                            </div>  
+                        </div>
+                        <div class="form-group d-flex align-items-center">      
+                            <div class="form-check">
+                                <ol>
+                                    <li>{{"本人(等)不需支付任何費用予承灃物業及有權拒絕接受承灃物業介紹的銀行/金融機構貸款。"|showlang:request.session.lang}}</li>
+                                    <li>{{"本人(等)確認上述資料均屬正確並授權承灃物業可將本人(等)之個人資料（包括載於本表格的個人資料及日後由本人經電話或電子媒介向承灃物業提供的其他個人資料）轉介予承灃物業的按揭轉介安排（包括本人（等）所選）之銀行/金融機構，以便有關銀行/金融機構可直接聯絡本人(等)辦理貸款申請手續。"|showlang:request.session.lang}}</li>
+                                    <li>{{"本人(等)明確表示同意及授權承灃物業代表本人(等)為轉介目的跟進及轉遞本人(等)向銀行/金融機構提交的申請及向銀行/金融機構收取有關本人(等)的申請進度資料。 本人(等)亦授權銀行/金融機構接受承灃物業轉介及利用此表格所載之個人資料與本人(等)直接聯繫及向承灃物業發放有關本人(等)的申請進度的資料。"|showlang:request.session.lang}}</li>
+                                    <li>{{"本人(等)明白銀行/金融機構對貸款事宜擁有最終批核權。"|showlang:request.session.lang}}</li>
+                                    <li>{{"如本人(等)接受任何一間由承灃物業介紹之銀行/金融機構貸款，本人(等)明白並同意承灃物業將會獲得該銀行之介紹費。"|showlang:request.session.lang}}</li>
+                                </ol>
+                            </div>
+                        </div>  
+
+                        <div class="form-group d-flex align-items-center">
+                            <div class="form-check">
+                            {{"本人(等) 反對承灃物業"|showlang:request.session.lang}}:
+                            </div>
+                        </div>
+                        <div class="form-group d-flex align-items-center">
+                            <div class="form-check">
+                                <input type="checkbox" name="agree2" id="rtcl-agree2" value="agree"/><label class="form-check-label" for="rtcl-agree2"> {{"將本人(等)之個人資料轉移予其他第三方作直接促銷用途"|showlang:request.session.lang}}</label>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex align-items-center">
+                            <div class="form-check">
+                                <input type="checkbox" name="agree3" id="rtcl-agree3" value="agree"/><label class="form-check-label" for="rtcl-agree3"> {{"使用本人(等)之個人資料作直接促銷承灃物業之貸款轉介服務"|showlang:request.session.lang}}</label>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex align-items-center">
+                            <div class="form-check">
+                                <input type="checkbox" name="agree4" id="rtcl-agree4" value="agree"/><label class="form-check-label" for="rtcl-agree4"> {{"將本人(等)之個人資料轉移予【承灃會】"|showlang:request.session.lang}}</label>
+                            </div>
+                        </div>
+                        <!--
+                        <label for="signature-pad" class="control-label">
+                            <div style="color: var(--rt-primary-color)">客戶簽署</div>
+                        </label>
+                        <div class="form-group">
+                          <canvas id="signature-pad" width="400" height="200"></canvas>
+                          <br>
+                          <button id="clear-btn">清除</button>
+                          <button id="save-btn">儲存</button>
+                        </div>
+                        -->
+                        <br>
+                        <div class="form-group align-items-center">
+                            <button type="button" id="apply_button" name="apply_button" class="btn btn-primary" action="apply">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{"同意及提交"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+<script>
+    $("#bank_name").off("change").on("change", function() {
+        // Get the selected option element
+        var selectedOption = document.getElementById("bank_name").options[document.getElementById("bank_name").selectedIndex];
+
+        // Get the attribute values
+        var p_rate = selectedOption.getAttribute("p_rate");
+        var p_score = selectedOption.getAttribute("p_score");
+        var interest_rate = selectedOption.getAttribute("interest_rate");
+        $("#p_rate").val(p_rate);
+        $("#p_score").val(p_score);
+        $("#interest_rate").val(formatNumber(interest_rate));
+        pArea = document.getElementById('p_area');
+        if (document.getElementById("bank_name").selectedIndex == 0)
+            pArea.style.display = 'none';
+        else
+            pArea.style.display = '';
+    });
+
+    function formatNumber(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function calculateMortgagePayment(loanAmount, interestRate, loanTermInYears, livRatio) {
+      // Convert annual interest rate to monthly interest rate
+      const monthlyInterestRate = interestRate / 12 / 100;
+
+      // Calculate loan term in months
+      const loanTermInMonths = loanTermInYears * 12;
+
+      // Calculate the monthly installment
+      const monthlyInstallment = (loanAmount * (monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -loanTermInMonths))));
+
+      // Calculate the required monthly gross income
+      const requiredMonthlyGrossIncome = monthlyInstallment / livRatio;
+
+      return {
+        monthlyInstallment: monthlyInstallment.toFixed(2),
+        requiredMonthlyGrossIncome: requiredMonthlyGrossIncome.toFixed(2)
+      };
+    }
+
+    $("#calculate_button").off("click").on("click", function() {
+        // Get the attribute values
+        var p_rate = $("#p_rate").val();
+        var p_score = $("#p_score").val();
+        var interest_rate = $("#interest_rate").val();
+        var loan_amount = $("#loan_amount").val();
+
+        // Get the attribute values
+        var down_payment = parseFloat($("#property_value").val()) - parseFloat($("#loan_amount").val());
+        var liv = $("#liv").val();
+        var years_of_term = $("#term").val();
+
+        var monthly_interest_rate = (parseFloat(interest_rate) / 100) / 12;
+        var loan_term_in_months = parseInt(years_of_term) * 12;
+
+        // Example usage
+        const loanAmount = parseFloat(loan_amount);
+        const interestRate = parseFloat(interest_rate);
+        const loanTermInYears = parseInt(years_of_term);
+        const livRatio = liv/100;
+
+        const result = calculateMortgagePayment(loanAmount, interestRate, loanTermInYears, livRatio)
+        var total_monthly_installment = result.monthlyInstallment
+        var monthly_installment = result.monthlyInstallment;
+        var monthly_income_requirement = result.requiredMonthlyGrossIncome;
+
+        //var total_monthly_installment = selectedOption.getAttribute("p_rate");
+        //var years_of_term = selectedOption.getAttribute("p_rate");
+        //var monthly_installment = selectedOption.getAttribute("p_score");
+        //var monthly_income_requirement = selectedOption.getAttribute("interest_rate");
+
+        $("#total_monthly_installment").html("<h5 style=\"font-weight: bold; color: white;\">HK$"+total_monthly_installment+"</h5>");
+        $("#down_payment").html("HK$"+down_payment);
+        $("#years_of_term").html(years_of_term+" 年");
+        $("#monthly_installment").html("HK$"+monthly_installment);
+        $("#monthly_income_requirement").html("HK$"+monthly_income_requirement);
+    });
+
+    $(".open_modal_info").click(function(){
+        // Adding the Value from Table to Modal form
+        $(".modal-header").css('color', '#FFFFFF');
+        $("#property_id").val($(this).attr("property_id"));
+        $("#property_no").html($(this).attr("property_no"));
+        $("#property_name").html($(this).attr("property_name"));
+        $("#enquirytype").html($(this).attr("enquirytype"));
+        $("#message").html($(this).attr("message"));
+        $("#action").val($(this).attr("action"));
+
+        var property_id = $(this).attr("property_id");
+        var property_no = $(this).attr("property_no");
+        var property_name = $(this).attr("property_name");
+        var enquirytype = $(this).attr("enquirytype");
+        var message = $(this).attr("message");
+        var action = $(this).attr("action");
+        if (action == 'mortgage') {
+            $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>查詢"+enquirytype+"</b>");
+            $(".modal-header").css('background-color', '#F39C12');
+            $("#add_button").show();
+            $("#edit_button").hide();
+            $("#delete_button").hide();
+        }
+    });
+
+    $(document).on("click", "#add_button", function(){
+        var action = $(this).attr("action");
+        var property_name = $("#property_name").val();
+        var contact_name = $("#contact_name").val();
+        var email = $("#email").val();
+        var phone_area_code = $("#phone_area_code").val();
+        var phone_number = $("#phone_number").val();
+        var message = $("#message").val();
+        if ($('#newsletter').prop('checked')) {
+          var newsletter = 1;
+        } else {
+          var newsletter = 0;
+        }
+
+        if ((action == "mortgage")) {
+            if (property_name == '') {
+                alert('{{"請輸入物業地址"|showlang:request.session.lang}}');
+                $("#property_name").focus();
+                return false;
+            }
+            if (contact_name == '') {
+                alert('{{"請輸入您的姓名"|showlang:request.session.lang}}');
+                $("#contact_name").focus();
+                return false;
+            }
+            if (email == '') {
+                alert('{{"請輸入您的電郵地址"|showlang:request.session.lang}}');
+                $("#email").focus();
+                return false;
+            }
+            if (phone_number == '') {
+                alert('{{"請輸入電話號碼"|showlang:request.session.lang}}');
+                $("#phone_number").focus();
+                return false;
+            }
+
+            if (action == "mortgage") {
+                if (!(window.confirm('{{"查詢以上資料，你確定嗎？"|showlang:request.session.lang}}'))) {
+                    return false;
+                }
+            }
+
+            $.ajax({
+                url:'{% url 'enquiry_save' %}',
+                type:'POST',
+                data:{action:action, property_name:property_name, contact_name:contact_name, email:email, phone_area_code:phone_area_code, phone_number:phone_number, message:message, newsletter:newsletter},
+            })
+
+            .done(function(response){
+                if (response == "Success") {
+                    $.notify({
+                        message: "{{"你的網上查詢已成功送出"|showlang:request.session.lang}}"
+                        },{
+                            type: 'success',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    document.location.href = "/main"
+                }
+            })
+
+            .fail(function(xhr, status, error){
+                // alert the error if any error occured
+                $("#modal-message").html(xhr.responseText)
+                //alert(xhr.responseText);
+            })
+        }
+
+    });
+    $("#bank_name").trigger("change");
+</script>
+{% if action == "transfer" %}
+<script>
+    $("#apply_button").off("click").on("click", function() {
+        var action = $(this).attr("action");
+        var english_name = $("#english_name").val();
+        var title = $("#title").val();
+        var email = $("#email").val();
+        var phone_area_code = $("#phone_area_code").val();
+        var phone_number = $("#phone_number").val();
+        var id_type = $("#id_type").val();
+        var id_number = $("#id_number").val();
+        var english_name_2 = $("#english_name_2").val();
+        var title_2 = $("#title_2").val();
+        var email_2 = $("#email_2").val();
+        var phone_area_code_2 = $("#phone_area_code_2").val();
+        var phone_number_2 = $("#phone_number_2").val();
+        var id_type_2 = $("#id_type_2").val();
+        var id_number_2 = $("#id_number_2").val();
+
+        var unit = $("#unit").val();
+        var floor = $("#floor").val();
+        var block = $("#block").val();
+        var building = $("#building").val();
+        var street = $("#street").val();
+        var area = $("#area").val();
+        var district = $("#district").val();
+
+        var loan_purpose = $("#loan_purpose").val();
+        var purchase_price = $("#purchase_price").val();
+        var drawdown_date = $("#drawdown_date").val();
+        var referral = $("#referral").val();
+        var referral_name = $("#referral_name").val();
+        var referral_phone_number = $("#referral_phone_number").val();
+
+        var agree1 = $('#rtcl-agree1').prop('checked')
+        var agree2 = $('#rtcl-agree2').prop('checked')
+        var agree3 = $('#rtcl-agree3').prop('checked')
+        var agree4 = $('#rtcl-agree4').prop('checked')
+
+        if ((action == "apply")) {
+            if (english_name == '') {
+                alert('{{"請輸入英文姓名"|showlang:request.session.lang}}');
+                $("#english_name").focus();
+                return false;
+            }
+            if (phone_number == '') {
+                alert('{{"請輸入流動電話"|showlang:request.session.lang}}');
+                $("#phone_number").focus();
+                return false;
+            }
+            if (id_number == '') {
+                alert('{{"請輸入身份證號碼"|showlang:request.session.lang}}');
+                $("#id_number").focus();
+                return false;
+            }
+
+            if (!agree1) {
+                alert('{{"請確認已參閱並明白及同意條款及細則。"|showlang:request.session.lang}}');
+                return false;
+            }
+
+            if (action == "apply") {
+                if (!(window.confirm("{{"遞交以上資料，你確定嗎？"|showlang:request.session.lang}}"))) {
+                    return false;
+                }
+            }
+
+            /*var message1 = "action: " + action + "\n"
+                        + "english_name: " + english_name + "\n"
+                        + "title: " + title + "\n"
+                        + "email: " + email + "\n"
+                        + "phone_area_code: " + phone_area_code + "\n"
+                        + "phone_number: " + phone_number + "\n"
+                        + "id_type: " + id_type + "\n"
+                        + "id_number: " + id_number + "\n"
+                        + "english_name_2: " + english_name_2 + "\n"
+                        + "title_2: " + title_2 + "\n"
+                        + "email_2: " + email_2 + "\n"
+                        + "phone_area_code_2: " + phone_area_code_2 + "\n"
+                        + "phone_number_2: " + phone_number_2 + "\n"
+                        + "id_type_2: " + id_type_2 + "\n"
+                        + "id_number_2: " + id_number_2 + "\n"
+                        + "unit: " + unit + "\n"
+                        + "floor: " + floor + "\n"
+                        + "block: " + block + "\n"
+                        + "building: " + building + "\n"
+                        + "street: " + street + "\n"
+                        + "area: " + area + "\n"
+                        + "district: " + district + "\n"
+                        + "loan_purpose: " + loan_purpose + "\n"
+                        + "purchase_price: " + purchase_price + "\n"
+                        + "drawdown_date: " + drawdown_date + "\n"
+                        + "referral: " + referral + "\n"
+                        + "referral_name: " + referral_name + "\n"
+                        + "referral_phone_number: " + referral_phone_number;
+
+            alert(message1);*/
+
+            $.ajax({
+                url:'{% url 'mortgage_save' %}',
+                type:'POST',
+                data:{action:action, english_name:english_name, title:title, email:email, phone_area_code:phone_area_code, phone_number:phone_number, id_type:id_type, id_number:id_number, english_name_2:english_name_2, title_2:title_2, email_2:email_2, phone_area_code_2:phone_area_code_2, phone_number_2:phone_number_2, id_type_2:id_type_2, id_number_2:id_number_2, unit:unit, floor:floor, block:block, building:building, street:street, area:area, district:district, loan_purpose:loan_purpose, purchase_price:purchase_price, drawdown_date:drawdown_date, referral:referral, referral_name:referral_name, referral_phone_number:referral_phone_number},
+            })
+
+            .done(function(response){
+                if (response == "Success") {
+                    $.notify({
+                        message: "{{"你的按揭轉介服務網上申請已成功遞交"|showlang:request.session.lang}}"
+                        },{
+                            type: 'success',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    document.location.href = "/main"
+                }
+            })
+
+            .fail(function(xhr, status, error){
+                // alert the error if any error occured
+                $("#message").html(xhr.responseText)
+                //alert(xhr.responseText);
+            })
+        }
+
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+<script>
+
+    $('#purchase_price').on('input', function() {
+        var value = $(this).val();
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        $(this).val(value);
+    });
+</script>
+{% endif %}
+{% endblock custom_js %}

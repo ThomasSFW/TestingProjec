@@ -1,0 +1,514 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">店鋪管理</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+.phone-input-container {
+  display: flex;
+  align-items: center;
+}
+
+.phone-input-container input:first-child {
+  margin-right: 10px;
+}
+</style>
+
+<section class="content">
+    <div class="row">
+        <!-- Zero Configuration  Starts-->
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label" for="searchinput">關鍵字</label>
+                            <div class="input-group">
+                                <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                                    <span class="input-group-btn">
+                                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                    </span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="cboTeam">店鋪</label>
+                            <select id="cboTeam" class="form-select"{% if not 1426 in request.session.accessright %} disabled{% endif %}>
+                            <option value="" {% if user_team == teams.teamdesc %}selected{% endif %}>- 所有店鋪 -</option>
+                            {% for teams in teamlist %}
+                                <option value="{{teams.teamdesc}}" {% if user_team == teams.teamdesc %}selected{% endif %}>{{teams.teamfulldesc}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="recordid">
+                <input type="hidden" class="form-control" id="shop_id">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group">
+					<label for="TxtShopCode">店舖編碼</label>
+						<input type="text" class="form-control" id="TxtShopCode" placeholder="輸入店舖編碼" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtShopName">店舖名稱</label>
+						<input type="text" class="form-control" id="TxtShopName" placeholder="輸入店舖名稱" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtShopNameE">店舖名稱(英)</label>
+						<input type="text" class="form-control" id="TxtShopNameE" placeholder="輸入店舖名稱(英)" value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtShopAddress">店舖地址</label>
+						<input type="text" class="form-control" id="TxtShopAddress" placeholder="輸入店舖地址" value="">
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-3">
+                        <label for="TxtPhoneAreaCode">電話區號</label>
+						<select id="TxtPhoneAreaCode" class="form-control" style="background: #fff; cursor: pointer; padding-top:10px;width: 100%">
+							<option value="+852" selected>+852 (香港)</option>
+							<option value="+853">+853 (澳門)</option>
+							<option value="+86">+86 (中國)</option>
+						</select>
+                    </div>
+                    <div class="form-group col-sm-9">
+                        <label for="TxtPhoneNumber">電話號碼</label>
+                        <input type="number" class="form-control" id="TxtPhoneNumber" placeholder="請輸入電話號碼" value="" size="8">
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-3">
+                        <label for="TxtFaxAreaCode">傳真區號</label>
+						<select id="TxtFaxAreaCode" class="form-control" style="background: #fff; cursor: pointer; padding-top:10px;width: 100%">
+							<option value="+852" selected>+852 (香港)</option>
+							<option value="+853">+853 (澳門)</option>
+							<option value="+86">+86 (中國)</option>
+						</select>
+                    </div>
+                    <div class="form-group col-sm-9">
+                        <label for="TxtFaxNumber">傳真號碼</label>
+                        <input type="number" class="form-control" id="TxtFaxNumber" placeholder="請輸入傳真號碼" value="" size="8">
+                    </div>
+                </div>
+				<div class="form-group">
+					<label for="TxtOpeningHours">營業時間</label>
+						<input type="text" class="form-control" id="TxtOpeningHours" placeholder="輸入營業時間" value="">
+			    </div>
+				<div class="form-group">
+					<label>狀態</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioActive" name="r1">
+								<label for="radioActive" value="1">正常</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioInActive" name="r1">
+								<label for="radioInActive" value="1">失效</label>
+							</div>
+						</div>
+                </div>
+				<div class="form-group dropzone" style="display:none">
+                    <table border="2" cellpadding="3" class="table" bordercolor="grey">
+                       <tbody><tr><td bgcolor="#FFFFEE">
+                            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tbody><tr><td><label for="TxtShopPhoto">店舖相片</label></td></tr>
+                                <tr><td>
+                                    {% csrf_token %}
+                                     <div style="float:left"><input type="file" class="" id="TxtShopPhoto" placeholder="請選擇圖片" value="" width="200"></div>&nbsp;&nbsp;&nbsp;<div style="float:right"><button type="submit" class="btn btn-xs btn-warning" id="upload_button" action="upload"><i class="fa fa-upload"></i>&nbsp;&nbsp;上傳</button></div>
+                                </td></tr>
+                                <tr><td style="padding-top:10px">
+                                    <img src="/static/dist/img/male-160x160.jpg" class="img-circle" width="80" id="preview_icon">
+                                </td></tr>
+                            </tbody></table>
+                       </td></tr>
+                    </tbody></table>
+			    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="add_button" action="add"><i class="fa fa-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="submit" class="btn btn-warning" id="edit_button" action="edit"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                {% if 236 in request.session.accessright %}
+                <button type="submit" class="btn btn-danger" id="remove_button"><i class="fa fa-trash"></i>&nbsp;&nbsp;刪除</button>
+                {% endif %}
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        var table;
+
+        $("#searchinput").on("keyup", function() {
+			var oTable = $('#contentTable').dataTable();
+			oTable.fnFilter($(this).val());
+        });
+
+        $("#cboTeam").on('change', function(){
+            load_table();
+        });
+
+        function load_table() {
+            $("#contentTable").html('<br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>');
+            var team = $("#cboTeam").val();
+            $.ajax({
+                url:'{% url 'shopList_response' %}',
+                type:'POST',
+                data:{action:'shop_list', team:team},
+            })
+
+            .done(function(response){
+                $("#contentBody").html(response);
+                refresh_table();
+            })
+
+            .fail(function(xhr, status, error){
+                $("#contentBody").html(xhr.responseText);
+            })
+        }
+
+        function refresh_table() {
+            table = $('#contentTable').DataTable({
+                "paging": true,
+                "dom": '<"toolbar">fBrtip',
+                "order": [],
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                   language: {
+                       "sProcessing": "處理中...",
+                       "sLengthMenu": "顯示 _MENU_ 項結果",
+                       "sZeroRecords": "沒有匹配結果",
+                       "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                       "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                       "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                       "sInfoPostFix": "",
+                       "sSearch": "搜索：",
+                       "sUrl": "",
+                       "oPaginate": {
+                           "sFirst": "首頁",
+                           "sPrevious": "上一頁",
+                           "sNext": "下一頁",
+                           "sLast": "末頁"
+                       },
+                       buttons: {
+                           copy: "複製到剪貼簿"
+                       }
+                   },
+                buttons: [
+                    {   extend: "copy",
+                        text: '<i class="fa fa-copy"></i>&nbsp;&nbsp;複製',
+                        className: 'btn-warning'
+                    },
+                    {
+                        extend: "print",
+                        text: '<i class="fa fa-print"></i>&nbsp;&nbsp;列印',
+                        customize: function(win)
+                        {
+                            var last = null;
+                            var current = null;
+                            var bod = [];
+
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+
+                            style.type = 'text/css';
+                            style.media = 'print';
+
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+                            head.appendChild(style);
+                        },
+                        className: 'btn-primary'
+                    },
+                    {% if 1424 in request.session.accessright %}
+                    {
+                        text: '<i class="fa fa-plus"></i>&nbsp;&nbsp;新增店舖',
+                        action: function(e, dt, node, config) {
+                            $('#EditModal').modal('show');
+                            $("#FunctionTitle").html("<i class='fa fa-plus'></i>&nbsp;&nbsp;<b>新增店舖</b>");
+                            $(".modal-header").css('background-color', '#DD4B39');
+            				$(".modal-header").css('color', '#FFFFFF');
+                            $("#add_button").show();
+                            $("#edit_button").hide();
+                            $("#remove_button").hide();
+                            $("#print_button").hide();
+
+                            $("#shop_id").val($(this).attr("shop_id"));
+                            $("#TxtShopCode").val($(this).attr("shop_code"));
+                            $("#TxtShopName").val($(this).attr("shop_name"));
+                            $("#TxtShopNameE").val($(this).attr("shop_name_e"));
+                            $("#TxtShopAddress").val($(this).attr("shop_address"));
+                            $("#TxtPhoneAreaCode").val($(this).attr("phone_area_code"));
+                            $("#TxtPhoneNumber").val($(this).attr("phone_number"));
+                            $("#TxtFaxAreaCode").val($(this).attr("fax_area_code"));
+                            $("#TxtFaxNumber").val($(this).attr("fax_number"));
+                            $("#TxtOpeningHours").val($(this).attr("opening_hours"));
+                            $("#TxtShopPhoto").html($(this).attr("shop_photo"));
+                            $("#TxtShopLogo").html($(this).attr("shop_logo"));
+                            $("#radioActive").prop("checked", true);
+                        },
+                        className: 'btn-danger'
+                    },
+                    {% endif %}
+                ],
+            });
+    		$("div.toolbar").css("padding-bottom", "10px");
+            $("div.toolbar").html('<b><font size=3>店鋪列表</font></b>&nbsp;&nbsp;<a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="add" formtype="shop_info" formname="Shop Information" recordid="{{ displaydata.recordid }}" shop_id="{{ displaydata.shop_id }}" shop_code="{{ displaydata.shop_code }}" shop_name="{{ displaydata.shop_name }}" shop_name_e="{{ displaydata.shop_name_e }}" shop_address="{{ displaydata.shop_address }}" phone_area_code="{{ displaydata.phone_area_code }}" phone_number="{{ displaydata.phone_number }}" fax_area_code="{{ displaydata.fax_area_code }}" fax_number="{{ displaydata.fax_number }}" opening_hours="{{ displaydata.opening_hours }}" status="{{ displaydata.status }}" photoicon="{{ displaydata.PhotoIcon }}"><i class="icon-plus text-white"></i></a>');
+        }
+
+        $("#upload_button").click(function(){
+            $("#action").val($("#upload_button").attr("action"));
+        });
+
+        $("#add_button").click(function(){
+            $("#action").val("add");
+        });
+
+        $("#edit_button").click(function(){
+            $("#action").val("edit");
+        });
+
+        $("#remove_button").click(function(){
+            $("#action").val("delete");
+        });
+
+        document.getElementById("upload-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            //var fileInput = document.getElementById("TxtShopPhoto");
+            //var file = fileInput.files[0];
+            var recordid = $("#recordid").val();
+            var action = $("#action").val();
+            var shop_id = $("#shop_id").val();
+            var shop_code = $("#TxtShopCode").val();
+            var shop_name = $("#TxtShopName").val();
+            var shop_name_e = $("#TxtShopNameE").val();
+            var shop_address = $("#TxtShopAddress").val();
+            var phone_area_code = $("#TxtPhoneAreaCode").val();
+            var phone_number = $("#TxtPhoneNumber").val();
+            var fax_area_code = $("#TxtFaxAreaCode").val();
+            var fax_number = $("#TxtFaxNumber").val();
+            var opening_hours = $("#TxtOpeningHours").val();
+            if ($("#radioActive").is(':checked')) status = 1;
+            if ($("#radioInActive").is(':checked')) status = 0;
+            var shop_photo = $("#TxtShopPhoto").val();
+            var shop_logo = $("#TxtShopLogo").val();
+            var shop_logo = $("#TxtShopLogo").val();
+            if ((action == "add") || (action == "edit")) {
+                //if (fileInput.files.length == 0) {
+                    //alert("Please browse relevant inspection report file to upload")
+                    //return false;
+                //}
+                if (shop_code == '') {
+                    alert('請輸入店鋪編碼');
+                    return false;
+                }
+                if (shop_name == '') {
+                    alert('請輸入店鋪名稱');
+                    return false;
+                }
+                if (shop_name_e == '') {
+                    alert('請輸入店鋪名稱(英文)');
+                    return false;
+                }                
+                if (shop_address == '') {
+                    alert('請選擇店舖地址');
+                    return false;
+                }
+                if (phone_area_code == '') {
+                    alert('請選擇電話地區');
+                    return false;
+                }
+                if (phone_number == '') {
+                    alert('請輸入電話');
+                    return false;
+                }                
+                if (action == "add") {
+                    if (!(window.confirm("新增店舖記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                } else {
+                    if (!(window.confirm("更新店舖記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("recordid", recordid);
+                formData.append("shop_id", shop_id);
+                formData.append("shop_code", shop_code);
+                formData.append("shop_name", shop_name);
+                formData.append("shop_name_e", shop_name_e);
+                formData.append("shop_address", shop_address);
+                formData.append("phone_area_code", phone_area_code);
+                formData.append("phone_number", phone_number);
+                formData.append("fax_area_code", fax_area_code);
+                formData.append("fax_number", fax_number);
+                formData.append("opening_hours", opening_hours);
+                formData.append("status", status);
+                //formData.append("file", file);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'shopList_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功更新"
+                            },{
+                                type: 'success',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "delete") {
+                if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("recordid", recordid);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'shopList_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功刪除"
+                            },{
+                                type: 'danger',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "upload") {
+                if (fileInput.files.length == 0) {
+                    alert("Please browse relevant inspection report file to upload")
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("recordid", recordid);
+                formData.append("shop_id", shop_id);
+                formData.append("shop_code", shop_code);
+                formData.append("shop_name", shop_name);
+                formData.append("shop_name_e", shop_name_e);
+                formData.append("shop_address", shop_address);
+                formData.append("phone_area_code", phone_area_code);
+                formData.append("phone_number", phone_number);
+                formData.append("fax_area_code", fax_area_code);
+                formData.append("fax_number", fax_number);
+                formData.append("opening_hours", opening_hours);
+                formData.append("isactive", isactive);
+                formData.append("file", file);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'shopList_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        alert("File was uploaded successfully")
+                        //load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+        });
+
+        load_table()
+
+    })
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

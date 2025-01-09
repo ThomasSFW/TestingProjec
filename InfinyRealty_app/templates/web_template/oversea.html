@@ -1,0 +1,200 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"海外物業"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Account     Start               =-->
+    <!--=====================================-->
+    <div class="article-head"><br>
+        <h5 class="text-center" style="font-weight:600">{{"環球物業"|showlang:request.session.lang}}</h5>
+    </div>
+    <main class="site-main content-area">
+        <div class="container">
+            <div class="row justify-content-center">
+                {% for displaydata in countrylist %}
+                <div class="col-xl-2 col-lg-4 col-md-6">
+                    <div class="pricing-box1 wow zoomIn" data-wow-delay=".3s">
+                        <div class="heading-title open_search" country="{{displaydata.code_detail_name}}">
+                            <h3 class="item-title">
+                                {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                     {{displaydata.code_detail_name}}
+                                {% elif request.session.lang == "sc" %}
+                                     {{displaydata.code_detail_name_s}}
+                                {% else %}
+                                     {{displaydata.code_detail_name_e}}
+                                {% endif %}
+                            </h3>
+                            <div>
+                                <a href="#"><img src="/static/dist/img-web/main/{{displaydata.code_detail_photo}}"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $('.open_search').click(function(event) {
+        event.preventDefault(); // Prevent the default link behavior
+
+        var country = $(this).attr('country'); // Get the value from the data attribute
+        var action = "search_foreign"
+
+        // Send an AJAX request to the server
+        $.ajax({
+            url:'{% url 'main_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, country:country},
+            success: function(response) {
+                location.href = "/property_foreign_search"
+                console.log('Value added to session:', response);
+                // Optionally redirect or update the UI after success
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.error('Error adding value to session:', textStatus, errorThrown);
+            }
+        });
+    });
+    $(document).on("click", "#rtcl-entrust", function(){
+        var action = $(this).attr("action");
+        var contact_name = $("#contact_name").val();
+        var email = $("#email").val();
+        var phone_area_code = $("#phone_area_code").val();
+        var phone_number = $("#phone_number").val();
+        var contact_period = $("#contact_period").val();
+        var contact_period_other = $("#contact_period_other").val();
+        var property_address_1 = $("#property_address_1").val();
+        var offer_type_1 = $("#offer_type_1").val();
+        var usage_1 = $("#usage_1").val();
+        var netarea_1 = $("#netarea_1").val();
+        var rent_1 = $("#rent_1").val();
+        var selling_1 = $("#selling_1").val();
+        var property_address_2 = $("#property_address_2").val();
+        var offer_type_2 = $("#offer_type_2").val();
+        var usage_2 = $("#usage_2").val();
+        var netarea_2 = $("#netarea_2").val();
+        var rent_2 = $("#rent_2").val();
+        var selling_2 = $("#selling_2").val();
+        var remarks = $("#remarks").val();
+
+
+        var agree = $("#rtcl-agree").val();
+        if ((action == "entrust")) {
+            if (contact_name == '') {
+                alert('{{"請輸入您的姓名"|showlang:request.session.lang}}');
+                $("#contact_name").focus();
+                return false;
+            }
+            if (email == '') {
+                alert('{{"請輸入您的電郵地址"|showlang:request.session.lang}}');
+                $("#email").focus();
+                return false;
+            }
+            if (phone_number == '') {
+                alert('{{"請輸入電話號碼"|showlang:request.session.lang}}');
+                $("#phone_number").focus();
+                return false;
+            }
+            if (property_address_1 == '') {
+                alert('{{"請輸入您的物業地址"|showlang:request.session.lang}}');
+                $("#property_address_1").focus();
+                return false;
+            }
+            if (!($('#rtcl-agree').prop('checked'))) {
+                alert('{{"請確認以上的私隱政策和收集個人資料聲明，並同意貴公司使用本人於此所填寫的個人資料作直接促銷。"|showlang:request.session.lang}}');
+                return false;
+            }
+
+            if (action == "entrust") {
+                if (!(window.confirm("{{"遞交以上資料，你確定嗎？"|showlang:request.session.lang}}"))) {
+                    return false;
+                }
+            }
+
+            var message = "Action: " + action +
+                "\nContact Name: " + contact_name +
+                "\nEmail: " + email +
+                "\nArea Code: " + phone_area_code +
+                "\nPhone Number: " + phone_number +
+                "\nContact Period: " + contact_period +
+                "\nContact Period Other: " + contact_period_other +
+                "\nProperty Address 1: " + property_address_1 +
+                "\nOffer Type 1: " + offer_type_1 +
+                "\nUsage 1: " + usage_1 +
+                "\nNet Area 1: " + netarea_1 +
+                "\nRent 1: " + rent_1 +
+                "\nSelling 1: " + selling_1 +
+                "\nProperty Address 2: " + property_address_2 +
+                "\nOffer Type 2: " + offer_type_2 +
+                "\nUsage 2: " + usage_2 +
+                "\nNet Area 2: " + netarea_2 +
+                "\nRent 2: " + rent_2 +
+                "\nSelling 2: " + selling_2 +
+                "\nRemarks: " + remarks;
+
+            //alert(message);
+
+            $.ajax({
+                url:'{% url 'entrust_save' %}',
+                type:'POST',
+                data:{action:action, contact_name:contact_name, email:email, phone_area_code:phone_area_code, phone_number:phone_number, contact_period:contact_period, contact_period_other:contact_period_other, property_address_1:property_address_1, offer_type_1:offer_type_1, usage_1:usage_1, netarea_1:netarea_1, rent_1:rent_1, selling_1:selling_1, property_address_2:property_address_2, offer_type_2:offer_type_2, usage_2:usage_2, netarea_2:netarea_2, rent_2:rent_2, selling_2:selling_2, remarks:remarks},
+            })
+
+            .done(function(response){
+                if (response == "Success") {
+                    $.notify({
+                        message: "{{"你的網上委託已成功遞交"|showlang:request.session.lang}}"
+                        },{
+                            type: 'success',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    document.location.href = "/main"
+                }
+            })
+
+            .fail(function(xhr, status, error){
+                // alert the error if any error occured
+                $("#message").html(xhr.responseText)
+                //alert(xhr.responseText);
+            })
+        }
+
+    });
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

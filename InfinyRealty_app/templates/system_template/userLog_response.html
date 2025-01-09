@@ -1,0 +1,254 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+<link rel="stylesheet" href="{% static 'common/formCommon.css' %}">
+	{% if action == "menutab" %}
+		<div class="col-md-12">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs nav-primary">
+				  <!--<li class="active"><a href="#overview" data-toggle="tabajax" action="overview" year="{{year}}" start_date="{{start_date}}" end_date="{{end_date}}"><b>Overview</b></a></li>-->
+				  <li class="nav-item active"><a class="nav-link active" href="#login_log" data-toggle="tabajax" action="login_log" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1400 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>登入日誌</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#active_log" data-toggle="tabajax" action="active_log" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1401 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>活躍日誌</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#visit_log" data-toggle="tabajax" action="visit_log" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1402 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>瀏覽日誌</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#action_log" data-toggle="tabajax" action="action_log" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1402 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>動作日誌</b></a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="active tab-pane" id="login_log"></div>
+					<div class="tab-pane" id="active_log"></div>
+					<div class="tab-pane" id="visit_log"></div>
+					<div class="tab-pane" id="action_log"></div>
+				</div>
+				<div id="errormessage"></div>
+			</div>
+		</div>
+	{% endif %}
+	{% if action == "login_log" %}
+        <div class="table-responsive">
+            <table id="contentTable-{{action}}" class="display" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th width="100">登入時間</th>
+                        <th width="80">登入名稱</th>
+                        <th width="150">姓名</th>
+                        <th width="80">IP位置</th>
+                        <th width="80">用戶IP位置</th>
+                        <th width="120">伺服器</th>
+                        <th>用戶系統資料</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in login_log_list %}
+                        <tr>
+                            <td align="center">{{displaydata.LastLogin|date:'Y-m-d H:i'}}</td>
+                            <td>{{displaydata.username}}</td>
+                            <td>{{displaydata.LoginNameDesc}}</td>
+                            <td>{{displaydata.ip}}</td>
+                            <td>{{displaydata.clientip}}</td>
+                            <td>{{displaydata.serverName}}</td>
+                            <td>{{displaydata.clientInfo}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+	{% if action == "active_log" %}
+        <div class="table-responsive">
+            <table id="contentTable-{{action}}" class="display" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th width="100">活躍日期</th>
+                        <th width="120">登入名稱</th>
+                        <th width="150">姓名</th>
+                        <th width="200">電郵地址</th>
+                        <th width="80" align="center">電話</th>
+                        <th width="80">店舖</th>
+                        <th width="80">職位</th>
+                        <th>備註</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in active_log_list %}
+                        <tr>
+                            <td align="center">{{displaydata.activeDate|date:'Y-m-d H:i'}}</td>
+                            <td>{{displaydata.username}}</td>
+                            <td>{{displaydata.LoginNameDesc}}</td>
+                            <td>{{displaydata.email}}</td>
+                            <td align="center">{{displaydata.Phone}}</td>
+                            <td>{{displaydata.Team|teamtosection}}</td>
+                            <td>{{displaydata.Rank}}</td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+	{% if action == "visit_log" %}
+        <div class="table-responsive">
+            <table id="contentTable-{{action}}" class="display" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th width="100">瀏覽日期</th>
+                        <th width="120">登入名稱</th>
+                        <th width="150">姓名</th>
+                        <th>功能名稱</th>
+                        <th width="120">登入類別</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in visit_log_list %}
+                        <tr>
+                            <td align="center">{{displaydata.LogDatetime|date:'Y-m-d H:i'}}</td>
+                            <td>{{displaydata.username}}</td>
+                            <td>{{displaydata.LoginNameDesc}}</td>
+                            <td>{{displaydata.PageName}}</td>
+                            <td>{{displaydata.LoginType}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+	{% if action == "action_log" %}
+        <div class="table-responsive">
+            <table id="contentTable-{{action}}" class="display" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th width="100">瀏覽日期</th>
+                        <th width="120">登入名稱</th>
+                        <th width="150">姓名</th>
+                        <th width="120">功能名稱</th>
+                        <th width="60">日誌類別</th>
+                        <th width="120">物業編號</th>
+                        <th>動作內容</th>
+                        <th width="80">備註</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in action_log_list %}
+                        <tr>
+                            <td align="center">{{displaydata.logDatetime|date:'Y-m-d H:i'}}</td>
+                            <td>{{displaydata.username}}</td>
+                            <td>{{displaydata.LoginNameDesc}}</td>
+                            <td>{{displaydata.pagename}}</td>
+                            <td>{{displaydata.logType|default_if_none:""}}</td>
+                            <td>{{displaydata.PropertyNo|default_if_none:""}}</td>
+                            <td>{{displaydata.logDesc|default_if_none:""}}</td>
+                            <td>{{displaydata.remarks|default_if_none:""}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+	{% if action == "team_list" %}
+        {% setvar "" as tmpTeam %}
+            <option value="">- 所有用戶 -</option>
+        {% for displayuser in userlist|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displayuser.Team %}{% if tmpTeam == "" %}<optgroup label="{{displayuser.teamFullDesc}}">{% else %}</optgroup><optgroup label="{{displayuser.teamFullDesc}}">{% endif %}{% endif %}
+            <option value="{{displayuser.LoginID}}" {% if user_loginid == displayuser.LoginID %} selected {% endif %}>{{displayuser.LoginNameDesc}} ({{displayuser.rankDesc}})</option>
+            {% setvar displayuser.Team as tmpTeam %}
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+{% if action == "login_log" %}
+    $(document).ready(function(){
+
+    })
+{% endif %}
+{% if action == "action_log" or action == "active_log" or action == "eform_action_log" %}
+    $(document).ready(function(){
+
+    })
+{% endif %}
+{% if action == "menutab" %}
+    action = "login_log";
+    team = $("#cboTeam").val();
+    loginid = $("#cboUser").val();
+    $.ajax({
+        url:'{% url 'userLog_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, start_date:start_date, end_date:end_date, team:team, loginid:loginid},
+        beforeSend: function(){
+            $('#login_log').html('<br/><br/><br/><br/><br/><br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}" width=80><br/><br/><br/><br/></center></p>');
+        },
+    })
+    .done(function(response){
+        $('#login_log').html(response);
+        refresh_table(action);
+        $("div.toolbar").html('<b><font size=3>用戶登入日誌列表</font></b>');
+    })
+    .fail(function(xhr, status, error){
+        $('#login_log').html(xhr.responseText);
+        //alert(xhr.responseText);
+    })
+    var selectTab
+    $('[data-toggle="tabajax"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+        $this.attr('start_date',start.format('YYYY-MM-DD'));
+        $this.attr('end_date',end.format('YYYY-MM-DD'));
+        $this.attr('team',$("#cboTeam").val());
+        $this.attr('loginid',$("#cboUser").val());
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-target'),
+            action = $this.attr('action');
+            start_date = $this.attr('start_date');
+            end_date = $this.attr('end_date');
+            team = $this.attr('team');
+            loginid = $this.attr('loginid');
+            lock = $this.attr('lock');
+            if (lock == 1) {
+                alert("\u26A0 沒有存取此頁面的存取權限！欲了解更多信息，請聯絡系統管理員。");
+                return false;
+            }
+
+            $.ajax({
+                url:'{% url 'userLog_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, start_date:start_date, end_date:end_date, team:team, loginid:loginid},
+                beforeSend: function(){
+                    // Display the loading message with the current time
+                    var startTime = new Date().getTime();
+                    $('#'+action).html('<br/><br/><br/><br/><br/><center><b>CALCULATING</b><br/><span id="loadingTime"></span><br/><img src="{% static 'images/calculator.gif' %}" width=80><br/><br/><br/><br/></center></p>');
+                    loadingInterval = setInterval(function() {
+                      // Update the loading time every second
+                      var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+                      $('#loadingTime').html('Elapsed time: ' + elapsedTime + ' seconds');
+                    }, 1000);
+                },
+            })
+            .done(function(response){
+                // Calculate the loading time and append it to the response message
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#'+action).html(response);
+                refresh_table(action);
+                if (action == "login_log") $("div.toolbar").html('<b><font size=3>用戶登入日誌列表</font></b>&nbsp;&nbsp;&nbsp;');
+                if (action == "active_log") $("div.toolbar").html('<b><font size=3>用戶活躍日誌列表</font></b>&nbsp;&nbsp;&nbsp;');
+                if (action == "visit_log") $("div.toolbar").html('<b><font size=3>用戶瀏覽日誌列表</font></b>&nbsp;&nbsp;&nbsp;');
+                if (action == "action_log") $("div.toolbar").html('<b><font size=3>用戶動作日誌列表</font></b>&nbsp;&nbsp;&nbsp;');
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            //$(loadurl).html(loadurl);
+            $this.tab('show');
+        return false;
+    });
+{% endif %}
+</script>
+{% endblock custom_js %}

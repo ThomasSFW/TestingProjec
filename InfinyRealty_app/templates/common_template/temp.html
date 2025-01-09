@@ -1,0 +1,39 @@
+                        formid_list.append(formid)
+                        field_length = 0
+                        if pagetype == "#a" or pagetype == "#a2":
+                            cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=' + getattr(settings, "AUTH_QAIP_HOST",None) + ';UID=' + getattr(settings, "AUTH_QAIP_USER", None) + ';PWD=' + getattr(settings, "AUTH_QAIP_PASSWORD", None) + ';Database=esrform')
+                            cursor = cnxn.cursor()
+                            cursor.execute("exec spC12InfoInsp '" + formid + "','" + insptype + "'")
+                            data_list = cursor.fetchall()
+                            show_all = "Y"
+                            report_list.append({'schoolid': w.SchoolID, 'schoolid2': w.schoolID2, 'code': w.code, 'esryear': w.esrYear, 'schoolNameE': w.schoolNameE, 'schoolNameC': w.schoolNameC, 'SchoolType': schooltype, 'InspType': w.InspType, 'LoginNameDesc': w.LoginNameDesc, 'PostDesc': w.PostDesc, 'esrStartDate': w.esrStartDate, 'esrEndDate': w.esrEndDate, 'status': formstatus, 'endofsdp': w.endOfSdp, 'sql1': sql1, 'datalist': data_list, 'fieldlength': int(field_length)})
+                        if pagetype == "#a11":
+                            cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=' + getattr(settings, "AUTH_QAIP_HOST", None) + ';UID=' + getattr(settings, "AUTH_QAIP_USER", None) + ';PWD=' + getattr(settings, "AUTH_QAIP_PASSWORD", None) + ';Database=sqp')
+                            cursor = cnxn.cursor()
+                            cursor.execute("select * from V_Inspection_PI_Rating where schoolid = '" + w.SchoolID + "' and esryear = '" + str(year) + "'")
+                            data_list = cursor.fetchall()
+                            report_list.append({'schoolid': w.SchoolID, 'schoolid2': w.schoolID2, 'code': w.code, 'esryear': w.esrYear, 'schoolNameE': w.schoolNameE, 'schoolNameC': w.schoolNameC, 'SchoolType': schooltype, 'InspType': w.InspType, 'LoginNameDesc': w.LoginNameDesc, 'PostDesc': w.PostDesc, 'esrStartDate': w.esrStartDate, 'esrEndDate': w.esrEndDate, 'status': formstatus, 'endofsdp': w.endOfSdp, 'sql1': sql1, 'datalist': data_list, 'fieldlength': int(field_length)})
+                        if pagetype == "#c":
+                            if subject == "MA":
+                                field_list = EformPage.objects.using('esrform').filter(year=year, insptype=inspectiontype, formpage="supp_note_b_form", part=part, pagebase=2, focustypeid=focustype, subfocustypeid=subject, schooltypeid=schooltype, schooltypeid__in=['P', 'S']).exclude(pageid__in=['c', 'c1', 'c12', 'c2']).order_by('sequence')
+                            else:
+                                field_list = EformPage.objects.using('esrform').filter(year=year, insptype=inspectiontype,formpage="supp_note_b_form", part=part, pagebase=2, focustypeid=focustype, schooltypeid="A").exclude(pageid__in=['c', 'c1', 'c12', 'c2']).order_by('sequence')
+                            debug = pagetype
+                            field_string = ""
+                            field_type = ""
+                            temp_list = []
+                            count = 0
+                            variable_list = {}
+                            for z in field_list:
+                                cnxn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=' + getattr(settings, "AUTH_QAIP_HOST", None) + ';UID=' + getattr( settings, "AUTH_QAIP_USER", None) + ';PWD=' + getattr(settings, "AUTH_QAIP_PASSWORD", None) + ';Database=' + z.readdb)
+                                cursor = cnxn.cursor()
+                                cursor.execute("select * from " + z.readtable + " where " + strWhereFieldName + " = '" + formid + "'")
+                                data_list = cursor.fetchall()
+                                number_of_records = len(data_list)
+                                count = count + 1
+                                variable_list['CD' + str(count)] = number_of_records
+                            temp_list.append(variable_list)
+                            data_list = temp_list
+                            show_all = "Y"
+                            if data_list and show_all == "N" or show_all == "Y":
+                                report_list.append({'schoolid': w.SchoolID, 'schoolid2': w.schoolID2, 'code': w.code, 'esryear': w.esrYear, 'schoolNameE': w.schoolNameE, 'schoolNameC': w.schoolNameC, 'SchoolType': schooltype, 'InspType': w.InspType, 'LoginNameDesc': w.LoginNameDesc, 'PostDesc': w.PostDesc, 'esrStartDate': w.esrStartDate, 'esrEndDate': w.esrEndDate, 'status': formstatus, 'endofsdp': w.endOfSdp, 'sql1': sql1, 'datalist': data_list, 'fieldlength': int(field_length)})

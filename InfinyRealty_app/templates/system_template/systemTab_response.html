@@ -1,0 +1,108 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "systemtab_list" %}
+        <div class="table-responsive">
+            <table class="display" id="contentTable">
+                <thead>
+                    <tr class="skin-blue">
+                        <th width="20">ID</th>
+                        <th>系統分頁名稱</th>
+                        <th width="150">網址</th>
+                        <th style="text-align:center;" width="40">次序</th>
+                        <th style="text-align:center;" width="60">圖示類</th>
+                        <th style="text-align:center;" width="40">狀態</th>
+                        <th style="text-align:center;" width="20">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in tabs|dictsort:"sequence" %}
+                    <tr>
+                        <td style = "text-align: center;">{{ displaydata.tabid }}</td>
+                        <td data-filter="{{ displaydata.tabname }}">{{ displaydata.tabname }}</td>
+                        <td>{{ displaydata.url }}</td>
+                        <td style = "text-align: center;">{{ displaydata.sequence }}</td>
+                        <td style = "text-align: center;">
+                            {% if displaydata.iconclass == None %}
+                                NIL
+                            {% elif displaydata.iconclass != '' %}
+                                <i class="{{ displaydata.iconclass }}"></i>
+                            {% else %}
+                                NIL
+                            {% endif %}
+                        </td>
+                        <td style = "text-align: center;">
+                            {% if displaydata.isenabled == 1 %}
+                            <span class="badge rounded-pill badge-success">正常</span>
+                            {% else %}
+                            <span class="badge rounded-pill badge-danger">失效</span>
+                            {% endif %}
+                        </td>
+                        <td align="center">
+                            <ul class="action">
+                            {% if 245 not in request.session.accessright %}
+                                <li class="edit"> <a href="#" class="open_modal_edit" data-bs-target="#EditModal" action="edit" formtype="systemtab" formname="Tab Information" tabid="{{ displaydata.tabid }}" tabname="{{ displaydata.tabname }}" url="{{ displaydata.url }}" sequence="{{ displaydata.sequence }}" iconclass="{{ displaydata.iconclass }}" isenabled="{{ displaydata.isenabled }}"><i class="icon-lock"></i></a></li>
+                            {% else %}
+                                <li class="edit"> <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="edit" formtype="systemtab" formname="Tab Information" tabid="{{ displaydata.tabid }}" tabname="{{ displaydata.tabname }}" url="{{ displaydata.url }}" sequence="{{ displaydata.sequence }}" iconclass="{{ displaydata.iconclass }}" isenabled="{{ displaydata.isenabled }}"><i class="icon-pencil-alt"></i></a></li>
+                            {% endif %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "systemtab_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#tabid").val($(this).attr("tabid"));
+                $("#action").val($(this).attr("action"));
+                $("#TxtTabName").val($(this).attr("tabname"));
+                $("#TxtURL").val($(this).attr("url"));
+                $("#TxtSequence").val($(this).attr("sequence"));
+                $("#TxtIconClass").val($(this).attr("iconclass"));
+                if (($(this).attr("isenabled") == "1") || ($(this).attr("isenabled") == ""))
+                    $("#radioActive").prop("checked", true);
+                else
+                    $("#radioInActive").prop("checked", true);
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增系統分頁</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                } else {
+                    $("#FunctionTitle").html("<i class='icon-pencil-alt'></i>&nbsp;&nbsp;<b>編輯系統分頁</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

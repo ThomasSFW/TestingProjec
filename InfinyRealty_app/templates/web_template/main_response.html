@@ -1,0 +1,433 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+
+	{% if action == "recommend_view" %}
+        <div class="row">
+            {% for displayproperty in property_view_list %}
+                {% if display == "1" %}
+                    <div class="col-lg-3 col-lg-3 col-md-6">
+                        <div class="property-box3">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="/static/dist/img-web/property-cms/{{displayproperty.PropertyID}}/{{displayproperty.FileName|showwatermark}}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                        <div class="item-category">{{displayproperty.OfferType|showlang:request.session.lang}}</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        {% if displayproperty.OfferType == "放售" %}
+                                        <div class="item-price">HK${{displayproperty.SellingPrice|default_if_none:""|format_number_with_commas}}</div>
+                                        {% else %}
+                                        <div class="item-price">HK${{displayproperty.SellingPrice|default_if_none:""|format_number_with_commas}}<span><i>/</i>{{"月"|showlang:request.session.lang}}</span></div>
+                                        {% endif %}
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show/{{displayproperty.PropertyID}}">
+                                    {% if displayproperty.Building == "" %}
+                                        {{displayproperty.Street}}{{displayproperty.StreetNo}}{% if displayproperty.StreetNo|slice:"-1" != "號" %}號{% endif %}
+                                    {% else %}
+                                        {{displayproperty.Building}}
+                                    {% endif %}
+                                    </a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-maps-and-flags"></i>{{displayproperty.SubDistrict}}</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>{{displayproperty.NetArea|default_if_none:""|format_number_with_commas}} {{"平方呎"|showlang:request.session.lang}}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if display == "2" %}
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12 for-sell">
+                        <div class="property-box2">
+                            <div class="item-img" style="max-height:260px">
+                                <a href="/property_show/{{displayproperty.PropertyID}}"><img src="/static/dist/img-web/property-cms/{{displayproperty.PropertyID}}/{{displayproperty.FileName|showwatermark}}" alt="blog" width="510" height="340"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">{{displayproperty.OfferType|showlang:request.session.lang}}</div>
+                                </div>
+                                <div class="rent-price">
+                                    {% if displayproperty.OfferType == "放售" %}
+                                        {% if displayproperty.SellingPrice|default_if_none:"" != "" %}
+                                        <div class="item-price">{{"售"|showlang:request.session.lang}}：HK${{displayproperty.SellingPrice|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if displayproperty.OfferType == "放租" %}
+                                        {% if displayproperty.Rent|default_if_none:"" != "" %}
+                                        <div class="item-price">{{"租"|showlang:request.session.lang}}：HK${{displayproperty.Rent|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if displayproperty.OfferType == "連租約售" %}
+                                        {% if displayproperty.SellingPrice|default_if_none:"" != "" %}
+                                        <div class="item-price">{{"售"|showlang:request.session.lang}}：HK${{displayproperty.SellingPrice|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if displayproperty.OfferType == "租售" %}
+                                        {% if displayproperty.Rent|default_if_none:"" != "" %}
+                                        <div class="item-price">{{"租"|showlang:request.session.lang}}：HK${{displayproperty.Rent|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                        {% if displayproperty.SellingPrice|default_if_none:"" != "" %}
+                                        <div class="item-price">{{"售"|showlang:request.session.lang}}：HK${{displayproperty.SellingPrice|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if displayproperty.OfferType == "放售" %}
+                                        {% if displayproperty.UnitPrice|default_if_none:"" != "" %}
+                                        <div class="unitrent-price">HK${{displayproperty.UnitPrice|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if displayproperty.OfferType == "放租" %}
+                                        {% if displayproperty.UnitRent|default_if_none:"" != "" %}
+                                        <div class="unitrent-price">@HK${{displayproperty.UnitRent|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if displayproperty.OfferType == "連租約售" %}
+                                        {% if displayproperty.UnitPrice|default_if_none:"" != "" %}
+                                        <div class="unitrent-price">HK${{displayproperty.UnitPrice|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if displayproperty.OfferType == "租售" %}
+                                        {% if displayproperty.UnitRent|default_if_none:"" != "" %}
+                                        <div class="unitrent-price">@HK${{displayproperty.UnitRent|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                        {% if displayproperty.UnitPrice|default_if_none:"" != "" %}
+                                        <div class="unitrent-price">HK${{displayproperty.UnitPrice|default_if_none:""|format_number_with_commas}}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="item-category10">{{displayproperty.Usage|showlang:request.session.lang}}</div>
+                            <div class="item-content">
+                                <div class="verified-area">
+                                    <h3 class="item-title">
+                                        <a href="/property_show/{{displayproperty.PropertyID}}">
+                                    {% if displayproperty.Building|default_if_none:"" == "" %}
+                                        {{displayproperty.Street}}{{displayproperty.StreetNo}}{% if displayproperty.StreetNo|slice:"-1" != "號" %}號{% endif %}{% if displayproperty.FloorZone != "" %}{{displayproperty.FloorZone}}{% endif %}
+                                    {% else %}
+                                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                            {{displayproperty.Building}}
+                                        {% elif request.session.lang == "sc" %}
+                                            {{displayproperty.Building_s}}
+                                        {% else %}
+                                            {{displayproperty.Building_e}}
+                                        {% endif %}
+                                            {% if displayproperty.Street|default_if_none:"" != "" %}
+                                                {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                                    {{displayproperty.Street}}
+                                                {% elif request.session.lang == "sc" %}
+                                                    {{displayproperty.Street_s}}
+                                                {% else %}
+                                                    {{displayproperty.Street_e}}
+                                                {% endif %}
+                                            {% endif %}{% if displayproperty.StreetNo|default_if_none:"" != "" %}{{displayproperty.StreetNo}}號{% endif %}{% if displayproperty.FloorZone|default_if_none:"" != "" %}{{displayproperty.FloorZone|showlang:request.session.lang}}{% endif %}
+                                    {% endif %}
+                                        </a>
+                                    </h3>
+                                </div>
+                                <!--<div class="location-area"><i class="flaticon-maps-and-flags"></i>{{displayproperty.SubDistrict}}</div>-->
+                                <div class="item-categoery3">
+                                    <ul>
+                                        <li><i class="flaticon-maps-and-flags"></i>
+                                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                            {{displayproperty.SubDistrict}}
+                                        {% elif request.session.lang == "sc" %}
+                                            {{displayproperty.SubDistrict_s}}
+                                        {% else %}
+                                            {{displayproperty.SubDistrict_e}}
+                                        {% endif %}
+                                        </li>
+                                        <li><i class="flaticon-two-overlapping-square"></i>
+                                            {% if displayproperty.GrossArea|default_if_none:"" != "" and displayproperty.GrossArea|default_if_none:"" != "0" %}
+                                                {{"約"|showlang:request.session.lang}} {{displayproperty.GrossArea|default_if_none:""|format_number_with_commas}} {{"平方呎"|showlang:request.session.lang}}{{"(建築)"|showlang:request.session.lang}}
+                                            {% else %}
+                                                {% if displayproperty.NetArea|default_if_none:"" != "" and displayproperty.NetArea|default_if_none:"" != "0" %}
+                                                    {{displayproperty.NetArea|default_if_none:""|format_number_with_commas}} {{"平方呎"|showlang:request.session.lang}}{{"(實用)"|showlang:request.session.lang}}
+                                                {% else %}
+                                                    {{"不適用"|showlang:request.session.lang}}
+                                                {% endif %}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="item-categoery3">
+                                    <ul>
+                                        <li><i class="far fa-number">#</i><!--物業編號：-->{{displayproperty.PropertyNo}}</li>
+                                        <li><i class="far fa-calendar-alt"></i><!--更新日期：-->{{displayproperty.ModifyDate|date:'Y/m/d'}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+	{% if action == "recommend_rent" %}
+        <div class="row">
+            {% for displayproperty in property_rent_view_list %}
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="rent-feature1">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="rent-box2">
+                                        <div class="item-img">
+                                            <a href="/property_show/{{displayproperty.PropertyID}}"><img src="/static/dist/img-web/property-cms/{{displayproperty.PropertyID}}/{{displayproperty.FileName|showwatermark}}" alt="property" height="170" width="220"></a>
+                                            <div class="item-category">
+                                                <a href="/property_show/{{displayproperty.PropertyID}}">{{displayproperty.OfferType}}</a>
+                                            </div>
+                                        </div>
+                                        <div class="item-content">
+                                            <h3 class="item-title"><a href="/property_show/{{displayproperty.PropertyID}}">
+                                                {{displayproperty.Building}}</a></h3>
+                                            <div class="location-area"><i class="flaticon-maps-and-flags"></i>{{displayproperty.SubDistrict}}</div>
+                                            <div class="item-categoery3">
+                                                <ul>
+                                                    <!--<li><i class="flaticon-bed"></i>Beds: 03</li>
+                                                    <li><i class="flaticon-shower"></i>Baths: 02</li>-->
+                                                    <li><i class="flaticon-two-overlapping-square"></i>{{displayproperty.NetArea|default_if_none:""|format_number_with_commas}} {{"平方呎"|showlang:request.session.lang}}</li>
+                                                </ul>
+                                            </div>
+                                            <div class="rent-price">
+                                                <div class="item-price">HK${{displayproperty.Rent|default_if_none:""|format_number_with_commas}} <span><i>/</i>{{"月"|showlang:request.session.lang}}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+	{% if action == "newproperty_view" %}
+        <div class="row">
+            {% for displayproperty in property_view_list %}
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12 for-sell">
+                    <div class="property-box2">
+                        <div class="item-img" style="max-height:260px">
+                            <!--<a href="/property_show/{{displayproperty.PropertyID}}"><img src="/static/dist/img-web/property-cms/{{displayproperty.PropertyID}}/{{displayproperty.FileName|showwatermark}}" alt="blog" width="510" height="340"></a>-->
+                            <a href="/newproperty_show/{{displayproperty.listing_id}}"><img src="/static/dist/img-web/propertynew-cms/{{displayproperty.listing_id}}/{{displayproperty.FileName}}" alt="property" width="510" height="340"></a>
+                            <!--
+                            <div class="item-category-box1">
+                                <div class="item-category">{{displayproperty.OfferType}}</div>
+                            </div>
+                            -->
+                            <!--
+                            <div class="rent-price">
+                                {% if displayproperty.min_selling_price|default_if_none:"" != "" %}
+                                <div class="item-price">售：HK${{displayproperty.min_selling_price|default_if_none:""|format_number_with_commas}}萬起*</div>
+                                {% endif %}
+                            </div>
+                            -->
+                        </div>
+                        <div class="item-category10">
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                {{displayproperty.development_type}}
+                            {% elif request.session.lang == "sc" %}
+                                {{displayproperty.development_type_s}}
+                            {% else %}
+                                {{displayproperty.development_type_e}}
+                            {% endif %}
+                        </div>
+                        <div class="item-content">
+                            <div class="verified-area">
+                                <h3 class="item-title">
+                                    <a href="/newproperty_show/{{displayproperty.listing_id}}">
+                                    {% if displayproperty.development_name|default_if_none:"" != "" %}
+                                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                            {{displayproperty.development_name}}
+                                        {% elif request.session.lang == "sc" %}
+                                            {{displayproperty.development_name_s}}
+                                        {% else %}
+                                            {{displayproperty.development_name_e}}
+                                        {% endif %}
+                                    {% endif %}
+                                    </a>
+                                </h3>
+                            </div>
+                            <!--<div class="location-area"><i class="flaticon-maps-and-flags"></i>{{displayproperty.SubDistrict}}</div>-->
+                            <div class="item-categoery3">
+                                <ul>
+                                    <li><i class="flaticon-maps-and-flags"></i>
+                                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                            {{displayproperty.district}}
+                                        {% elif request.session.lang == "sc" %}
+                                            {{displayproperty.district_s}}
+                                        {% else %}
+                                            {{displayproperty.district_e}}
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="item-categoery3">
+                                <ul>
+                                    <li><i class="far fa-calendar-alt"></i>{{"預計關鍵日期"|showlang:request.session.lang}}：{{displayproperty.estimated_completion_date|date:'Y/m/d'}}</li>
+                                </ul>
+                            </div>
+                            <div class="item-categoery3">
+                                <ul>
+                                    <li><i class="far fa-calendar-alt"></i>{{"首次出售"|showlang:request.session.lang}}：{{displayproperty.first_sale_date|date:'Y/m/d'}}</li>
+                                </ul>
+                            </div>
+                            <div class="item-categoery3">
+                                <ul>
+                                    <li></li>
+                                    <li>
+                                        {% if displayproperty.min_selling_price|default_if_none:"" != "" %}
+                                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                                <h4 class="item-title"><b>{{"售"|showlang:request.session.lang}}：HK${{displayproperty.min_selling_price|default_if_none:""|format_number_with_commas}}萬起*</b></h4>
+                                            {% elif request.session.lang == "sc" %}
+                                                <h4 class="item-title"><b>{{"售"|showlang:request.session.lang}}：HK${{displayproperty.min_selling_price|default_if_none:""|format_number_with_commas}}万起*</b></h4>
+                                            {% else %}
+                                                <h4 class="item-title"><b>{{"售"|showlang:request.session.lang}}：HK${{displayproperty.min_selling_price|default_if_none:""|format_number_with_commas}}M up*</b></h4>
+                                            {% endif %}
+                                        {% else %}
+                                        <h4 class="item-title"><b>&nbsp;</b></h4>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+	{% if action == "index_view" %}
+        <div class="row">
+        {% for displaydata in district_count_list %}
+            <span class="searchTree_cat_count"><font size=2 style="font-weight:600">{{ displaydata.District }}({{ displaydata.district_count }})</font></span>&nbsp;&nbsp;
+        {% endfor %}
+        {% for displaydata in subdistrict_count_list %}
+            {{ displaydata.SubDistrict }} ({{ displaydata.subdistrict_count }})
+        {% endfor %}
+        </div>
+    {% endif %}
+
+	{% if action == "transaction_record" %}
+        <div class="table-responsive">
+            <table class="display" id="contentTable{{display}}" data-page-length="10">
+                <thead>
+                    <tr style="text-align:center;">
+                        <th width="100">{{"成交日期"|showlang:request.session.lang}}</th>
+                        <th width="100">{{"區域"|showlang:request.session.lang}}</th>
+                        <th>{{"物業名稱"|showlang:request.session.lang}}</th>
+                        <th width="100">{{"樓層"|showlang:request.session.lang}}</th>
+                        <th width="140">{{"建築面積"|showlang:request.session.lang}}{{"(未核實)"|showlang:request.session.lang}}</th>
+                        <!--<th width="80">盤類</th>-->
+                        <th style="text-align:center;" width="100">{{"成交價"|showlang:request.session.lang}}</th>
+                        <th style="text-align:center;" width="100">{{"單價"|showlang:request.session.lang}}</th>
+                        <th style="text-align:center;" width="100">{{"來源"|showlang:request.session.lang}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in transaction_record_list %}
+                    <tr valign="top">
+                        <td data-filter="{{ displaydata.transactiondate }}">{{ displaydata.transactiondate|date:'Y-m-d' }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.district }}">{{ displaydata.district }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.propertyname }}">{{ displaydata.propertyname }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.floor }}">{{ displaydata.floor }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.approximatearea }}">{{ displaydata.approximatearea }}</td>
+                        <!--<td style="text-align:center;" data-filter="{{ displaydata.transactionstatus }}">
+                        {% if displaydata.transactionstatus == "已租" %}
+                            <font color="green">{{ displaydata.transactionstatus }}</font>
+                        {% else %}
+                            <font color="red">{{ displaydata.transactionstatus }}</font>
+                        {% endif %}
+                        </td>-->
+                        <td style="text-align:center;" data-filter="{{ displaydata.transactionprice }}">{{ displaydata.transactionprice }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.unitprice }}">{{ displaydata.unitprice }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.source }}">{{ displaydata.source }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% endif %}
+
+	{% if action == "transaction_page" %}
+        <div class="table-responsive">
+            <table class="display" id="contentTable{{display}}" data-page-length="20">
+                <thead>
+                    <tr style="text-align:center;">
+                        <th width="100">{{"成交日期"|showlang:request.session.lang}}</th>
+                        <th width="100">{{"區域"|showlang:request.session.lang}}</th>
+                        <th>{{"物業名稱"|showlang:request.session.lang}}</th>
+                        <th width="100">{{"樓層"|showlang:request.session.lang}}</th>
+                        <th width="140">{{"建築面積"|showlang:request.session.lang}}{{"(未核實)"|showlang:request.session.lang}}</th>
+                        <!--<th width="80">盤類</th>-->
+                        <th style="text-align:center;" width="100">{{"成交價"|showlang:request.session.lang}}</th>
+                        <th style="text-align:center;" width="100">{{"單價"|showlang:request.session.lang}}</th>
+                        <th style="text-align:center;" width="100">{{"來源"|showlang:request.session.lang}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in transaction_record_list|dictsortreversed:"transactiondate" %}
+                    <tr valign="top">
+                        <td data-filter="{{ displaydata.transactiondate }}">{{ displaydata.transactiondate|date:'Y-m-d' }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.district }}">{{ displaydata.district }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.propertyname }}">{{ displaydata.propertyname }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.floor }}">{{ displaydata.floor }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.approximatearea }}">{{ displaydata.approximatearea }}</td>
+                        <!--<td style="text-align:center;" data-filter="{{ displaydata.transactionstatus }}">
+                        {% if displaydata.transactionstatus == "已租" %}
+                            <font color="green">{{ displaydata.transactionstatus }}</font>
+                        {% else %}
+                            <font color="red">{{ displaydata.transactionstatus }}</font>
+                        {% endif %}
+                        </td>-->
+                        <td style="text-align:center;" data-filter="{{ displaydata.transactionprice }}">{{ displaydata.transactionprice }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.unitprice }}">{{ displaydata.unitprice }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.source }}">{{ displaydata.source }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+	{% if action == "transaction_record" %}
+	function refresh_table() {
+        table = $('#contentTable1, #contentTable2, #contentTable3, #contentTable4').DataTable({
+            destroy: true,
+            "paging": false,
+            "dom": 'Brt',
+            "ordering": false, // Disable sorting
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+               language: {
+                   "sProcessing": "處理中...",
+                   "sLengthMenu": "顯示 _MENU_ 項結果",
+                   "sZeroRecords": "沒有匹配結果",
+                   "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                   "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                   "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                   "sInfoPostFix": "",
+                   "sSearch": "搜索：",
+                   "sUrl": "",
+                   "oPaginate": {
+                       "sFirst": "首頁",
+                       "sPrevious": "上一頁",
+                       "sNext": "下一頁",
+                       "sLast": "末頁"
+                   },
+               },
+        });
+	}
+    refresh_table();
+	{% endif %}
+</script>
+{% endblock custom_js %}

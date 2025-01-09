@@ -1,0 +1,194 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "inspection_list" %}
+        <table id="contentTable" class="table table-bordered table-striped" data-page-length="100">
+            <thead>
+                <tr class="skin-blue">
+                    <th width="50">Code</th>
+                    <th width="50">School ID</th>
+                    <th width="10">Year</th>
+                    <th>School Name</th>
+                    <th width="50">Insp.<br>Type</th>
+                    <th width="120">Team Leader</th>
+                    <th width="200">Inspection Report</th>
+                    <th width="120">Last Upload</th>
+                    <th width="60">Content Import</th>
+                    <th width="80">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for displaydata in teammember_list %}
+                <tr>
+                    <td align="center" data-filter="{{ displaydata.code }}">
+                        <span style="display:none">{{ displaydata.code }}</span>
+                        {% if displaydata.schoolid2 != "NULL" %}
+                            {% if 259 in request.session.accessright %}
+                                <a href="#" class="open_modal_school_info" data-toggle="modal" data-target="#SchoolInfoModal" action="view" formtype="school_info" formname="School Information" code="{{ displaydata.code }}" schoolid="{{ displaydata.schoolid }}" year="{{ displaydata.esryear }}" insptype="{{displaydata.InspType}}" loginid="{{ displaydata.LoginID|safe }}" schoolname="{{ displaydata.schoolNameE }}<br>{{ displaydata.schoolNameC }}" subcode="{{ displaydata.subcode }}" tmpost="{{displaydata.tmpost}}" status="-1"><span class="info-box-number">{{ displaydata.code }}{{displaydata.schoolid|getSchoolType}}</span></a>
+                                <a href="#" class="open_modal_school_info" data-toggle="modal" data-target="#SchoolInfoModal" action="view" formtype="school_info" formname="School Information" code="{{ displaydata.code }}" schoolid="{{ displaydata.schoolid2 }}" year="{{ displaydata.esryear }}" insptype="{{displaydata.InspType}}" loginid="{{ displaydata.LoginID|safe }}" schoolname="{{ displaydata.schoolNameE }}<br>{{ displaydata.schoolNameC }}" subcode="{{ displaydata.subcode }}" tmpost="{{displaydata.tmpost}}" status="-1"><span class="info-box-number">{{ displaydata.code }}{{displaydata.schoolid2|getSchoolType}}</span></a>
+                            {% else %}
+                                {{ displaydata.code }}{{displaydata.schoolid|getSchoolType}}<br>{{ displaydata.code }}{{displaydata.schoolid2|getSchoolType}}
+                            {% endif %}
+                        {% else %}
+                            {% if 259 in request.session.accessright %}
+                                <a href="#" class="open_modal_school_info" data-toggle="modal" data-target="#SchoolInfoModal" action="view" formtype="school_info" formname="School Information" code="{{ displaydata.code }}" schoolid="{{ displaydata.schoolid }}" year="{{ displaydata.esryear }}" insptype="{{displaydata.InspType}}" loginid="{{ displaydata.LoginID|safe }}" schoolname="{{ displaydata.schoolNameE }}<br>{{ displaydata.schoolNameC }}" subcode="{{ displaydata.subcode }}" tmpost="{{displaydata.tmpost}}" status="-1"><span class="info-box-number">{{ displaydata.code }}</span></a>
+                            {% else %}
+                                {{ displaydata.code }}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <!--<td align="center" data-filter="{{ displaydata.code }}"><span class="info-box-number"><a href="{% url 'school_info' displaydata.schoolid %}">{{ displaydata.code }}</a></span></td>-->
+                    <td data-filter="{{ displaydata.schoolid }}">{{ displaydata.schoolid }}</td>
+                    <td align="center" data-filter="{{ displaydata.esryear }}">{{ displaydata.esryear }}</td>
+                    <td data-filter="{{ displaydata.schoolNameE }}{{ displaydata.schoolNameC }}">{{ displaydata.schoolNameE }}<br>{{ displaydata.schoolNameC }}</td>
+                    <td align="center" data-filter="{{ displaydata.InspType }}">{{ displaydata.InspType }}</td>
+                    <td data-filter="{{ displaydata.tl_loginnamedesc }}{{ displaydata.tl_postdesc }}">{{ displaydata.tl_loginnamedesc }}<br>{{ displaydata.tl_postdesc }}</td>
+                    <td data-filter="{{ displaydata.reportfilename|default_if_none:"" }}">
+                        {% if displaydata.reportfilename|default_if_none:"" != "" %}
+                            {% if 260 in request.session.accessright %}
+                                <a href="{% url 'downloadfile' displaydata.InspType displaydata.esryear displaydata.code displaydata.schoolid %}"><span class="info-box-number">
+                                <img src="{% static ''|add:displaydata.reportfilename|default_if_none:''|get_file_icon' %}" width="22"> {{ displaydata.reportfilename|default_if_none:"" }}
+                                </span></a>
+                            {% else %}
+                                <span class="info-box-number"><img src="{% static ''|add:displaydata.reportfilename|default_if_none:''|get_file_icon' %}" width="22"> {{ displaydata.reportfilename|default_if_none:"" }}</span>
+                            {% endif %}
+                        {% else %}
+                            <span style="color:red;width:100%;text-align:center">-- Unavailable --</span>
+                        {% endif %}
+                    </td>
+                    <td data-filter="{{ displaydata.lastuploaddate|date:'Y/m/d' }}">
+                        {% if displaydata.PostDesc|default_if_none:"" != "" %}
+                            <font color="green">{{ displaydata.PostDesc }} at {{ displaydata.lastuploaddate|date:'Y/m/d' }}</font>
+                        {% endif %}
+                    </td>
+                    <td data-filter="{{ displaydata.content_import }}" align="center">
+                        {% if displaydata.content_import == "Yes" %}
+                            {{ displaydata.content_import }}
+                        {% else %}
+                            <span style="color:red;width:100%;text-align:center">-- Pending --</span>
+                        {% endif %}
+                    </td>
+                    <td data-filter="{{ displaydata.esrEndDate|date:'Y/m/d' }}" align="center">
+                        {% if 261 in request.session.accessright %}
+                            {% if displaydata.reportfilename|default_if_none:"" != "" %}
+                                <a href="#" class="btn btn-danger btn-xs btn-block open_modal_fileupload" data-toggle="modal" data-target="#FileUploadModal" action="remove" formtype="school_contact" formname="School ESDA Contact Information" schoolid="{{ displaydata.schoolid }}" schoolname="{{ displaydata.schoolNameE|trim }}<br>{{ displaydata.schoolNameC|trim }}" esryear="{{ displaydata.esryear }}" schoolyear="{{ displaydata.esryear|schoolyear }}" schoolcode="{{ displaydata.code }}" insptype="{{ displaydata.InspType }}" teamleader="{{ displaydata.tl_loginnamedesc }} - {{ displaydata.tl_postdesc }}" reportfilename="{{ displaydata.reportfilename|default_if_none:"" }}"><i class="fa fa-trash"></i>&nbsp;&nbsp;Remove</a>
+                            {% else %}
+                                <a href="#" class="btn btn-warning btn-xs btn-block open_modal_fileupload" data-toggle="modal" data-target="#FileUploadModal" action="upload" formtype="school_contact" formname="School ESDA Contact Information" schoolid="{{ displaydata.schoolid }}" schoolname="{{ displaydata.schoolNameE|trim }}<br>{{ displaydata.schoolNameC|trim }}" esryear="{{ displaydata.esryear }}" schoolyear="{{ displaydata.esryear|schoolyear }}" schoolcode="{{ displaydata.code }}" insptype="{{ displaydata.InspType }}" teamleader="{{ displaydata.tl_loginnamedesc }} - {{ displaydata.tl_postdesc }}" reportfilename="{{ displaydata.reportfilename|default_if_none:"" }}"><i class="fa fa-upload"></i>&nbsp;&nbsp;Upload</a>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+	{% if action == "team_list" %}
+            <option value="">- All -</option>
+        {% setvar "" as tmpTeam%}
+        {% for teamleader in team_list|dictsort:"PostDesc"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != teamleader.TeamDesc %}{% if tmpTeam == "" %}<optgroup label="{{teamleader.TeamDesc|teamtosection}}">{% else %}</optgroup><optgroup label="{{teamleader.TeamDesc|teamtosection}}">{% endif %}{% endif %}
+            <option value="{{teamleader.LoginID}}"{% if user_loginid|safe == teamleader.LoginID|safe %} selected {% endif %}>{{teamleader.PostDesc}} - {{teamleader.LoginNameDesc}}</option>
+            {% setvar teamleader.TeamDesc as tmpTeam%}
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+	{% if action == "inspection_list" %}
+    <script>
+        $(document).ready(function(){
+            $(".open_modal_school_info").click(function(){
+                action = $(this).attr("action");
+                formtype = $(this).attr("formtype");
+                formname = $(this).attr("formname");
+                schoolid = $(this).attr("schoolid");
+                year = $(this).attr("year");
+                insptype = $(this).attr("insptype");
+                loginid = $(this).attr("loginid");
+                schoolname = $(this).attr("schoolname");
+                tmpost = $(this).attr("tmpost");
+                code = $(this).attr("code");
+                subcode = $(this).attr("subcode");
+                status = $(this).attr("status");
+
+                if (action == "view") {
+                    $("#SchoolInfoTitle").html("<i class='fa fa-eye'/>&nbsp;&nbsp;View - "+formname);
+                    //$("#confirm_button").text("Create and save");
+                    //$("#confirm_button").attr("action", "add");
+                    $(".modal-header").css('background-color', '#00A65A');
+                    $(".modal-header").css('color', '#FFFFFF');
+                    $("#draft_button_fb").hide();
+                    $("#confirm_button_fb").hide();
+                    $("#unconfirm_button_fb").show();
+                }
+                if (formtype == "school_info") {
+                    $.ajax({
+                        url:'{% url 'schoolInfo_response' %}',
+                        type:'POST',
+                        data:{action:'school_info', schoolid:schoolid, year:year, insptype:insptype, schoolname:schoolname, loginid:loginid, tmpost:tmpost, subcode:subcode, code:code},
+                    })
+                    .done(function(response){
+                        $("#SchoolInfoModal .modal-body").html(response);
+                    })
+                    .fail(function(xhr, status, error){
+                        $('#SchoolInfoModal .modal-message').html(xhr.responseText);
+                        //alert(xhr.responseText);
+                    })
+                }
+            });
+
+            $(".open_modal_fileupload").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#id").val($(this).attr("recordid"));
+                $("#action").html($(this).attr("action"));
+                $("#insptype").html($(this).attr("insptype"));
+                $("#schoolid").html($(this).attr("schoolid"));
+                $("#esryear").html($(this).attr("esryear"));
+                $("#teamleader").html($(this).attr("teamleader"));
+                $("#schoolname").html($(this).attr("schoolname"));
+                $("#schoolyear").html($(this).attr("schoolyear"));
+                $("#schoolcode").html($(this).attr("schoolcode"));
+                $("#inspectiontype").html($(this).attr("insptype"));
+                $("#filename").html($(this).attr("reportfilename"));
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                var showuploadname = document.getElementById("showuploadname");
+                var showfilename = document.getElementById("showfilename");
+                if (action == 'upload') {
+                    $("#FunctionTitle").html("<i class='fa fa-upload'></i>&nbsp;&nbsp;<b>Upload Inspection Report</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    showuploadname.style.display = "";
+                    showfilename.style.display = "none";
+                    $("#upload_button").show();
+                    $("#remove_button").hide();
+                } else {
+                    $("#FunctionTitle").html("<i class='fa fa-trash'></i>&nbsp;&nbsp;<b>Remove existing Inspection Report file</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    showuploadname.style.display = "none";
+                    showfilename.style.display = "";
+                    $("#upload_button").hide();
+                    $("#remove_button").show();
+                }
+            });
+
+        })
+    </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

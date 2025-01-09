@@ -1,0 +1,403 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="/property_foreign_search">{{"環球物業進階搜尋"|showlang:request.session.lang}}</a></li>
+                        <!--<li class="breadcrumb-item"><a href="/main">{{request.session.search_usage}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">全部</li>-->
+                        <!--<li class="breadcrumb-item active" aria-current="page">{{request.session.search_projectname}}|{{request.session.search_propertyno}}|{{request.session.search_usage}}|{{request.session.search_country}}|{{request.session.search_offertype}}</li>-->
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+      <!--=====================================-->
+      <!--=   Single Listing     Start        =-->
+      <!--=====================================-->
+        <section class="grid-wrap3">
+            <div class="container">
+                <div class="row gutters-40">
+                    <div class="col-lg-3 col-sm-12 widget-break-lg sidebar-widget">
+                        <div class="widget widget-advanced-search">
+                            <h3 class="widget-subtitle">{{"環球物業進階搜尋"|showlang:request.session.lang}}</h3>
+                            <form action="index.html" class="map-forms map-form-style-2">
+                                <input type="text" class="form-control" placeholder="{{"搜尋關鍵字、地址、地區"|showlang:request.session.lang}}" id="search-projectname" value="{{projectname}}" style="margin-bottom:10px">
+                                <input type="text" class="form-control" placeholder="{{"物業編號"|showlang:request.session.lang}}" id="search-propertyno" value="{{propertyno}}">
+                                <div class="row">
+                                    <div class="col-lg-12 pl-15 mb-0">
+                                        <div class="rld-single-select">
+                                            <select class="select single-select mr-0" id="search-usage">
+                                                <option value="">{{"所有環球物業類別"|showlang:request.session.lang}}</option>
+                                                {% for displaydata in usagelist %}
+                                                <option value="{{displaydata.code_detail_name}}"{% if request.session.search_usage == "{{displaydata.code_detail_name}}" %} selected{% endif %}>{{displaydata.code_detail_name}}</option>
+                                                {% endfor %}
+                                                <!--<option value="公寓"{% if usage == "公寓" %} selected{% endif %}>{{"公寓"|showlang:request.session.lang}}</option>-->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 pl-15 mb-0">
+                                        <div class="rld-single-select">
+                                            <select class="select single-select mr-0" id="search-offertype">
+                                                <option value="">{{"所有租售類別"|showlang:request.session.lang}}</option>
+                                                <option value="放租"{% if offertype == "放租" %} selected{% endif %}>{{"租盤"|showlang:request.session.lang}}</option>
+                                                <option value="放售"{% if offertype == "放售" %} selected{% endif %}>{{"售盤"|showlang:request.session.lang}}</option>
+                                                <!--<option value="租售"{% if offertype == "租售" %} selected{% endif %}>租售盤</option>
+                                                <option value="連租約售"{% if offertype == "連租約售" %} selected{% endif %}>連租約售盤</option>-->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 pl-15 mb-0">
+                                        <div class="rld-single-select">
+                                            <select class="select single-select mr-0" id="search-country">
+                                                <option value="">{{"所有國家"|showlang:request.session.lang}}</option>
+                                                {% for displaydata in countrylist %}
+                                                <option value="{{displaydata.code_detail_name}}"{% if request.session.search_country|safe == "{{displaydata.code_detail_name|safe}}" %} selected{% endif %}>{{displaydata.code_detail_name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 pl-15 mb-0">
+                                        <div class="rld-single-select">
+                                            <input type="checkbox" id="search-have-value" value="1" {% if request.session.search_have_value|safe == "1" %}checked{% endif %}>&nbsp;&nbsp;{{"只顯示有價錢的物業"|showlang:request.session.lang}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="banner-search-wrap banner-search-wrap-2">
+                                <div class="row">
+                                    <div class="col-sm-6 col-xs-6 pl-15 mb-0">
+                                        <div class="form-group bath">
+                                            <label for="price_min" class="item-bath" id="price_min_label">{% if offertype == "放租" %}{{"租價"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}}){% else %}{{"售價"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}}){% endif %}</label>
+                                            <input type="number" id="price_min" value="{{price_min}}" placeholder="{% if offertype == "放租" %}{{"最小"|showlang:request.session.lang}}{% else %}{{"最小"|showlang:request.session.lang}}({{"萬"|showlang:request.session.lang}}){% endif %}" maxlength="7" class="form-control" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-xs-6 pl-15 mb-0">
+                                        <div class="form-group bath">
+                                            <label for="price_max" class="item-bath" id="price_max_label">{% if offertype == "放租" %}{{"租價"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}}){% else %}{{"售價"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}}){% endif %}</label>
+                                            <input type="number" id="price_max" value="{{price_max}}" placeholder="{% if offertype == "放租" %}{{"最大"|showlang:request.session.lang}}{% else %}{{"最大"|showlang:request.session.lang}}({{"萬"|showlang:request.session.lang}}){% endif %}" maxlength="7" class="form-control" required="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 pl-15 mb-0">
+                                        <div class="form-group bath">
+                                            <label for="unitprice_min" class="item-bath" id="unitprice_min_label">{% if offertype == "放租" %}{{"呎租"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}}){% else %}{{"呎價"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}}){% endif %}</label>
+                                            <input type="number" id="unitprice_min" value="{{unitprice_min}}" placeholder="{{"最小"|showlang:request.session.lang}}" maxlength="7" class="form-control" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pl-15 mb-0">
+                                        <div class="form-group bath">
+                                            <label for="unitprice_max" class="item-bath" id="unitprice_max_label">{% if offertype == "放租" %}{{"呎租"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}}){% else %}{{"呎價"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}}){% endif %}</label>
+                                            <input type="number" id="unitprice_max" value="{{unitprice_max}}" placeholder="{{"最大"|showlang:request.session.lang}}" maxlength="7" class="form-control" required="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 pl-15 mb-0">
+                                        <div class="form-group bath">
+                                            <label for="area_min" class="item-bath">{{"面積"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}})</label>
+                                            <input type="number" id="area_min" value="{{area_min}}" placeholder="{{"最小"|showlang:request.session.lang}}" maxlength="7" class="form-control" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pl-15 mb-0">
+                                        <div class="form-group bath">
+                                            <label for="area_max" class="item-bath">{{"面積"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}})</label>
+                                            <input type="number" id="area_max" value="{{area_max}}" placeholder="{{"最大"|showlang:request.session.lang}}" maxlength="7" class="form-control" required="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rld-main-search rld-main-search3">
+                                    <div class="filter-button" style="white-space: nowrap;">
+                                        <a href="#" class="filter-btn1 search-btn" id="search_foreign_button" buttontype="search_foreign"><i class="fas fa-search"></i> {{"搜尋環球物業"|showlang:request.session.lang}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-9 col-sm-12">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-12 col-md-12">
+                                <div class="item-shorting-box">
+                                    <div class="shorting-title">
+                                        <h4 class="item-title">{{"找到共"|showlang:request.session.lang}} {{total_records}} {{"個環球物業"|showlang:request.session.lang}}</h4>
+                                    </div>
+                                    <div id="errormessage"></div>
+                                    <div class="item-shorting-box-2">
+                                        <div class="by-shorting">
+                                            <div class="shorting">{{"排序方式"|showlang:request.session.lang}}：</div>
+                                            <select class="select single-select" width="300px" id="property-sorting">
+                                                <option value="">{{"預設"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                {% if offertype == "放售" or offertype == "" %}
+                                                <option value="1"{% if sorting_mode == "1" %} selected{% endif %}>{{"售價由低至高"|showlang:request.session.lang}}</option>
+                                                <option value="2"{% if sorting_mode == "2" %} selected{% endif %}>{{"售價由高至低"|showlang:request.session.lang}}</option>
+                                                {% endif %}
+                                                {% if offertype == "放租" or offertype == "" %}
+                                                <option value="3"{% if sorting_mode == "3" %} selected{% endif %}>{{"租金由低至高"|showlang:request.session.lang}}</option>
+                                                <option value="4"{% if sorting_mode == "4" %} selected{% endif %}>{{"租金由高至低"|showlang:request.session.lang}}</option>
+                                                {% endif %}
+                                                <option value="5"{% if sorting_mode == "5" %} selected{% endif %}>{{"面積由小至大"|showlang:request.session.lang}}</option>
+                                                <option value="6"{% if sorting_mode == "6" %} selected{% endif %}>{{"面積由大至小"|showlang:request.session.lang}}</option>
+                                                {% if offertype == "放租" or offertype == "" %}
+                                                <option value="7"{% if sorting_mode == "7" %} selected{% endif %}>{{"呎租由小至大"|showlang:request.session.lang}}</option>
+                                                <option value="8"{% if sorting_mode == "8" %} selected{% endif %}>{{"呎租由大至小"|showlang:request.session.lang}}</option>
+                                                {% endif %}
+                                                {% if offertype == "放售" or offertype == "" %}
+                                                <option value="9"{% if sorting_mode == "9" %} selected{% endif %}>{{"呎價由小至大"|showlang:request.session.lang}}</option>
+                                                <option value="10"{% if sorting_mode == "10" %} selected{% endif %}>{{"呎價由大至小"|showlang:request.session.lang}}</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                        <div class="grid-button">
+                                            <ul>
+                                                {% if request.session.display_mode == "list" %}
+                                                <li id="list-view" viewtype="list"><a href="#" class="active bg-white"><i class="fas fa-list-ul"></i></a></li>
+                                                <li class="without-border" id="grid-view" viewtype="grid"><a href="#" class="bg-white"><i class="fas fa-th"></i></a></li>
+                                                {% else %}
+                                                <li class="without-border" id="list-view" viewtype="list"><a href="#" class="bg-white"><i class="fas fa-list-ul"></i></a></li>
+                                                <li id="grid-view" viewtype="grid"><a href="#" class="active bg-white"><i class="fas fa-th"></i></a></li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="data-placeholder">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    var selectedUsage = "{{ request.session.search_usage|safe }}"; // Get the value you want to select
+    $('#search-usage').val(selectedUsage); // Select the option
+    var selectedCountry = "{{ request.session.search_country|safe }}"; // Get the value you want to select
+    $('#search-country').val(selectedCountry); // Select the option
+
+    $(document).on("click", "#search_foreign_button", function(){
+        var buttontype = $(this).attr("buttontype");
+
+        if (buttontype == 'search_foreign') {
+            projectname = $("#search-projectname").val();
+            propertyno = $("#search-propertyno").val();
+            if ($('#search-have-value').prop('checked')) {
+              var have_value = 1;
+            } else {
+              var have_value = 0;
+            }
+            usage = $("#search-usage").val();
+            country = $("#search-country").val();
+            areacode = $("#search-areacode").val();
+            offertype = $("#search-offertype").val();
+            price_min = $("#price_min").val();
+            price_max = $("#price_max").val();
+            unitprice_min = $("#unitprice_min").val();
+            unitprice_max = $("#unitprice_max").val();
+            area_min = $("#area_min").val();
+            area_max = $("#area_max").val();
+            var action = 'search_foreign';
+            $.ajax({
+                url:'{% url 'main_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, projectname:projectname, propertyno:propertyno, usage:usage, country:country, areacode:areacode, offertype:offertype, price_min:price_min, price_max:price_max, unitprice_min:unitprice_min, unitprice_max:unitprice_max, area_min:area_min, area_max:area_max},
+            })
+            .done(function(response){
+                document.location.href = "/property_foreign_search";
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+        }
+    })
+
+    $(document).on("change", "#search-usage, #search-offertype, #search-country", function(){
+        var buttontype = "search_foreign";
+        offertype = $("#search-offertype").val();
+        if (offertype == '放租') {
+            $("#search-offertype").val("放租");
+            var label = document.getElementById("price_min_label");
+            label.textContent = "{{"租價"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}})";
+            var label = document.getElementById("price_max_label");
+            label.textContent = "{{"租價"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}})";
+            var label = document.getElementById("unitprice_min_label");
+            label.textContent = "{{"呎租"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}})";
+            var label = document.getElementById("unitprice_max_label");
+            label.textContent = "{{"呎租"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}})";
+            var input = document.getElementById("price_min");
+            input.placeholder = "{{"最小"|showlang:request.session.lang}}";
+            var input = document.getElementById("price_max");
+            input.placeholder = "{{"最大"|showlang:request.session.lang}}";
+            var input = document.getElementById("search-projectname");
+            input.placeholder = "{{"搜尋租盤於各大地區、大廈名稱、街道"|showlang:request.session.lang}}";
+        }
+        if (offertype == '放售') {
+            $("#search-offertype").val("放售");
+            var label = document.getElementById("price_min_label");
+            label.textContent = "{{"售價"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}})";
+            var label = document.getElementById("price_max_label");
+            label.textContent = "{{"售價"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}})";
+            var label = document.getElementById("unitprice_min_label");
+            label.textContent = "{{"呎價"|showlang:request.session.lang}}({{"最小"|showlang:request.session.lang}})";
+            var label = document.getElementById("unitprice_max_label");
+            label.textContent = "{{"呎價"|showlang:request.session.lang}}({{"最大"|showlang:request.session.lang}})";
+            var input = document.getElementById("price_min");
+            input.placeholder = "{{"最小"|showlang:request.session.lang}}({{"萬"|showlang:request.session.lang}})";
+            var input = document.getElementById("price_max");
+            input.placeholder = "{{"最大"|showlang:request.session.lang}}({{"萬"|showlang:request.session.lang}})";
+            var input = document.getElementById("search-projectname");
+            input.placeholder = "{{"搜尋售盤於各大地區、大廈名稱、街道"|showlang:request.session.lang}}";
+        }
+        if (buttontype == 'search_foreign') {
+            projectname = $("#search-projectname").val();
+            propertyno = $("#search-propertyno").val();
+            usage = $("#search-usage").val();
+            country = $("#search-country").val();
+            areacode = $("#search-areacode").val();
+            offertype = $("#search-offertype").val();
+            price_min = $("#price_min").val();
+            price_max = $("#price_max").val();
+            unitprice_min = $("#unitprice_min").val();
+            unitprice_max = $("#unitprice_max").val();
+            area_min = $("#area_min").val();
+            area_max = $("#area_max").val();
+            var action = 'search_foreign';
+            $.ajax({
+                url:'{% url 'main_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, projectname:projectname, propertyno:propertyno, usage:usage, country:country, areacode:areacode, offertype:offertype, price_min:price_min, price_max:price_max, unitprice_min:unitprice_min, unitprice_max:unitprice_max, area_min:area_min, area_max:area_max},
+            })
+            .done(function(response){
+                document.location.href = "/property_foreign_search";
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+        }
+    })
+
+    $(document).on("change", "#property-sorting", function(){
+        var sortingtype = $(this).val();
+        action = "sorting_mode"
+        $.ajax({
+            url:'{% url 'main_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, sortingtype:sortingtype},
+        })
+        .done(function(response){
+            location.reload();
+        })
+        .fail(function(xhr, status, error){
+            $('#errormessage').html(xhr.responseText);
+        })
+    })
+
+    $(document).on("click", "#list-view, #grid-view", function(){
+        var viewtype = $(this).attr("viewtype");
+        action = "display_mode"
+        $.ajax({
+            url:'{% url 'main_response' %}',
+            type:'POST',
+            async:true,
+            data:{action:action, viewtype:viewtype},
+        })
+        .done(function(response){
+            location.reload();
+        })
+        .fail(function(xhr, status, error){
+            $('#errormessage').html(xhr.responseText);
+        })
+    })
+
+    $(document).ready(function() {
+      var isLoading = false; // Flag to prevent multiple simultaneous requests
+      var currentPage = 1; // Current page number
+      var pageSize = 12; // Number of items to load per page
+
+      function loadData() {
+        if (isLoading) return; // Exit if a request is already in progress
+
+        isLoading = true;
+        // Make an AJAX request to fetch the data
+        $.ajax({
+          url: '{% url 'property_foreign_data' %}',
+          type: 'POST',
+          data: {
+            page: currentPage,
+            pageSize: pageSize
+          },
+          success: function(response) {
+            var data = response; // The loaded data from the server
+
+            // Append the loaded data to the placeholder
+            $('#data-placeholder').append(data);
+
+            isLoading = false; // Reset the loading flag
+            currentPage++; // Increment the page number for the next request
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            // Get the error message and status code from the server response
+            var errorMessage = xhr.responseJSON ? xhr.responseJSON.error : 'An error occurred.';
+            var statusCode = xhr.status;
+            var statusText = xhr.statusText;
+            $('#errormessage').html(xhr.responseText);
+            // Get the stack trace of the error
+            var stackTrace = xhr.error ? xhr.error.stack : null;
+
+            // Extract the line number from the stack trace
+            var lineNumber = stackTrace ? getLineNumberFromStackTrace(stackTrace) : 'Unknown';
+
+            // Log the detailed error information to the console
+            console.error(`Error: ${errorMessage} (${statusCode} - ${statusText}) at line ${lineNumber}`);
+
+            // Display a user-friendly alert
+            alert(`Error: ${errorMessage}`);
+            isLoading = false; // Reset the loading flag in case of an error
+
+          }
+        });
+      }
+
+      // Detect scroll event
+      $(window).scroll(function() {
+        var scrollPosition = $(window).scrollTop();
+        var windowHeight = $(window).height();
+        var documentHeight = $(document).height();
+
+        // Load more data when the user reaches the bottom of the page
+        if (scrollPosition + windowHeight >= documentHeight - 200) {
+          loadData();
+        }
+      });
+
+      // Initial data load
+      loadData();
+    });
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

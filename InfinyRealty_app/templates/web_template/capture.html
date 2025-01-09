@@ -1,0 +1,58 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">主頁</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">匯入數據</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Terms     Start                 =-->
+    <!--=====================================-->
+        <div class="article-head"><br>
+		    <h5 class="text-center" style="font-weight:600">匯入數據</h5>
+		</div>
+
+        <section class="about-wrap">
+            <div class="container">
+                <div class="row flex-row-reverse flex-lg-row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="about-box3 wow fadeInUp" data-wow-delay=".2s">
+                            {{webpage_content|safe}}
+                            {{table_rows|safe}}
+                            <p>Success</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

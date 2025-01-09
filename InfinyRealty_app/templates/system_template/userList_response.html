@@ -1,0 +1,123 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "user_list" %}
+        <div class="table-responsive">
+            <table class="display" id="contentTable">
+                <thead>
+                    <tr style="text-align:center;">
+                        <th width="20">ID</th>
+                        <th width="80">登入名稱</th>
+                        <th width="200">姓名</th>
+                        <th>電郵地址</th>
+                        <th width="80">部門</th>
+                        <th width="80">職級</th>
+                        <th style="text-align:center;" width="70">登入次數</th>
+                        <th style="text-align:center;" width="110">更新日期</th>
+                        <th style="text-align:center;" width="110">最後登入時間</th>
+                        <!--<th width="100">活躍時間</th>-->
+                        <th style="text-align:center;" width="50" align="center">狀態</th>
+                        <th width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in user_list|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+                    <tr>
+                        <td style="text-align:center;">{{ displaydata.LoginID }}</td>
+                        <td data-filter="{{ displaydata.username }}">{{ displaydata.username }}</td>
+                        <td>{{ displaydata.LoginNameDesc }}</td>
+                        <td>{{ displaydata.email }}</td>
+                        <td style="text-align:center;">{{ displaydata.Team }}</td>
+                        <td>{{ displaydata.rankDesc }}</td>
+                        <td style="text-align:center;">{{ displaydata.loginCount }}</td>
+                        <td style="text-align:center;">{{ displaydata.modifyDate|date:'Y/m/d H:i' }}</td>
+                        <td style="text-align:center;">{{ displaydata.lastLoginDate|date:'Y/m/d H:i' }}</td>
+                        <!--<td style="text-align:center;">{{ displaydata.activeDate|date:'Y/m/d H:i' }}</td>-->
+                        <td style="text-align:center;">
+                            {% if displaydata.isActive == 1 %}
+                            <span class="badge rounded-pill badge-success">正常</span>
+                            {% else %}
+                            <span class="badge rounded-pill badge-danger">失效</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align:center;">
+                             <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="edit" formtype="user_info" formname="User Information" recordid="{{ displaydata.recordid }}" loginid="{{ displaydata.LoginID }}" username="{{ displaydata.username }}" loginnamedesc="{{ displaydata.LoginNameDesc }}" email="{{ displaydata.email }}" team="{{ displaydata.Team }}" rank="{{ displaydata.Rank }}" status="{{ displaydata.isActive }}" photoicon="{{ displaydata.PhotoIcon }}"><i class="icon-pencil-alt"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+	{% if action == "team_list" %}
+        {% setvar "" as tmpTeam %}
+            <option value="">- 所有用戶 -</option>
+        {% for displayuser in userlist|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displayuser.Team %}{% if tmpTeam == "" %}<optgroup label="{{displayuser.teamFullDesc}}">{% else %}</optgroup><optgroup label="{{displayuser.teamFullDesc}}">{% endif %}{% endif %}
+            <option value="{{displayuser.LoginID}}" {% if user_loginid == displayuser.LoginID %} selected {% endif %}>{{displayuser.LoginNameDesc}} ({{displayuser.rankDesc}})</option>
+            {% setvar displayuser.Team as tmpTeam %}
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "user_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#recordid").val($(this).attr("recordid"));
+                $("#action").val($(this).attr("action"));
+                $("#loginid").val($(this).attr("loginid"));
+                $("#TxtPostDesc").val($(this).attr("username"));
+                $("#TxtLoginNameDesc").val($(this).attr("loginnamedesc"));
+                $("#TxtEmail").val($(this).attr("email"));
+                $("#SelectTeam").val($(this).attr("team"));
+                $("#SelectRank").val($(this).attr("rank"));
+                if ($(this).attr("status") == "1")
+                    $("#radioActive").prop("checked", true);
+                else
+                    $("#radioInActive").prop("checked", true);
+                $("#TxtPhoto").html($(this).attr("photoicon"));
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                //var showuploadname = document.getElementById("showuploadname");
+                //var showfilename = document.getElementById("showfilename");
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增系統用戶</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    //showuploadname.style.display = "";
+                    //showfilename.style.display = "none";
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                } else {
+                    $("#FunctionTitle").html("<i class='icon-pencil-alt'></i>&nbsp;&nbsp;<b>編輯系統用戶</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    //showuploadname.style.display = "none";
+                    //showfilename.style.display = "";
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

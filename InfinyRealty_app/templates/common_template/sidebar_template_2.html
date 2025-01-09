@@ -1,0 +1,108 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block side_content %}
+{% load static %}
+        <!-- Page Sidebar Start-->
+        <div class="sidebar-wrapper">
+          <div>
+            <div class="logo-wrapper" style="padding: 8px 30px;"><a href="/home"><img class="img-fluid for-light" src="{% static 'dist/img/infinyrealty.png' %}" alt=""><img class="img-fluid for-dark" src="{% static 'dist/img/infinyrealty.png' %}" alt=""></a>
+              <div class="back-btn"><i class="fa fa-angle-left"></i></div>
+              <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-left"> </i></div>
+            </div>
+            <div class="logo-icon-wrapper"><a href="/home"><img class="img-fluid for-light" src="{% static 'dist/img/infinyrealty.png' %}" alt=""><img class="img-fluid for-dark" src="{% static 'dist/img/infinyrealty.png' %}" alt=""></a></div>
+            <nav class="sidebar-main">
+              <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
+              <div id="sidebar-menu">
+                <ul class="sidebar-links" id="simple-bar">
+                  <li class="back-btn"><a href="/home"><img class="img-fluid for-light" src="{% static 'dist/img/infinyrealty.png' %}" alt=""><img class="img-fluid for-dark" src="{% static 'dist/img/infinyrealty.png' %}" alt=""></a>
+                    <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
+                  </li>
+		{% for displayitem in menuitem %}
+			{% setvar "" as tmpTabID %}
+			{% setvar "" as tmpCatID %}
+			{% setvar 0 as tmpTabStart %}
+			{% for displaylist in menulist|dictsort:"cat_sequence"|dictsort:"subcat_sequence"|dictsort:"cat_sequence"|dictsort:"tab_sequence" %}
+				{% if displaylist.sequence == 0 %}
+
+					{% if displaylist.tabID != tmpTabID %}
+						{% if tmpTabID != "" %}
+					</ul>
+				  </li>
+						{% endif %}
+
+                  <li class="sidebar-main-title">
+                    <div>
+                      <h4>{{displaylist.tabName|upper}}</h4>
+                    </div>
+                  </li>
+					{% endif %}
+
+					{% if displaylist.tabID == tmpTabID and displaylist.catID != tmpCatID %}
+					</ul>
+				  </li>
+					{% endif %}
+
+					{% if displaylist.catID != tmpCatID %}
+	 			  <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="{{ displaylist.cat_iconclass }}"></i><span>{{ displaylist.catName }}</span><!--<span class="badge badge-primary">3</span>--></a>
+	                <ul class="sidebar-submenu">
+					{% endif %}
+
+					{% if displaylist.urlType == 2 %}
+						{% setvar "target=new" as urltype %}
+					{% else %}
+						{% setvar "" as urltype %}
+					{% endif %}
+
+                    {% if displaylist.isReady == 1 %}
+                      <li><a href="{{ displaylist.urlNew }}" {{urltype}}><font style="font-weight:600"><b>{{ displaylist.subCatName }}</b></font></a></li>
+                    {% else %}
+							{% if displaylist.subCatID == displayitem.subCatID %}
+								{% if displaylist.url != "" %}
+				                      <li><a href="{{ displaylist.url }}" {{urltype}}><font style="font-weight:600"><b>{{ displaylist.subCatName }}</b></font></a></li>
+								{% else %}
+				                      <li><a href="/undercon" {{urltype}}>{{ displaylist.subCatName }}</a></li>
+								{% endif %}
+							{% else %}
+								{% if displaylist.url != "" %}
+				                      <li><a href="{{ displaylist.url }}" {{urltype}}>{{ displaylist.subCatName }}</a></li>
+								{% else %}
+				                      <li><a href="/undercon" {{urltype}}>{{ displaylist.subCatName }}</a></li>
+								{% endif %}
+							{% endif %}
+                    {% endif %}
+
+
+					{% setvar displaylist.catID as tmpCatID %}
+					{% setvar displaylist.tabID as tmpTabID %}
+				{% endif %}
+			{% endfor %}
+		{% endfor %}
+                    </ul>
+                  </li>
+                </ul>
+                <div class="sidebar-img-section" height="100%">
+                  <!--<div class="sidebar-img-content"><img class="img-fluid" src="{% static 'Koho/assets/images/dashboard/upgrade/2.png' %}" alt="">
+                    <h4>體驗更多功能</h4><a class="btn btn-primary" href="/home" target="_blank">請即加入</a>
+                  </div>-->
+                </div>
+              </div>
+              <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
+            </nav>
+          </div>
+        </div>
+        <!-- Page Sidebar Ends-->
+
+
+{% endblock side_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

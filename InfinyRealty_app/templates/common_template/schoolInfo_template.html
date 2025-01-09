@@ -1,0 +1,114 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block breadcrumb %}
+
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+<div class="modal fade" id="SchoolInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLongTitle"><b><span id="SchoolInfoTitle"></span></b><button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button></h4>
+            </div>
+            <div class="modal-message"></div>
+            <div class="modal-body" style="height:100%"><br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" id="print_button" buttontype="print"><i class="fa fa-print"></i> Print this page</button>
+                <button type="button" class="btn btn-default" id="close_button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- jquery printThis -->
+<script src="{% static 'bower_components/jquery-ui-1.12.1/jquery.js' %}"></script>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(".open_modal_school_info").click(function(){
+        action = $(this).attr("action");
+        formtype = $(this).attr("formtype");
+        formname = $(this).attr("formname");
+        schoolid = $(this).attr("schoolid");
+        year = $(this).attr("year");
+        insptype = $(this).attr("insptype");
+        loginid = $(this).attr("loginid");
+        schoolname = $(this).attr("schoolname");
+        tmpost = $(this).attr("tmpost");
+        code = $(this).attr("code");
+        subcode = $(this).attr("subcode");
+        status = $(this).attr("status");
+
+        if (action == "view") {
+            $("#SchoolInfoTitle").html("<i class='fa fa-eye'/>&nbsp;&nbsp;View - "+formname);
+            //$("#confirm_button").text("Create and save");
+            //$("#confirm_button").attr("action", "add");
+            $(".modal-header").css('background-color', '#00A65A');
+            $(".modal-header").css('color', '#FFFFFF');
+            $("#draft_button_fb").hide();
+            $("#confirm_button_fb").hide();
+            $("#unconfirm_button_fb").show();
+        }
+        if (formtype == "school_info") {
+            $.ajax({
+                url:'{% url 'schoolInfo_response' %}',
+                type:'POST',
+                data:{action:'school_info', schoolid:schoolid, year:year, insptype:insptype, schoolname:schoolname, loginid:loginid, tmpost:tmpost, subcode:subcode, code:code},
+            })
+            .done(function(response){
+                $("#SchoolInfoModal .modal-body").html(response);
+            })
+            .fail(function(xhr, status, error){
+                $('#SchoolInfoModal .modal-message').html(xhr.responseText);
+                //alert(xhr.responseText);
+            })
+        }
+    });
+
+    $(document).on("click", "#SchoolInfoModal #print_button", function(){
+        //Disabling the Button while data is being saved in Server
+        //$(this).attr("disabled", "disabled")
+        //$(this).text("Confirming...")
+
+        var buttontype = $(this).attr("buttontype");
+
+        if (buttontype == 'print') {
+            //my_window= window.open ("","mywindow1");
+
+            sRestricted = '';
+
+            var sheader = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+            sheader = sheader + '<style>';
+            sheader = sheader + 'body{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'table tr td{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'body { margin: 0; padding: 15;  box-sizing: border-box;}';
+            sheader = sheader + '</style>';
+
+            var sstyle = '<link rel="stylesheet" href="{% static 'dist/css/Adminlte.css' %}" /><link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.css' %}"/>';
+
+            //my_window.document.write( sheader );
+            var tabobj = $('<div width=780px></div>').html($('#SchoolInfoModal .tab-content').html() );
+            //tabobj.find('button').hide();
+
+            shtml = tabobj.html();
+            tabobj.printThis();
+
+            //my_window.document.write( '<html><head>' +sheader + '</head>' + sstyle + '<body>' + shtml + '</body></html>');
+        }
+    })
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}

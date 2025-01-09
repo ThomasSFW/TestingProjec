@@ -1,0 +1,382 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">功能分類</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="row">
+        <!-- Zero Configuration  Starts-->
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label" for="searchinput">關鍵字</label>
+                            <div class="input-group">
+                                <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                                    <span class="input-group-btn">
+                                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="catid">
+                <input type="hidden" class="form-control" id="tabid">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group">
+					<label for="TxtCategoryName">功能分類名稱</label>
+						<input type="text" class="form-control" id="TxtCategoryName" placeholder="輸入功能分類名稱" value="">
+			    </div>
+				<div class="form-group">
+					<label>系統分頁</label>
+					<select id="SelectTabName" class="form-control">
+                        <option disabled selected value="">選擇系統分頁</option>
+                    {% for tab in tabs %}
+                        <option value="{{tab.tabid|safe}}" {% if user_tabid|safe == tab.tabid|safe %}selected{% endif %}>{{tab.tabname}}</option>
+                    {% endfor %}
+					</select>
+			    </div>
+				<div class="form-group">
+					<label for="TxtURL">網址</label>
+						<input type="text" class="form-control" id="TxtURL" placeholder="輸入網址" value="">
+			    </div>
+				<div class="form-group">
+					<label>開啟方式</label>
+					<select id="SelectURLType" class="form-control">
+                    {% for URLType in urltypes %}
+                        {% for title, value in URLType.items %}
+                    <option value="{{ value }}" {% if action == "edit" %}{% if category.urltype == value %} selected {% endif %}{% endif %}>{{ title }}</option>
+                        {% endfor %}
+                    {% endfor %}
+					</select>
+			    </div>
+				<div class="form-group">
+					<label for="TxtSequence">次序</label>
+						<input type="number" class="form-control" id="TxtSequence" placeholder="輸入次序，例如1,2,3,..." value="">
+			    </div>
+				<div class="form-group">
+					<label for="TxtIconClass">圖示類</label>
+						<input type="text" class="form-control" id="TxtIconClass" placeholder="輸入圖示類" value="">
+			    </div>
+				<div class="form-group">
+					<label>狀態</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioActive" name="r1">
+								<label for="radioActive" value="1">正常</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioInActive" name="r1">
+								<label for="radioInActive" value="1">失效</label>
+							</div>
+						</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="add_button" action="add"><i class="icon-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="submit" class="btn btn-warning" id="edit_button" action="edit"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                {% if 1421 in request.session.accessright %}
+                <button type="submit" class="btn btn-danger" id="remove_button"><i class="icon-trash"></i>&nbsp;&nbsp;刪除</button>
+                {% endif %}
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        var table;
+
+        $("#searchinput").on("keyup", function() {
+			var oTable = $('#contentTable').dataTable();
+			oTable.fnFilter($(this).val());
+        });
+
+        function load_table() {
+            $("#contentTable").html('<br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>');
+            $.ajax({
+                url:'{% url 'category_response' %}',
+                type:'POST',
+                data:{action:'category_list'},
+            })
+
+            .done(function(response){
+                $("#contentBody").html(response);
+                refresh_table();
+            })
+
+            .fail(function(xhr, status, error){
+                $("#contentBody").html(xhr.responseText);
+            })
+        }
+
+        function refresh_table() {
+            table = $('#contentTable').DataTable({
+                "paging": true,
+                "dom": '<"toolbar">Brtip',
+                "order": [],
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                   language: {
+                       "sProcessing": "處理中...",
+                       "sLengthMenu": "顯示 _MENU_ 項結果",
+                       "sZeroRecords": "沒有匹配結果",
+                       "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                       "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                       "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                       "sInfoPostFix": "",
+                       "sSearch": "搜索：",
+                       "sUrl": "",
+                       "oPaginate": {
+                           "sFirst": "首頁",
+                           "sPrevious": "上一頁",
+                           "sNext": "下一頁",
+                           "sLast": "末頁"
+                       },
+                   },
+                buttons: [
+                    {   extend: "copy",
+                        text: '<i class="fa fa-copy"></i>&nbsp;&nbsp;複製',
+                        className: 'btn-warning'
+                    },
+                    {
+                        extend: "print",
+                        text: '<i class="fa fa-print"></i>&nbsp;&nbsp;列印',
+                        customize: function(win)
+                        {
+                            var last = null;
+                            var current = null;
+                            var bod = [];
+
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+
+                            style.type = 'text/css';
+                            style.media = 'print';
+
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+                            head.appendChild(style);
+                        },
+                        className: 'btn-primary'
+                    },
+                    {% if 248 in request.session.accessright %}
+                    {
+                        text: '<i class="fa fa-plus"></i>&nbsp;&nbsp;新增功能分類',
+                        action: function(e, dt, node, config) {
+                            $('#EditModal').modal('show');
+                            $("#FunctionTitle").html("<i class='fa fa-plus'></i>&nbsp;&nbsp;<b>新增功能分類</b>");
+                            $(".modal-header").css('background-color', '#DD4B39');
+            				$(".modal-header").css('color', '#FFFFFF');
+                            $("#add_button").show();
+                            $("#edit_button").hide();
+                            $("#remove_button").hide();
+
+                            $("#catid").val($(this).attr("catid"));
+                            $("#SelectTabName").val($(this).attr("tabid"));
+                            $("#action").val($(this).attr("action"));
+                            $("#TxtCategoryName").val($(this).attr("categoryname"));
+                            $("#TxtURL").val($(this).attr("url"));
+                            $("#SelectURLType").val(0);
+                            $("#TxtSequence").val($(this).attr("sequence"));
+                            $("#TxtIconClass").val($(this).attr("iconclass"));
+                            $("#radioActive").prop("checked", true);
+                        },
+                        className: 'btn-danger'
+                    },
+                    {% endif %}
+                ],
+            });
+            $("div.toolbar").html('<b><font size=3>功能分類列表</font></b>&nbsp;&nbsp; <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="add" formtype="category" formname="Category Information" tabid="{{ displaydata.tabid.tabid }}" catid="{{ displaydata.catid }}" tabname="{{ displaydata.tabid.tabname }}" categoryname="{{ displaydata.catname }}" url="{{ displaydata.url }}" urltype="{{ displaydata.urltype }}" sequence="{{ displaydata.sequence }}" iconclass="{{ displaydata.iconclass }}" isenabled="{{ displaydata.isenabled }}"><i class="icon-plus text-white"></i></a>');
+        }
+
+        $("#add_button").click(function(){
+            $("#action").val("add");
+        });
+
+        $("#edit_button").click(function(){
+            $("#action").val("edit");
+        });
+
+        $("#remove_button").click(function(){
+            $("#action").val("delete");
+        });
+
+        document.getElementById("upload-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var catid = $("#catid").val();
+            var selectElement = document.getElementById('SelectTabName');
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var tabid = selectedOption.value;
+            var action = $("#action").val();
+            var categoryname = $("#TxtCategoryName").val();
+            var tabname = $("#SelectTabName").val();
+            //var url = $("#TxtURL").val();
+            var url = "";
+            var urltype = $("#SelectURLType").val();
+            var sequence = $("#TxtSequence").val();
+            var iconclass = $("#TxtIconClass").val();
+            if ($("#radioActive").is(':checked')) isactive = 1;
+            if ($("#radioInActive").is(':checked')) isactive = 0;
+            if ((action == "add") || (action == "edit")) {
+                if (categoryname == '') {
+                    alert('請輸入功能分類名稱');
+                    return false;
+                }
+                if (tabid == '') {
+                    alert('請選擇系統分頁');
+                    return false;
+                }
+                if (sequence == '') {
+                    alert('請輸入次序');
+                    return false;
+                }
+                if (action == "add") {
+                    if (!(window.confirm("新增功能分類記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                } else {
+                    if (!(window.confirm("更新功能分類記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("catid", catid);
+                formData.append("tabid", tabid);
+                formData.append("categoryname", categoryname);
+                formData.append("url", url);
+                formData.append("urltype", urltype);
+                formData.append("sequence", sequence);
+                formData.append("iconclass", iconclass);
+                formData.append("isactive", isactive);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'category_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功更新"
+                            },{
+                                type: 'success',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "delete") {
+                if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("catid", catid);
+                formData.append("tabid", tabid);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'category_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功刪除"
+                            },{
+                                type: 'danger',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+
+        });
+
+        load_table()
+    })
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

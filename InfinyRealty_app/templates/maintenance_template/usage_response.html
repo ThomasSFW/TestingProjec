@@ -1,0 +1,110 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "usage_list" %}
+        <div class="table-responsive">
+            <table class="display" id="contentTable">
+                <thead>
+                    <tr>
+                        <th width="20">ID</th>
+                        <th style="text-align:center;" width="60">編碼</th>
+                        <th width="150">名稱</th>
+                        <th>名稱(英)</th>
+                        <th width="100">物業編號(最新)</th>
+                        <th style="text-align:center;" width="80">次序</th>
+                        <th style="text-align:center;" width="50">狀態</th>
+                        <th style="text-align:center;" width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in usage_list %}
+                    <tr>
+                        <td style="text-align:center;">{{ displaydata.usage_id }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.usage_code }}">{{ displaydata.usage_code }}</td>
+                        <td data-filter="{{ displaydata.usage_name }}">{{ displaydata.usage_name }}</td>
+                        <td data-filter="{{ displaydata.usage_name_e }}">{{ displaydata.usage_name_e }}</td>
+                        <td data-filter="{{ displaydata.usage_name_e }}">{{ displaydata.usage_number }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.sequence }}">{{ displaydata.sequence }}</td>
+                        <td style="text-align:center;">
+                            {% if displaydata.status == 1 %}
+                            <span class="badge rounded-pill badge-success">正常</span>
+                            {% else %}
+                            <span class="badge rounded-pill badge-danger">失效</span>
+                            {% endif %}
+                        </td>
+                        <td align="center">
+                            <ul class="action">
+                            {% if 1309 not in request.session.accessright %}
+                                <li class="edit"> <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal"><i class="icon-lock"></i></a></li>
+                            {% else %}
+                                <li class="edit"> <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="edit" formtype="code_info" formname="Code Information" usage_id="{{ displaydata.usage_id }}"  usage_code="{{ displaydata.usage_code }}" usage_name="{{ displaydata.usage_name }}" usage_name_e="{{ displaydata.usage_name_e }}" sequence="{{ displaydata.sequence }}" usage_photo="{{ displaydata.usage_photo }}" usage_icon="{{ displaydata.usage_icon }}" status="{{ displaydata.status }}"><i class="icon-pencil-alt"></i></a></li>
+                            {% endif %}
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "usage_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#action").val($(this).attr("action"));
+                $("#usage_id").val($(this).attr("usage_id"));
+                $("#TxtUsageCode").val($(this).attr("usage_code"));
+                $("#TxtUsageName").val($(this).attr("usage_name"));
+                $("#TxtUsageNameE").val($(this).attr("usage_name_e"));
+                $("#TxtSequence").val($(this).attr("sequence"));
+                $("#TxtUsagePhoto").html($(this).attr("usage_photo"));
+                $("#TxtUsageIcon").html($(this).attr("usage_icon"));
+                if ($(this).attr("status") == "1")
+                    $("#radioActive").prop("checked", true);
+                else
+                    $("#radioInActive").prop("checked", true);
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                //var showuploadname = document.getElementById("showuploadname");
+                //var showfilename = document.getElementById("showfilename");
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增用途</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    //showuploadname.style.display = "";
+                    //showfilename.style.display = "none";
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                } else {
+                    $("#FunctionTitle").html("<i class='icon-pencil-alt'></i>&nbsp;&nbsp;<b>編輯用途</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    //showuploadname.style.display = "none";
+                    //showfilename.style.display = "";
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

@@ -1,0 +1,140 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"研究與新聞"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Terms     Start                 =-->
+    <!--=====================================-->
+        <div class="article-head"><br>
+		    <h5 class="text-center" style="font-weight:600">{{"研究與新聞"|showlang:request.session.lang}}</h5>
+		</div>
+
+        <section class="blog-wrap5">
+            <div class="container">
+                <div class="row gutters-40">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="blog-box1 blog-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <!--<div class="item-img img-style-2">
+                                        <a href="blog1.html"><img src="{% static 'dist/img-web/news/1/hongkong.jpg' %}" alt="blog" width="100%" height="399"></a>
+                                    </div>-->
+                                    <div class="item-content content-style-2">
+                                        {% for displaydata in content_detail %}
+                                        <div class="entry-meta">
+                                            <ul>
+                                                <!--<li class="theme-cat"><a href="single-listing1.html"><img src="img/theme1.png" alt="theme">by radiustheme</a></li>-->
+                                                <li class="calendar-icon"><a href="/news/{{displaydata.create_date|date:'Y-m-d'}}"><i class="far fa-calendar-alt"></i>{{displaydata.create_date|date:'Y年m月d日'}}</a></li>
+                                                <!--<li><a href="single-listing1.html">Apartment, Room</a></li>
+                                                <li><a href="single-listing1.html">5 mins</a></li>-->
+                                            </ul>
+                                        </div>
+                                        <div class="heading-title title-style-2">
+                                            <h5 style="color:#330066;font=weight:600">{{displaydata.content_detail_title|default_if_none:""|remove_p_tags|safe}}</h5>
+                                            <p>{{displaydata.content_detail_name|safe}}
+                                            </p>
+                                        </div>
+                                        {% endfor %}
+                                        <div class="blog-button-style2">
+                                            <a href="/news" class="item-btn">返回<i class="fas fa-arrow-left"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="col-lg-4 widget-break-lg sidebar-widget">
+                        <div class="widget widget-categoery-box">
+                            <h3 class="widget-subtitle">搜索日期</h3>
+                            <div class="datepicker-here" data-language="en" width="100%"></div>
+                            <button id="get-date" style="display:none">Get Selected Date</button>
+                            <div id="selected-date" style="display:none"></div>
+                            <br>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    var propertyTypeItems = document.querySelectorAll(".property_type_select");
+    var offerTypeItems = document.querySelectorAll(".offer_type_select");
+    propertyTypeItems.forEach(function(item) {
+        item.addEventListener("click", function() {
+            var usage = item.getAttribute("value");
+            var action = 'search';
+            $.ajax({
+                url:'{% url 'main_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, usage:usage},
+            })
+            .done(function(response){
+                document.location.href = "/property_search";
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+        });
+    });
+
+    var $datepicker = $('.datepicker-here');
+
+    // Initialize the datepicker
+    $datepicker.datepicker({
+      language: 'en',
+      onSelect: function(formattedDate, date, inst) {
+        // Get the selected date when the user selects a date
+        updateSelectedDate(date);
+      }
+    });
+
+    // Function to update the selected date display
+    function updateSelectedDate(date) {
+      var $selectedDate = $('#selected-date');
+      if (date) {
+        $selectedDate.text('Selected date: ' + date.toLocaleDateString('en-CA', {year: 'numeric',month: '2-digit',day: '2-digit'}));
+        location.href = "/news/" + date.toLocaleDateString('en-CA', {year: 'numeric',month: '2-digit',day: '2-digit'}).replace(/\//g, '-');
+      } else {
+        $selectedDate.text('No date selected');
+      }
+    }
+
+    // Button click event to get the selected date
+    $('#get-date').on('click', function() {
+      var selectedDate = $datepicker.data('datepicker').getDate();
+      updateSelectedDate(selectedDate);
+    });
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

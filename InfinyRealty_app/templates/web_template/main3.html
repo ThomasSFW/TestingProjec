@@ -1,0 +1,1180 @@
+﻿{% extends "web_template/common_template.html" %}
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Main Banner     Start           =-->
+    <!--=====================================-->
+
+        <section class="main-banner-wrap2">
+            <div id="header-bottombar" class="header-bottombar-area">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-xl-9 col-lg-9">
+                            <form action="index4.html" class="map-form">
+                                <div class="row">
+                                    <div class="col-lg-3 pl-15 pr-0">
+                                        <div class="rld-single-select mt-0">
+                                            <select class="select single-select mr-0" style="display: none;">
+                                                <option value="1">物業類別</option>
+                                                <option value="2">Family House</option>
+                                                <option value="3">Apartment</option>
+                                                <option value="3">Condo</option>
+                                            </select><div class="nice-select select single-select mr-0" tabindex="0"><span class="current">物業類別</span><ul class="list"><li data-value="0" class="option selected">物業類別</li><li data-value="2" class="option">商業</li><li data-value="3" class="option">工業</li><li data-value="4" class="option">商鋪</li><li data-value="1" class="option">住宅</li></ul></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pl-15 pr-0">
+                                        <div class="control-style">
+                                            <input type="text" class="form-control" placeholder="搜尋關鍵字、地址、地區">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 pl-15">
+                                        <div class="rld-single-select mt-0">
+                                            <select class="select single-select mr-0" style="display: none;">
+                                                <option value="1">物業狀態</option>
+                                                <option value="2">Los Angeles</option>
+                                                <option value="3">Chicago</option>
+                                                <option value="3">Philadelphia</option>
+                                            </select><div class="nice-select select single-select mr-0" tabindex="0"><span class="current">物業狀態</span><ul class="list"><li data-value="1" class="option selected">All Cities</li><li data-value="2" class="option">Los Angeles</li><li data-value="3" class="option">Chicago</li><li data-value="3" class="option">Philadelphia</li></ul></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 d-flex justify-content-end">
+                            <div class="banner-search-wrap banner-search-wrap-2">
+                                <div class="rld-main-search rld-main-search2">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="box">
+                                                <div class="dropdown-filter"><span><i class="fas fa-sliders-h"></i></span></div>
+                                                <div class="filter-button">
+                                                    <a href="single-listing1.html" class="filter-btn1 search-btn"><i class="fas fa-search"></i>&nbsp;&nbsp;搜尋物業</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/ End Search Form -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="explore__form-checkbox-list explore__form-checkbox-list2 full-filter">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-6 py-1 pr-30 pl-0">
+                                        <!-- Form Property Status -->
+                                        <div class="form-group bed">
+                                            <label class="item-bedrooms">Bedrooms</label>
+                                            <div class="nice-select form-control wide" tabindex="0"><span class="current">Any</span>
+                                                <ul class="list">
+                                                    <li data-value="1" class="option selected ">For Sale</li>
+                                                    <li data-value="2" class="option">For Rent</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!--/ End Form Property Status -->
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 py-1 pr-30 pl-0 ">
+                                        <!-- Form Bedrooms -->
+                                        <div class="form-group bath">
+                                            <label class="item-bath">Bathrooms</label>
+                                            <div class="nice-select form-control wide" tabindex="0"><span class="current">Any</span>
+                                                <ul class="list">
+                                                    <li data-value="1" class="option selected">1</li>
+                                                    <li data-value="2" class="option">2</li>
+                                                    <li data-value="3" class="option">3</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!--/ End Form Bedrooms -->
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 py-1 pl-0 pr-0">
+                                        <!-- Form Bathrooms -->
+                                        <div class="form-group garage">
+                                            <label class="item-garage">Garage</label>
+                                            <div class="nice-select form-control wide" tabindex="0"><span class="current">Any</span>
+                                                <ul class="list">
+                                                    <li data-value="1" class="option selected">1</li>
+                                                    <li data-value="2" class="option">2</li>
+                                                    <li data-value="3" class="option">3</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!--/ End Form Bathrooms -->
+                                    </div>
+                                    <!-- Price Fields -->
+                                    <div class="main-search-field-2 col-12">
+                                        <div class="row">
+                                            <div class="col-md-6 pl-0">
+                                                <div class="price-range-wrapper">
+                                                    <div class="range-box">
+                                                        <div class="price-label">Flat Size:</div>
+                                                        <div id="price-range-filter-3"
+                                                            class="price-range-filter"></div>
+                                                        <div
+                                                            class="price-filter-wrap d-flex align-items-center">
+                                                            <div class="price-range-select">
+                                                                <div class="price-range"
+                                                                    id="price-range-min-3"></div>
+                                                                <div class="price-range">-</div>
+                                                                <div class="price-range"
+                                                                    id="price-range-max-3"></div>
+                                                                <div
+                                                                    class="price-range range-title">
+                                                                    sft</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 pl-0">
+                                                <div class="price-range-wrapper">
+                                                    <div class="range-box">
+                                                        <div class="price-label">Distance:</div>
+                                                        <div id="price-range-filter-2"
+                                                            class="price-range-filter"></div>
+                                                        <div
+                                                            class="price-filter-wrap d-flex align-items-center">
+                                                            <div class="price-range-select">
+                                                                <div class="price-range"
+                                                                    id="price-range-min-2"></div>
+                                                                <div class="price-range">-</div>
+                                                                <div class="price-range"
+                                                                    id="price-range-max-2"></div>
+                                                                <div
+                                                                    class="price-range range-title">
+                                                                    km</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- row -->
+                                    <div class="row">
+
+                                        <div class="col-lg-12 col-md-12 col-sm-12 mt-3">
+                                            <h4 class="text-dark">Amenities</h4>
+                                            <ul class="no-ul-list third-row">
+                                                <li>
+                                                    <input id="a-1" class="checkbox-custom" name="a-1" type="checkbox">
+                                                    <label for="a-1" class="checkbox-custom-label">Air Condition</label>
+                                                </li>
+                                                <li>
+                                                    <input id="a-2" class="checkbox-custom" name="a-2" type="checkbox">
+                                                    <label for="a-2" class="checkbox-custom-label">Bedding</label>
+                                                </li>
+                                                <li>
+                                                    <input id="a-3" class="checkbox-custom" name="a-3" type="checkbox">
+                                                    <label for="a-3" class="checkbox-custom-label">Heating</label>
+                                                </li>
+                                                <li>
+                                                    <input id="a-4" class="checkbox-custom" name="a-4" type="checkbox">
+                                                    <label for="a-4" class="checkbox-custom-label">Internet</label>
+                                                </li>
+                                                <li>
+                                                    <input id="a-5" class="checkbox-custom" name="a-5" type="checkbox">
+                                                    <label for="a-5" class="checkbox-custom-label">Microwave</label>
+                                                </li>
+                                                <li>
+                                                    <input id="a-6" class="checkbox-custom" name="a-6" type="checkbox">
+                                                    <label for="a-6" class="checkbox-custom-label">Smoking Allow</label>
+                                                </li>
+                                                <li>
+                                                    <input id="a-7" class="checkbox-custom" name="a-7" type="checkbox">
+                                                    <label for="a-7" class="checkbox-custom-label">Terrace</label>
+                                                </li>
+                                                <li>
+                                                    <input id="a-8" class="checkbox-custom" name="a-8" type="checkbox">
+                                                    <label for="a-8" class="checkbox-custom-label">Balcony</label>
+                                                </li>
+                                                <li>
+                                                    <input id="a-9" class="checkbox-custom" name="a-9" type="checkbox">
+                                                    <label for="a-9" class="checkbox-custom-label">Balcony</label>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="filter-button">
+                                        <a href="index4.html" class="filter-btn1">Apply Filter</a>
+                                        <a href="index4.html" class="filter-btn1 reset-btn">Reset Filter<i class="fas fa-redo-alt"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-wrap1 brand-wrap3">
+                <div class="container">
+                    <div class="brand-layout swiper-container">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <div class="brand-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <div class="item-img">
+                                        <a href="index.html"><img src="{% static 'dist/img-web/main/victoria-harbour1.jpg' %}" alt="brand" height="140" width="240"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="brand-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <div class="item-img">
+                                        <a href="index.html"><img src="{% static 'dist/img-web/main/victoria-harbour2.jpg' %}" alt="brand" height="140" width="240"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="brand-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <div class="item-img">
+                                        <a href="index.html"><img src="{% static 'dist/img-web/main/victoria-harbour3.jpg' %}" alt="brand" height="117" width="200"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="brand-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <div class="item-img">
+                                        <a href="index.html"><img src="{% static 'dist/img-web/main/victoria-harbour4.jpg' %}" alt="brand" height="117" width="200"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="brand-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <div class="item-img">
+                                        <a href="index.html"><img src="{% static 'dist/img-web/main/victoria-harbour1.jpg' %}" alt="brand" height="117" width="200"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="brand-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <div class="item-img">
+                                        <a href="index.html"><img src="{% static 'dist/img-web/main/victoria-harbour2.jpg' %}" alt="brand" height="117" width="200"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="brand-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <div class="item-img">
+                                        <a href="index.html"><img src="{% static 'dist/img-web/main/victoria-harbour3.jpg' %}" alt="brand" height="117" width="200"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="brand-box2 wow fadeInUp" data-wow-delay=".4s">
+                                    <div class="item-img">
+                                        <a href="index.html"><img src="{% static 'dist/img-web/main/victoria-harbour4.jpg' %}" alt="brand" height="117" width="200"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    <!--=====================================-->
+    <!--=   Property     Start              =-->
+    <!--=====================================-->
+
+        <section class="property-wrap2">
+            <div class="container">
+                <div class="item-heading-center mb-20">
+                    <span class="section-subtitle">我們的物業</span>
+                    <h2 class="section-title">精選推介</h2>
+                    <!--<div class="bg-title-wrap" style="display: block;">
+                        <span class="background-title solid">Properties</span>
+                    </div>-->
+                    <div class="d-flex justify-content-center">
+                        <ul class="nav nav-tabs" id="info-tab" role="tablist">
+                          <li class="nav-item"><a class="nav-link active" id="info-home-tab" data-bs-toggle="tab" href="#info-home" role="tab" aria-controls="info-home" aria-selected="true"><i class="icofont icofont-ui-home"></i>商業</a></li>
+                          <li class="nav-item"><a class="nav-link" id="profile-info-tab" data-bs-toggle="tab" href="#info-profile" role="tab" aria-controls="info-profile" aria-selected="false"><i class="icofont icofont-man-in-glasses"></i>工業</a></li>
+                          <li class="nav-item"><a class="nav-link" id="contact-info-tab" data-bs-toggle="tab" href="#info-contact" role="tab" aria-controls="info-contact" aria-selected="false"><i class="icofont icofont-contacts"></i>商鋪</a></li>
+                        </ul>
+                    </div>
+                    <div class="tab-content" id="info-tabContent">
+                      <div class="tab-pane fade show active" id="info-home" role="tabpanel" aria-labelledby="info-home-tab">
+                        <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'dist/img-web/property/250px-Millennium_Plaza_2010.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                        <div class="item-category">租賃</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$600,000<span>/月</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">新紀元中心</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property6.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        賣<div class="item-price">HK$300,000,000</div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">太古廣場6座</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>灣仔</li>
+                                            <li><i class="flaticon-shower"></i>寫字樓</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>3,800 平方呎</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".6s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property7.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Buy</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$10,200<span>/mo</span></div>
+                                        <span class="item-veryfy"><i class="fas fa-check"></i></span>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Northwest Office Space</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".8s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property8.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Rent</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$250,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Diamond Manco Apartment</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property9.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$8,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Affordable Green Villa House</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property9.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$8,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Affordable Green Villa House</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property9.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$8,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Affordable Green Villa House</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property10.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Buy</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$9,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Countryside Modern Lake View</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                      </div>
+                      <div class="tab-pane fade" id="info-profile" role="tabpanel" aria-labelledby="profile-info-tab">
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                      </div>
+                      <div class="tab-pane fade" id="info-contact" role="tabpanel" aria-labelledby="contact-info-tab">
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                      </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'dist/img-web/property/250px-Millennium_Plaza_2010.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                        <div class="item-category">租賃</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$600,000<span>/月</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">新紀元中心</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property6.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$300,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Brand New Shopping Mall for Sale</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".6s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property7.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Buy</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$10,200<span>/mo</span></div>
+                                        <span class="item-veryfy"><i class="fas fa-check"></i></span>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Northwest Office Space</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".8s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property8.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Rent</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$250,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Diamond Manco Apartment</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property9.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$8,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Affordable Green Villa House</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property9.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$8,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Affordable Green Villa House</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property9.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Sell</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$8,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Affordable Green Villa House</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="property-box3 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property10.jpg' %}" alt="property" width="525" height="655"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Buy</div>
+                                </div>
+                            </div>
+                            <div class="property-content">
+                                <div class="item-content">
+                                    <div class="veryfy-area">
+                                        <div class="item-price">$9,000<span>/mo</span></div>
+                                    </div>
+                                    <h3 class="item-title"><a href="/property_show">Countryside Modern Lake View</a></h3>
+                                    <div class="item-categoery3">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i>03</li>
+                                            <li><i class="flaticon-shower"></i>02</li>
+                                            <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="property-button">
+                    <a href="/property_show" class="item-btn">瀏覽所有物業</a>
+                </div>
+            </div>
+        </section>
+    <!--=====================================-->
+    <!--=   Choose    Start                 =-->
+    <!--=====================================-->
+
+        <section class="why-choose-wrap1">
+            <div class="shape-img1 wow fadeInRight" data-wow-delay=".3s">
+                <img src="{% static 'HomListi/img/figure/shape9.png' %}" alt="shape" width="253" height="212">
+            </div>
+            <div class="container">
+                <div class="item-heading-center mb-20">
+                    <!--<span class="section-subtitle">People Like Us</span>-->
+                    <h2 class="section-title2">點解揀 InfinyRealty?</h2>
+                    <!--<div class="bg-title-wrap" style="display: block;">
+                        <span class="background-title solid">Choose</span>
+                    </div>-->
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="choose-box1 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="choose-shape1">
+                                <a href="index3.html"><img src="{% static 'HomListi/img/figure/Secure-Payment-1.svg' %}" alt="shape" width="59" height="63"></a>
+                            </div>
+                            <h3 class="item-title"><a href="single-listing3.html">租賃體驗</a></h3>
+                            <p>本公司擁有獨特的市場競爭優勢，如獨特的產品或服務、創新的技術、良好的品牌聲譽等。 這使得公司能夠在競爭激烈的市場中脫穎而出。</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="choose-box1 wow fadeInUp" data-wow-delay=".4s">
+                            <div class="choose-shape1">
+                                <a href="index3.html"><img src="{% static 'HomListi/img/figure/home_dollar-1.svg' %}" alt="shape" width="59" height="63"></a>
+                            </div>
+                            <h3 class="item-title"><a href="single-listing3.html">服務質素</a></h3>
+                            <p>公司有良好的財務狀況和穩定的盈利能力。 這意味著公司能夠有效管理資金、投資成長機會，並為股東創造良好的回報。</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="choose-box1 wow fadeInUp" data-wow-delay=".6s">
+                            <div class="choose-shape1 choose-shape2">
+                                <a href="index3.html"><img src="{% static 'HomListi/img/figure/home-calculator-1.svg' %}" alt="shape" width="59" height="63"></a>
+                            </div>
+                            <h3 class="item-title"><a href="single-listing3.html">客戶關係</a></h3>
+                            <p>本公司注重客戶滿意度和關係管理，建立了良好的客戶基礎並享有良好的口碑。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!--=====================================-->
+    <!--=   Feature     Start               =-->
+    <!--=====================================-->
+
+        <section class="feature-rent-wrap1">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-7 col-sm-12">
+                        <div class="item-heading-left">
+                            <span class="section-subtitle">Latest Listings</span>
+                            <h2 class="section-title">Properties For Rent</h2>
+                            <div class="bg-title-wrap" style="display: block;">
+                                <span class="background-title solid">properties</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5 col-sm-12">
+                        <div class="heading-button">
+                            <a href="with-sidebar.html" class="heading-btn">瀏覽所有物業</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-5">
+                        <div class="rent-box1 wow fadeInUp" data-wow-delay=".2s">
+                            <div class="item-img">
+                                <a href="/property_show"><img src="{% static 'HomListi/img/blog/property1.jpg' %}" alt="property" width="630" height="430"></a>
+                                <div class="item-category-box1">
+                                    <div class="item-category">For Rent</div>
+                                </div>
+                            </div>
+                            <div class="item-content">
+                                <h3 class="item-title"><a href="/property_show">Triple Story House for Rent</a></h3>
+                                <div class="location-area"><i class="flaticon-maps-and-flags"></i>Downey, California</div>
+                                <p>
+                                    Massa tempor nec feugiat nisl pretium. Egestas fringilla phasellus faucibus scelerisque eleifend donec. Porta nibh venenatis cras sed felis eget velit aliquet. Neque volutpat ac tincidunt vitae semper quis lectus.
+                                </p>
+                                <div class="item-categoery3">
+                                    <ul>
+                                        <li><i class="flaticon-bed"></i>Beds: 03</li>
+                                        <li><i class="flaticon-shower"></i>Baths: 02</li>
+                                        <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-7 wow fadeInUp" data-wow-delay=".4s">
+                        <div class="rent-feature1">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="rent-box2">
+                                        <div class="item-img">
+                                            <a href="with-sidebar.html"><img src="{% static 'HomListi/img/blog/property2.jpg' %}" alt="property" height="170" width="220"></a>
+                                            <div class="item-category">
+                                                <a href="/property_show">For Rent</a>
+                                            </div>
+                                        </div>
+                                        <div class="item-content">
+                                            <h3 class="item-title"><a href="/property_show">
+                                                Brand New Shopping Mall for Sale </a></h3>
+                                            <div class="location-area"><i class="flaticon-maps-and-flags"></i>Downey, California</div>
+                                            <div class="item-categoery3">
+                                                <ul>
+                                                    <li><i class="flaticon-bed"></i>Beds: 03</li>
+                                                    <li><i class="flaticon-shower"></i>Baths: 02</li>
+                                                    <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                                </ul>
+                                            </div>
+                                            <div class="rent-price">
+                                                <div class="item-price">$15,000<span><i>/</i>mo</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rent-feature1">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="rent-box2">
+                                        <div class="item-img">
+                                            <a href="with-sidebar.html"><img src="{% static 'HomListi/img/blog/property3.jpg' %}" alt="property" height="170" width="220"></a>
+                                            <div class="item-category">
+                                                <a href="/property_show">For Rent</a>
+                                            </div>
+                                        </div>
+                                        <div class="item-content">
+                                            <h3 class="item-title"><a href="/property_show">Northwest Office Space</a></h3>
+                                            <div class="location-area"><i class="flaticon-maps-and-flags"></i>Downey, California</div>
+                                            <div class="item-categoery3">
+                                                <ul>
+                                                    <li><i class="flaticon-bed"></i>Beds: 03</li>
+                                                    <li><i class="flaticon-shower"></i>Baths: 02</li>
+                                                    <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                                </ul>
+                                            </div>
+                                            <div class="rent-price">
+                                                <div class="item-price">$15,000<span><i>/</i>mo</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rent-feature1">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="rent-box2">
+                                        <div class="item-img">
+                                            <a href="with-sidebar.html"><img src="{% static 'HomListi/img/blog/property4.jpg' %}" alt="property" height="170" width="220"></a>
+                                            <div class="item-category">
+                                                <a href="/property_show">For Rent</a>
+                                            </div>
+                                        </div>
+                                        <div class="item-content">
+                                            <h3 class="item-title"><a href="/property_show">Diamond Manco Apartment</a></h3>
+                                            <div class="location-area"><i class="flaticon-maps-and-flags"></i>Downey, California</div>
+                                            <div class="item-categoery3">
+                                                <ul>
+                                                    <li><i class="flaticon-bed"></i>Beds: 03</li>
+                                                    <li><i class="flaticon-shower"></i>Baths: 02</li>
+                                                    <li><i class="flaticon-two-overlapping-square"></i>931 Sqft</li>
+                                                </ul>
+                                            </div>
+                                            <div class="rent-price">
+                                                <div class="item-price">$15,000<span><i>/</i>mo</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!--=====================================-->
+    <!--=   Progress     Start              =-->
+    <!--=====================================-->
+
+        <section class="progress-bar-wrap1 counter-appear">
+            <div class="shape-img1 wow fadeInLeft" data-wow-delay=".4s">
+                <img src="{% static 'HomListi/img/figure/counter-bg-2.png' %}" alt="progress">
+            </div>
+            <div class="container">
+                <div class="item-heading-bar">
+                    <h2 class="item-title">甲級寫字樓空置率</h2>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="13.1">13.1</span>%</div>
+                                    <label style="width: 180px;">全香港</label>
+                                    <label style="width: 180px;">按月 <font color="lightgreen">+0.1%</font> 按季 <font color="lightgreen">+0.1%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".3s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="10.6">10.6</span>%</div>
+                                    <label style="width: 180px;">中環/金鐘/上環</label>
+                                    <label style="width: 180px;">按月 <font color="lightgreen">+0.4%</font> 按季 <font color="lightgreen">+0.6%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".4s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="10.3">10.3</span>%</div>
+                                    <label style="width: 180px;">灣仔/銅鑼灣</label>
+                                    <label style="width: 180px;">按月 <font color="lightgreen">+0.3%</font> 按季 <font color="lightgreen">+0.4%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="13.2">13.2</span>%</div>
+                                    <label style="width: 180px;">港島東</label>
+                                    <label style="width: 180px;">按月 <font color="lightgreen">0%</font> 按季 <font color="red">-0.3%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="9.5">9.5</span>%</div>
+                                    <label style="width: 180px;">尖沙咀/柯士甸</label>
+                                    <label style="width: 180px;">按月 <font color="lightgreen">0%</font> 按季 <font color="lightgreen">0%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="18.1">18.1</span>%</div>
+                                    <label style="width: 180px;">東九龍</label>
+                                    <label style="width: 180px;">按月 <font color="red">-0.4%</font> 按季 <font color="red">-0.7%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <br>
+                <div class="item-heading-bar">
+                    <h2 class="item-title">租金指数</h2>
+                    <p>03 / 2024</p>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="223.6">223.6</span></div>
+                                    <label>平均租金指數</label>
+                                    <label style="width: 180px;">按月 <font color="red">-0.4%</font> 按季 <font color="red">-0.7%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".3s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="223.4">223.4</span></div>
+                                    <label>甲級指數</label>
+                                    <label style="width: 180px;">按月 <font color="red">-0.89%</font> 按季 <font color="red">-2.53%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".4s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="228.3">228.3</span></div>
+                                    <label>乙級指數</label>
+                                    <label style="width: 180px;">按月 <font color="lightgreen">+0.09%</font> 按季 <font color="red">-1.85%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="progress-box1 wow zoomIn" data-wow-delay=".2s">
+                            <div class="progress-layout">
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="process-circle"></div>
+                                <div class="progress-content">
+                                    <div class="item-parcent"><span class="counterUp" data-counter="215.9">215.9</span></div>
+                                    <label>丙級指數</label>
+                                    <label style="width: 180px;">按月 <font color="red">-0.83%</font> 按季 <font color="red">-2.17%</font></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!--=====================================-->
+    <!--=   Bulding Index     Start              =-->
+    <!--=====================================-->
+
+        <section class="property-wrap2">
+            <div class="container">
+                <div class="item-heading-center">
+                    <h2 class="section-title">大廈索引</h2>
+                    <!--<div class="bg-title-wrap" style="display: block;">
+                        <span class="background-title solid">Properties</span>
+                    </div>-->
+                    <div class="d-flex justify-content-center">
+                        <ul class="nav nav-tabs" id="info-tab" role="tablist">
+                          <li class="nav-item"><a class="nav-link active" id="info-home-tab" data-bs-toggle="tab" href="#info-home" role="tab" aria-controls="info-home" aria-selected="true"><i class="icofont icofont-ui-home"></i>商業</a></li>
+                          <li class="nav-item"><a class="nav-link" id="profile-info-tab" data-bs-toggle="tab" href="#info-profile" role="tab" aria-controls="info-profile" aria-selected="false"><i class="icofont icofont-man-in-glasses"></i>工業</a></li>
+                          <li class="nav-item"><a class="nav-link" id="contact-info-tab" data-bs-toggle="tab" href="#info-contact" role="tab" aria-controls="info-contact" aria-selected="false"><i class="icofont icofont-contacts"></i>商鋪</a></li>
+                        </ul>
+                    </div>
+                    <div class="tab-content" id="info-tabContent">
+                      <div class="tab-pane fade show active" id="info-home" role="tabpanel" aria-labelledby="info-home-tab">
+                        <div class="row" align="center"><br>
+                            {% for displaydata in district_count_list %}
+                                <span class="searchTree_cat_count"><font size=2 style="font-weight:600">{{ displaydata.District }}({{ displaydata.district_count }})</font></span>&nbsp;&nbsp;
+                            {% endfor %}
+                            {% for displaydata in subdistrict_count_list %}
+                                {{ displaydata.SubDistrict }}({{ displaydata.subdistrict_count }})
+                            {% endfor %}
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="info-profile" role="tabpanel" aria-labelledby="profile-info-tab">
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                      </div>
+                      <div class="tab-pane fade" id="info-contact" role="tabpanel" aria-labelledby="contact-info-tab">
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+                      </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+    var selectTab
+    $('[data-bs-toggle="tab"]').click(function(e) {
+        alert("fff");
+        var $this = $(this)
+        selectTab = $this.attr('action');
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-target'),
+            action = $this.attr('action');
+            usage = $this.attr('usage');
+            propertyid = $this.attr('propertyid');
+
+            lock = $this.attr('lock');
+            if (lock == 1) {
+                alert("\u26A0 沒有存取此頁面的存取權限！欲了解更多信息，請聯絡系統管理員。");
+                return false;
+            }
+
+            $.ajax({
+                url:'{% url 'property_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, usage:usage, propertyid:propertyid},
+                beforeSend: function(){
+                    // Display the loading message with the current time
+                    var startTime = new Date().getTime();
+                    $('#'+action).html('<br/><br/><br/><br/><br/><center<div class=\"loader-2\"></div><br/><span id="loadingTime"></span><br/><br/><br/><br/><br/></center></p>');
+                    loadingInterval = setInterval(function() {
+                      // Update the loading time every second
+                      var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+                      $('#loadingTime').html('讀取時間: ' + elapsedTime + ' 秒');
+                    }, 1000);
+                },
+            })
+            .done(function(response){
+                // Calculate the loading time and append it to the response message
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#'+action).html(response);
+                //refresh_table(action);
+                if (action == "usage_view") $("div.toolbar").html('<b><font size=3>用戶列表</font></b>');
+                if (action == "property_view") $("div.toolbar").html('<b><font size=3>物業列表</font></b>');
+                if (action == "request_review") $("div.toolbar").html('<b><font size=3>審批申請列表</font></b>&nbsp;&nbsp;&nbsp;');
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            //$(loadurl).html(loadurl);
+            $this.tab('show');
+        return false;
+    });
+
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

@@ -1,0 +1,384 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+<link rel="stylesheet" href="{% static 'common/formCommon.css' %}">
+	{% if action == "menutab" %}
+		<div class="col-md-12">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs nav-primary">
+				  <!--<li class="active"><a href="#overview" data-toggle="tabajax" action="overview" year="{{year}}" start_date="{{start_date}}" end_date="{{end_date}}"><b>Overview</b></a></li>-->
+				  <li class="nav-item active"><a class="nav-link active" href="#customer_list" data-toggle="tabajax" action="customer_list" start_date="{{start_date}}" end_date="{{end_date}}" lock="0"><b>客人記錄</b></a></li>
+				  <!--<li class="nav-item"><a class="nav-link" href="#member_active" data-toggle="tabajax" action="member_active" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1401 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>活躍會員</b></a></li>-->
+				</ul>
+				<div class="tab-content">
+					<div class="active tab-pane" id="customer_list"></div>
+					<div class="tab-pane" id="member_active"></div>
+				</div>
+				<div id="errormessage"></div>
+			</div>
+		</div>
+	{% endif %}
+	{% if action == "customer_list" %}
+        <div class="table-responsive">
+            <table id="contentTable-{{action}}" class="display" id="contentTable" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th style="text-align:center;" width="120">建立時間</th>
+                        <th>客人姓名</th>
+                        <th style="text-align:center;" width="100">電話</th>
+                        <th style="text-align:center;" width="150">電郵地址</th>
+                        <th style="text-align:center;" width="80">職業</th>
+                        <th style="text-align:center;" width="80">查詢盤類</th>
+                        <th style="text-align:center;" width="100">買入價錢範圍</th>
+                        <th style="text-align:center;" width="100">租入價錢範圍</th>
+                        <th style="text-align:center;" width="120">備註</th>
+                        {% if 2481 in request.session.accessright %}
+                        <th style="text-align:center;" width="80">同事</th>
+                        {% endif %}
+                        <th style="text-align:center;" width="60">狀態</th>
+                        <th style="text-align:center;" width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in customer_list %}
+                        {% setvar displaydata.followup_user|default_if_none:"" as followup_user_split_list %}
+                        {% if 2481 in request.session.accessright or displaydata.login_id == request.session.loginid %}
+                        <tr>
+                            <td style="text-align:center;">{{displaydata.create_date|date:'Y-m-d H:i'}}</td>
+                            <td>{{displaydata.customer_name}}</td>
+                            <td>{{displaydata.phone_area_code}} {{displaydata.phone_number}}</td>
+                            <td>{{displaydata.email}}</td>
+                            <td align="center">{{displaydata.industry}}</td>
+                            <td align="center">{{displaydata.offer_type}}</td>
+                            <td>{{displaydata.sellingprice_from|default_if_none:""|format_numeric|format_number_with_commas|safe}} ~ {{displaydata.sellingprice_to|default_if_none:""|format_numeric|format_number_with_commas|safe}}</td>
+                            <td>{{displaydata.rent_from|default_if_none:""|format_numeric|format_number_with_commas|safe}} ~ {{displaydata.rent_to|default_if_none:""|format_numeric|format_number_with_commas|safe}}</td>
+                            <td>{{displaydata.remarks}}</td>
+                            {% if 2481 in request.session.accessright %}
+                            <td>{{displaydata.login_id|getLoginName}}</td>
+                            {% endif %}
+                            <td style="text-align:center;">
+                                {% if displaydata.status == 0 %}
+                                <span class="badge badge-danger text-md">失效</span>
+                                {% endif %}
+                                {% if displaydata.status == 1 %}
+                                <span class="badge badge-success text-md">正常</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align:center;">
+                                <a href="#" class="open_modal_view" data-bs-toggle="modal" data-bs-target="#InfoModal" action="edit" formtype="customer_info" formname="Information" customer_id="{{ displaydata.customer_id }}" offer_type="{{ displaydata.offer_type }}" sellingprice_from="{{ displaydata.sellingprice_from }}" sellingprice_to="{{ displaydata.sellingprice_to }}" rent_from="{{ displaydata.rent_from }}" rent_to="{{ displaydata.rent_to }}" status="{{ displaydata.status }}" title="查詢客人記事簿及物業建議"><i class="icon-eye"></i></a>
+                                <a href="#" class="open_modal_info" data-bs-toggle="modal" data-bs-target="#EditModal" action="edit" formtype="customer_info" formname="Information" customer_id="{{ displaydata.customer_id }}" customer_name="{{ displaydata.customer_name }}" email="{{ displaydata.email }}" phone_area_code="{{ displaydata.phone_area_code }}" phone_number="{{ displaydata.phone_number }}" industry="{{ displaydata.industry }}" offer_type="{{ displaydata.offer_type }}" sellingprice_from="{{ displaydata.sellingprice_from }}" sellingprice_to="{{ displaydata.sellingprice_to }}" rent_from="{{ displaydata.rent_from }}" rent_to="{{ displaydata.rent_to }}" remarks="{{ displaydata.remarks }}" status="{{ displaydata.status }}" login_id="{{ displaydata.login_id }}" login_name="{{displaydata.login_id|getLoginName}}" title="編輯客人記事簿"><i class="icofont icofont-edit"></i></a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+	{% if action == "customer_info" %}
+        {% if customer_list %}
+        <table border="2" class="table table-striped" bordercolor="grey">
+            <colgroup>
+                <col style="width:20%;background-color: #f2f2f2;">
+                <col style="width:30%;">
+                <col style="width:20%;background-color: #e6e6e6;">
+                <col style="width:30%;">
+            </colgroup>
+            <thead>
+                <td align="center" class="bg-primary" colspan="4"><b>客人記事簿</b> ({{customer_list.0.login_id|getLoginName}})</td>
+            </thead>
+            <tr>
+                <td width="200"><b>客人姓名：</b></td>
+                <td colspan="3">{{customer_list.0.customer_name|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>電郵地址：</b></td>
+                <td colspan="3">{{customer_list.0.email|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>電話號碼：</b></td>
+                <td colspan="3">{{customer_list.0.phone_area_code}}{{customer_list.0.phone_number|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>職業</b></td>
+                <td>{{customer_list.0.industry|default_if_none:""}}</td>
+                <td><b>查詢盤類：</b></td>
+                <td>{{customer_list.0.offer_type|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>買入價錢範圍(HK$)：</b></td>
+                <td colspan="3">{{customer_list.0.sellingprice_from|default_if_none:""|format_number_with_commas|safe}} ~ {{customer_list.0.sellingprice_to|default_if_none:""|format_number_with_commas|safe}}</td>
+            </tr>
+            <tr>
+                <td><b>租入價錢範圍(HK$)：</b></td>
+                <td colspan="3">{{customer_list.0.rent_from|default_if_none:""|format_number_with_commas|safe}} ~ {{customer_list.0.rent_to|default_if_none:""|format_number_with_commas|safe}}</td>
+            </tr>
+            <tr>
+                <td><b>備註：</b></td>
+                <td colspan="3">{{customer_list.0.remarks|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>建立日期：</b></td>
+                <td colspan="3">{{customer_list.0.create_date|date:'Y-m-d H:i'}}</td>
+            </tr>
+            <tr>
+                <td><b>更新日期：</b></td>
+                <td colspan="3">{{customer_list.0.modify_date|date:'Y-m-d H:i'}}</td>
+            </tr>
+        </table>
+        {% endif %}
+
+        {% if customer_list.0.offer_type|default_if_none:"" == "購買" or customer_list.0.offer_type|default_if_none:"" == "找租" %}
+            {% if property_recommend_list %}
+          <table class="display table-hover table-bordered table-striped" cellpadding="6" width="100%">
+              <thead>
+                  <tr style="background-color:#330066;color:#FFFFFF">
+                      <th style="text-align:center;"colspan="13">物業建議</th>
+                  </tr>
+                  <tr style="background-color:#a27dba;color:#FFFFFF">
+                      <th>地址</th>
+                      <th style="text-align:center;" width="80">物業編號</th>
+                      <th style="text-align:center;" width="80">用途</th>
+                      <th width="80">建築面積</th>
+                      <th width="80">實用面積</th>
+                      <th style="text-align:center;" width="80">盤類</th>
+                      <th style="text-align:center;" width="80">業主叫價</th>
+                      <th style="text-align:center;" width="80">業主叫租</th>
+                      <th style="text-align:center;" width="70">管理費</th>
+                      <th style="text-align:center;" width="70">差餉</th>
+                      <th style="text-align:center;" width="80">物業狀況</th>
+                      <th style="text-align:center;" width="40">圖</th>
+                      <th style="text-align:center;" width="80">操作</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for displaydata in property_recommend_list %}
+                  <tr valign="top">
+                      <td data-filter="{{ displaydata.PropertyName }}">{{ displaydata.PropertyName }}</td>
+                      <td valign="top" style="text-align:center;" data-filter="{{ displaydata.PropertyNo }}">{{ displaydata.PropertyNo|safe }}</td>
+                      <td valign="top" style="text-align:center;" data-filter="{{ displaydata.Usage }}">{{ displaydata.Usage|safe }}</td>
+                      <td style="text-align:right;">{{ displaydata.GrossArea|default_if_none:""|format_number_with_commas }}</td>
+                      <td style="text-align:right;">{{ displaydata.NetArea|default_if_none:""|format_number_with_commas }}</td>
+                      <td style="text-align:center;">{{ displaydata.OfferType }}</td>
+                      <td style="text-align:right;">{{ displaydata.SellingPrice|format_numeric }}</td>
+                      <td style="text-align:right;">{{ displaydata.Rent|format_numeric }}</td>
+                      <td style="text-align:right;">{{ displaydata.ManagementFee|format_numeric }}</td>
+                      <td style="text-align:right;">{% if displaydata.Rates|default_if_none:0 != 0 %}{{ displaydata.Rates|default_if_none:0|format_numeric }}{% endif %}</td>
+                      <td style="text-align:center;">
+                          {% if displaydata.Possession == "現吉" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                          {% if displaydata.Possession == "商議" %}<span class="badge badge-warning text-md">{{displaydata.Possession}}</span>{% endif %}
+                          {% if displaydata.Possession == "連租約" %}<span class="badge badge-danger text-md">{{displaydata.Possession}}</span>{% endif %}
+                          {% if displaydata.Possession == "已售" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                          {% if displaydata.Possession == "已租" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                          {% if displaydata.Possession == "封盤" %}<span class="badge badge-success text-md">{{displaydata.Possession}}</span>{% endif %}
+                      </td>
+                      <td style="text-align:center;">
+                           {% if displaydata.FileName is not NULL %}<span class="badge badge-success text-md">O</span>
+                           {% endif %}
+                      </td>
+                      <td style="text-align:center;">
+                          {% if 1476 in request.session.accessright or 1461 in request.session.accessright %}<a href="/property/{{ displaydata.PropertyID }}" class="open_edit" action="edit" formtype="property_info" formname="Property Information" propertyid="{{ displaydata.PropertyID }}" propertyno="{{ displaydata.PropertyNo }}" propertyname="{{ displaydata.PropertyName }}" usage="{{ displaydata.Usage }}" district="{{ displaydata.District }}" subdistrict="{{ displaydata.SubDistrict }}" street="{{ displaydata.Street }}" streetno="{{ displaydata.StreetNo }}" building="{{ displaydata.Building }}" floor="{{ displaydata.Floor }}" unit="{{ displaydata.Unit }}" yield_field="{{ displaydata.Yield }}" target="_new"><i class="icon-pencil-alt"></i></a>{% endif %}
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+            {% else %}
+          <table class="display table-hover table-bordered table-striped" cellpadding="6" width="100%">
+              <thead>
+                  <tr style="background-color:#330066;color:#FFFFFF">
+                      <th style="text-align:center;">物業建議</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr valign="top">
+                      <td style="text-align:center;">
+                          暫時沒有任何建議
+                      </td>
+                  </tr>
+          </table>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+	{% if action == "team_list" %}
+        {% setvar "" as tmpTeam %}
+            <option value="">- 所有用戶 -</option>
+        {% for displayuser in userlist|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displayuser.Team %}{% if tmpTeam == "" %}<optgroup label="{{displayuser.teamFullDesc}}">{% else %}</optgroup><optgroup label="{{displayuser.teamFullDesc}}">{% endif %}{% endif %}
+            <option value="{{displayuser.LoginID}}" {% if user_loginid == displayuser.LoginID %} selected {% endif %}>{{displayuser.LoginNameDesc}} ({{displayuser.rankDesc}})</option>
+            {% setvar displayuser.Team as tmpTeam %}
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+{% if action == "customer_list" %}
+    $(".open_modal_info").click(function(){
+        // Adding the Value from Table to Modal form
+        $(".modal-header").css('color', '#FFFFFF');
+        $("#customer_id").val($(this).attr("customer_id"));
+        $("#action").val($(this).attr("action"));
+
+        var customer_id = $(this).attr("customer_id");
+        var action = $(this).attr("action");
+        var formtype = $(this).attr("formtype");
+        $("#login_id").val($(this).attr("login_id"));
+        $("#login_name").html($(this).attr("login_name"));
+        $("#customer_name").val($(this).attr("customer_name"));
+        $("#email").val($(this).attr("email"));
+        $("#phone_area_code").val($(this).attr("phone_area_code"));
+        $("#phone_number").val($(this).attr("phone_number"));
+        $("#industry").val($(this).attr("industry"));
+        $("#offer_type").val($(this).attr("offer_type"));
+        $("#sellingprice_from").val($(this).attr("sellingprice_from"));
+        $("#sellingprice_to").val($(this).attr("sellingprice_to"));
+        $("#rent_from").val($(this).attr("rent_from"));
+        $("#rent_to").val($(this).attr("rent_to"));
+        $("#remarks").val($(this).attr("remarks"));
+        if (($(this).attr("status") == "0")) $("#radioInActive").prop("checked", true);
+        if ($(this).attr("status") == "1") $("#radioActive").prop("checked", true);
+
+        if (action == 'add') {
+            $("#EditModal #FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增客人內容</b>");
+            $("#radioActive").prop("checked", true);
+            $("#phone_area_code").val("+852");
+            $(".modal-header").css('background-color', '#DD4B39');
+            $("#add_button").show();
+            $("#edit_button").hide();
+            $("#delete_button").hide();
+        } else {
+            $("#EditModal #FunctionTitle").html("<i class='icon-edit'></i>&nbsp;&nbsp;<b>編輯客人內容</b>");
+            $(".modal-header").css('background-color', '#F39C12');
+            $("#add_button").hide();
+            $("#edit_button").show();
+            $("#delete_button").show();
+        }
+
+    });
+
+    $(".open_modal_view").click(function(){
+        // Adding the Value from Table to Modal form
+        $(".modal-header").css('color', '#FFFFFF');
+
+        var customer_id = $(this).attr("customer_id");
+        var action = $(this).attr("action");
+        var formtype = $(this).attr("formtype");
+        $("#InfoModal #FunctionTitle").html("<i class='icon-eye'></i>&nbsp;&nbsp;<b>查詢客人記事簿及物業建議</b>");
+        $(".modal-header").css('background-color', '#F39C12');
+        $("#add_button").hide();
+        $("#edit_button").hide();
+        $("#remove_button").hide();
+        var offer_type = $(this).attr("offer_type");
+        var sellingprice_from = $(this).attr("sellingprice_from");
+        var sellingprice_to = $(this).attr("sellingprice_to");
+        var rent_from = $(this).attr("rent_from");
+        var rent_to = $(this).attr("rent_to");
+
+        if (formtype == "customer_info") {
+            $.ajax({
+                url:'{% url 'customerNote_response' %}',
+                type:'POST',
+                data:{action:'customer_info', customer_id:customer_id, offer_type:offer_type, sellingprice_from:sellingprice_from, sellingprice_to:sellingprice_to, rent_from:rent_from, rent_to:rent_to},
+            })
+            .done(function(response){
+                $("#InfoModal #customer_info").html(response);
+            })
+            .fail(function(xhr, status, error){
+                $('#InfoModal .modal-message').html(xhr.responseText);
+                //alert(xhr.responseText);
+            })
+        }
+    });
+
+{% endif %}
+{% if action == "menutab" %}
+    action = "customer_list";
+    $.ajax({
+        url:'{% url 'customerNote_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, start_date:start_date, end_date:end_date},
+        beforeSend: function(){
+            // Display the loading message with the current time
+            var startTime = new Date().getTime();
+            $('#'+action).html('<br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-7\"></div></div><br/><span id="loadingTime"></span><br/><br/><br/><br/><br/></center></p>');
+            loadingInterval = setInterval(function() {
+              // Update the loading time every second
+              var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+              $('#loadingTime').html('讀取時間: ' + elapsedTime + ' 秒');
+            }, 1000);
+        },
+    })
+    .done(function(response){
+        $('#customer_list').html(response);
+        refresh_table(action);
+        table.page(currentPage).draw(false);
+        $("div.toolbar").html('<b><font size=3>委託列表</font></b>&nbsp;&nbsp;&nbsp;');
+    })
+    .fail(function(xhr, status, error){
+        $('#customer_list').html(xhr.responseText);
+        //alert(xhr.responseText);
+    })
+    var selectTab
+    $('[data-toggle="tabajax"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+        $this.attr('start_date',start.format('YYYY-MM-DD'));
+        $this.attr('end_date',end.format('YYYY-MM-DD') + ' 23:59:59');
+        $this.attr('team',$("#cboTeam").val());
+        $this.attr('loginid',$("#cboUser").val());
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-target'),
+            action = $this.attr('action');
+            start_date = $this.attr('start_date');
+            end_date = $this.attr('end_date');
+            team = $this.attr('team');
+            loginid = $this.attr('loginid');
+            lock = $this.attr('lock');
+            if (lock == 1) {
+                alert("\u26A0 沒有存取此頁面的存取權限！欲了解更多信息，請聯絡系統管理員。");
+                return false;
+            }
+
+            $.ajax({
+                url:'{% url 'customerNote_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, start_date:start_date, end_date:end_date, team:team, loginid:loginid},
+                beforeSend: function(){
+                    // Display the loading message with the current time
+                    var startTime = new Date().getTime();
+                    $('#'+action).html('<br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-7\"></div></div></center></p>');
+                    loadingInterval = setInterval(function() {
+                      // Update the loading time every second
+                      var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+                      $('#loadingTime').html('Elapsed time: ' + elapsedTime + ' seconds');
+                    }, 1000);
+                },
+            })
+            .done(function(response){
+                // Calculate the loading time and append it to the response message
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#'+action).html(response);
+                refresh_table(action);
+                table.page(currentPage).draw(false);
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            //$(loadurl).html(loadurl);
+            $this.tab('show');
+        return false;
+    });
+{% endif %}
+</script>
+{% endblock custom_js %}

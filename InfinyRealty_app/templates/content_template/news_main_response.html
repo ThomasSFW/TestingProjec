@@ -1,0 +1,143 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "content_detail_list" %}
+        <div class="table-responsive">
+            <table class="display table-hover table-bordered table-striped" id="contentTable">
+                <thead>
+                    <tr style="text-align:center;background-color:#330066;color:#FFFFFF">
+                        <!--<th width="20">ID</th>-->
+                        <th style="text-align:center;" width="80">內容日期</th>
+                        <th>內容</th>
+                        <th style="text-align:center;" width="80">次序</th>
+                        <th style="text-align:center;" width="50">狀態</th>
+                        <th style="text-align:center;" width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in content_detail_list|dictsortreversed:"create_date" %}
+                    <tr>
+                        <!--<td style="text-align:center;">{{ displaydata.content_detail_id }}</td>-->
+                        <td style="text-align:center;" data-filter="{{ displaydata.create_date|date:'Y/m/d' }}" valign="top">{{ displaydata.create_date|date:'Y/m/d' }}</td>
+                        <td data-filter="{{ displaydata.content_detail_title|default_if_none:""|remove_p_tags|safe }}{{ displaydata.content_detail_name }}" valign="top"><h3>{{ displaydata.content_detail_title|default_if_none:""|remove_p_tags|safe }}</h3><br>{{ displaydata.content_detail_name|safe }}</td>
+                        <td style="text-align:center;" data-filter="{{ displaydata.sequence }}" valign="top">{{ displaydata.sequence }}</td>
+                        <td style="text-align:center;" valign="top">
+                            {% if displaydata.status == 1 %}
+                            <span class="badge rounded-pill badge-success">正常</span>
+                            {% else %}
+                            <span class="badge rounded-pill badge-danger">失效</span>
+                            {% endif %}
+                        </td>
+                        <td align="center" valign="top">
+                            {% if 1467 not in request.session.accessright %}
+                                <i class="icon-lock"></i>
+                            {% else %}
+                                <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="edit" formtype="content_info" formname="Code Information" content_detail_id="{{ displaydata.content_detail_id }}" content_id="{{ displaydata.content_id }}" content_detail_title="{{ displaydata.content_detail_title }}" content_detail_title_s="{{ displaydata.content_detail_title_s }}" content_detail_title_e="{{ displaydata.content_detail_title_e }}" content_detail_name="{{ displaydata.content_detail_name }}" content_detail_name_s="{{ displaydata.content_detail_name_s }}" content_detail_name_e="{{ displaydata.content_detail_name_e }}" sequence="{{ displaydata.sequence }}" status="{{ displaydata.status }}" create_date="{{ displaydata.create_date|date:'Y-m-d' }}"><i class="icon-pencil-alt"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td align="center" colspan="4">沒有記錄</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "content_detail_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                var content_detail_title = $(this).attr("content_detail_title");
+                var content_detail_title_s = $(this).attr("content_detail_title_s");
+                var content_detail_title_e = $(this).attr("content_detail_title_e");
+                var content_detail_name = $(this).attr("content_detail_name");
+                var content_detail_name_s = $(this).attr("content_detail_name_s");
+                var content_detail_name_e = $(this).attr("content_detail_name_e");
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#action").val($(this).attr("action"));
+                $("#content_detail_id").val($(this).attr("content_detail_id"));
+                $("#content_id").val($(this).attr("content_id"));
+                document.getElementById("TxtCreateDate").defaultValue = $(this).attr("create_date");
+                //$("#TxtCreateDate").val($(this).attr("create_date"));
+                if (editor3) {
+                    editor3.setData(content_detail_title);
+                } else {
+                    console.log("Editor is not initialized yet.");
+                }
+                if (editor4) {
+                    editor4.setData(content_detail_title_s);
+                } else {
+                    console.log("Editor is not initialized yet.");
+                }
+                if (editor5) {
+                    editor5.setData(content_detail_title_e);
+                } else {
+                    console.log("Editor is not initialized yet.");
+                }
+
+                if (editor) {
+                    editor.setData(content_detail_name);
+                } else {
+                    console.log("Editor is not initialized yet.");
+                }
+                if (editor1) {
+                    editor1.setData(content_detail_name_s);
+                } else {
+                    console.log("Editor is not initialized yet.");
+                }
+                if (editor2) {
+                    editor2.setData(content_detail_name_e);
+                } else {
+                    console.log("Editor is not initialized yet.");
+                }
+                //$("#TxtContentDetailName").val($(this).attr("content_detail_name"));
+                //$("#TxtContentDetailNameE").val($(this).attr("content_detail_name_e"));
+                $("#TxtSequence").val($(this).attr("sequence"));
+                if ($(this).attr("status") == "1")
+                    $("#radioActive").prop("checked", true);
+                else
+                    $("#radioInActive").prop("checked", true);
+                var id = $(this).attr("recordid");
+
+                var action = $(this).attr("action");
+
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增內容</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                    $("#TxtCreateDate").val("{{today}}");
+                    $("#radioActive").prop("checked", true);
+                } else {
+                    $("#FunctionTitle").html("<i class='icon-pencil-alt'></i>&nbsp;&nbsp;<b>編輯內容</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

@@ -1,0 +1,335 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+<link rel="stylesheet" href="{% static 'common/formCommon.css' %}">
+	{% if action == "menutab" %}
+		<div class="col-md-12">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs nav-primary">
+				  <!--<li class="active"><a href="#overview" data-toggle="tabajax" action="overview" year="{{year}}" start_date="{{start_date}}" end_date="{{end_date}}"><b>Overview</b></a></li>-->
+				  <li class="nav-item active"><a class="nav-link active" href="#entrust_list" data-toggle="tabajax" action="entrust_list" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1452 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>委託記錄</b></a></li>
+				  <!--<li class="nav-item"><a class="nav-link" href="#member_active" data-toggle="tabajax" action="member_active" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1401 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>活躍會員</b></a></li>-->
+				</ul>
+				<div class="tab-content">
+					<div class="active tab-pane" id="entrust_list"></div>
+					<div class="tab-pane" id="member_active"></div>
+				</div>
+				<div id="errormessage"></div>
+			</div>
+		</div>
+	{% endif %}
+	{% if action == "entrust_list" %}
+        <div class="table-responsive">
+            <table id="contentTable-{{action}}" class="display" id="contentTable" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th style="text-align:center;" width="120">建立時間</th>
+                        <th>聯絡人姓名</th>
+                        <th style="text-align:center;" width="150">電郵地址</th>
+                        <th style="text-align:center;" width="100">電話</th>
+                        <th style="text-align:center;" width="100">聯絡時段</th>
+                        <th style="text-align:center;" width="100">物業地址</th>
+                        <th style="text-align:center;" width="80">盤類</th>
+                        <th style="text-align:center;" width="50">用途</th>
+                        <th style="text-align:center;" width="80">跟進同事</th>
+                        <th style="text-align:center;" width="60">狀態</th>
+                        <th style="text-align:center;" width="60">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in entrust_list %}
+                        {% setvar displaydata.followup_user|default_if_none:"" as followup_user_split_list %}
+                        {% setvar followup_user_split_list|split:"," as followup_user_list %}
+                        {% if request.session.loginid|safe in followup_user_list or 1472 in request.session.accessright %}
+                        <tr>
+                            <td style="text-align:center;">{{displaydata.create_date|date:'Y-m-d H:i'}}</td>
+                            <td>{{displaydata.contact_name}}</td>
+                            <td>{{displaydata.email}}</td>
+                            <td align="center">{{displaydata.phone_area_code}} {{displaydata.phone_number}}</td>
+                            <td>{{displaydata.contact_period}}
+                                {% if displaydata.contact_period_other != "" %}
+                                    (其他時段：{{displaydata.contact_period_other}})
+                                {% endif %}
+                            </td>
+                            <td>{{displaydata.property_address_1}}</td>
+                            <td>{{displaydata.offer_type_1}}</td>
+                            <td>{{displaydata.usage_1}}</td>
+                            <td>{{displaydata.followup_user|default_if_none:""|getLoginName|safe}}</td>
+                            <td style="text-align:center;">
+                                {% if displaydata.status == 0 %}
+                                <span class="badge badge-danger text-md">新查詢</span>
+                                {% endif %}
+                                {% if displaydata.status == 1 %}
+                                <span class="badge badge-warning text-md">進行中</span>
+                                {% endif %}
+                                {% if displaydata.status == 2 %}
+                                <span class="badge badge-primary text-md">暫緩</span>
+                                {% endif %}
+                                {% if displaydata.status == 3 %}
+                                <span class="badge badge-success text-md">完成</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align:center;">
+                                <a href="#" class="open_modal_info" data-bs-toggle="modal" data-bs-target="#InfoModal" action="edit" formtype="entrust_info" formname="Information" entrust_id="{{ displaydata.entrust_id }}" followup_info="{{ displaydata.followup_info|default_if_none:"" }}" followup_user="{{ displaydata.followup_user }}" status="{{ displaydata.status }}"><i class="icon-eye"></i></a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+	{% if action == "entrust_info" %}
+        {% if entrust_list %}
+        <table border="2" class="table table-striped" bordercolor="grey">
+            <colgroup>
+                <col style="width:20%;background-color: #f2f2f2;">
+                <col style="width:30%;">
+                <col style="width:20%;background-color: #e6e6e6;">
+                <col style="width:30%;">
+            </colgroup>
+            <thead>
+                <td align="center" class="bg-success" colspan="4"><b>網上委託</b></td>
+            </thead>
+            <tr>
+                <td width="200"><b>聯絡人姓名：</b></td>
+                <td colspan="3">{{entrust_list.0.contact_name|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>電郵地址：</b></td>
+                <td colspan="3">{{entrust_list.0.email|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>電話號碼：</b></td>
+                <td colspan="3">{{entrust_list.0.phone_area_code}}{{entrust_list.0.phone_number|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>方便聯絡您的時段</b></td>
+                <td>{{entrust_list.0.contact_period|default_if_none:""}}</td>
+                <td><b>或其他時段：</b></td>
+                <td>{{entrust_list.0.contact_period_other|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td bgcolor="#FFFFCC"><b>您的物業地址#1：</b></td>
+                <td colspan="3">{{entrust_list.0.property_address_1|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>盤類：</b></td>
+                <td>{{entrust_list.0.offer_type_1|default_if_none:""}}</td>
+                <td><b>用途：</b></td>
+                <td>{{entrust_list.0.usage_1|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>實用面積(平方呎)：</b></td>
+                <td colspan="3">{{entrust_list.0.netarea_1|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>業主租金：</b></td>
+                <td>{{entrust_list.0.rent_1|default_if_none:""}}</td>
+                <td><b>業主叫價：</b></td>
+                <td>{{entrust_list.0.selling_1|default_if_none:""}}</td>
+            </tr>
+            {% if entrust_list.0.property_address_2|default_if_none:"" != "" %}
+            <tr>
+                <td bgcolor="#FFFFCC"><b>您的物業地址#2：</b></td>
+                <td colspan="3">{{entrust_list.0.property_address_2|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>盤類：</b></td>
+                <td colspan="3">{{entrust_list.0.offer_type_2|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>用途：</b></td>
+                <td colspan="3">{{entrust_list.0.usage_2|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>實用面積(平方呎)：</b></td>
+                <td colspan="3">{{entrust_list.0.netarea_2|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>業主租金：</b></td>
+                <td colspan="3">{{entrust_list.0.rent_2|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>業主叫價：</b></td>
+                <td colspan="3">{{entrust_list.0.selling_2|default_if_none:""}}</td>
+            </tr>            
+            {% endif %}
+            <tr>
+                <td><b>備註：</b></td>
+                <td colspan="3">{{entrust_list.0.remarks|default_if_none:""}}</td>
+            </tr>
+            <tr>
+                <td><b>建立日期：</b></td>
+                <td colspan="3">{{entrust_list.0.create_date|date:'Y-m-d H:i'}}</td>
+            </tr>
+            <tr>
+                <td><b>更新日期：</b></td>
+                <td colspan="3">{{entrust_list.0.modify_date|date:'Y-m-d H:i'}}</td>
+            </tr>
+        </table>
+        {% endif %}
+    {% endif %}
+	{% if action == "team_list" %}
+        {% setvar "" as tmpTeam %}
+            <option value="">- 所有用戶 -</option>
+        {% for displayuser in userlist|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displayuser.Team %}{% if tmpTeam == "" %}<optgroup label="{{displayuser.teamFullDesc}}">{% else %}</optgroup><optgroup label="{{displayuser.teamFullDesc}}">{% endif %}{% endif %}
+            <option value="{{displayuser.LoginID}}" {% if user_loginid == displayuser.LoginID %} selected {% endif %}>{{displayuser.LoginNameDesc}} ({{displayuser.rankDesc}})</option>
+            {% setvar displayuser.Team as tmpTeam %}
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+{% if action == "entrust_list" %}
+    $(".open_modal_info").click(function(){
+        // Adding the Value from Table to Modal form
+        $(".modal-header").css('color', '#FFFFFF');
+        $("#entrust_id").val($(this).attr("entrust_id"));
+        $("#followup_info").val($(this).attr("followup_info"));
+        $("#action").val($(this).attr("action"));
+        if (($(this).attr("status") == "0") || ($(this).attr("status") == "")) $("#radioNew").prop("checked", true);
+        if ($(this).attr("status") == "1") $("#radioInProgress").prop("checked", true);
+        if ($(this).attr("status") == "2") $("#radioPending").prop("checked", true);
+        if ($(this).attr("status") == "3") $("#radioCompleted").prop("checked", true);
+        var selectedOptions = $(this).attr("followup_user").split(',');
+        var selectElement = $("#cboUser");
+          // Clear all selected options
+          selectElement.find("option").prop("selected", false);
+
+          // Set the selected options
+          $.each(selectedOptions, function(index, optionValue) {
+            selectElement.find("option[value='" + optionValue + "']").prop("selected", true);
+          });
+          selectElement.trigger("change");
+
+        var entrust_id = $(this).attr("entrust_id");
+        var action = $(this).attr("action");
+        var formtype = $(this).attr("formtype");
+        if (action == 'add') {
+            $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增網上委託內容</b>");
+            $(".modal-header").css('background-color', '#DD4B39');
+            $("#add_button").show();
+            $("#edit_button").hide();
+            $("#remove_button").hide();
+        } else {
+            $("#FunctionTitle").html("<i class='icon-eye'></i>&nbsp;&nbsp;<b>查詢網上委託內容</b>");
+            $(".modal-header").css('background-color', '#F39C12');
+            $("#add_button").hide();
+            $("#edit_button").show();
+            $("#remove_button").show();
+        }
+        {% if 1472 in request.session.accessright %}
+            $("#cboUser").show();
+        {% else %}
+            $("#cboUser").hide();
+        {% endif %}
+        if (formtype == "entrust_info") {
+            $.ajax({
+                url:'{% url 'entrustMain_response' %}',
+                type:'POST',
+                data:{action:'entrust_info', entrust_id:entrust_id},
+            })
+            .done(function(response){
+                $("#InfoModal #entrust_info").html(response);
+            })
+            .fail(function(xhr, status, error){
+                $('#InfoModal .modal-message').html(xhr.responseText);
+                //alert(xhr.responseText);
+            })
+        }
+    });
+
+{% endif %}
+{% if action == "menutab" %}
+    action = "entrust_list";
+    $.ajax({
+        url:'{% url 'entrustMain_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, start_date:start_date, end_date:end_date},
+        beforeSend: function(){
+            // Display the loading message with the current time
+            var startTime = new Date().getTime();
+            $('#'+action).html('<br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-7\"></div></div><br/><span id="loadingTime"></span><br/><br/><br/><br/><br/></center></p>');
+            loadingInterval = setInterval(function() {
+              // Update the loading time every second
+              var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+              $('#loadingTime').html('讀取時間: ' + elapsedTime + ' 秒');
+            }, 1000);
+        },
+    })
+    .done(function(response){
+        $('#entrust_list').html(response);
+        refresh_table(action);
+        table.page(currentPage).draw(false);
+        $("div.toolbar").html('<b><font size=3>委託列表</font></b>&nbsp;&nbsp;&nbsp;');
+    })
+    .fail(function(xhr, status, error){
+        $('#entrust_list').html(xhr.responseText);
+        //alert(xhr.responseText);
+    })
+    var selectTab
+    $('[data-toggle="tabajax"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+        $this.attr('start_date',start.format('YYYY-MM-DD'));
+        $this.attr('end_date',end.format('YYYY-MM-DD'));
+        $this.attr('team',$("#cboTeam").val());
+        $this.attr('loginid',$("#cboUser").val());
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-target'),
+            action = $this.attr('action');
+            start_date = $this.attr('start_date');
+            end_date = $this.attr('end_date');
+            team = $this.attr('team');
+            loginid = $this.attr('loginid');
+            lock = $this.attr('lock');
+            if (lock == 1) {
+                alert("\u26A0 沒有存取此頁面的存取權限！欲了解更多信息，請聯絡系統管理員。");
+                return false;
+            }
+
+            $.ajax({
+                url:'{% url 'entrustMain_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, start_date:start_date, end_date:end_date, team:team, loginid:loginid},
+                beforeSend: function(){
+                    // Display the loading message with the current time
+                    var startTime = new Date().getTime();
+                    $('#'+action).html('<br/><br/><br/><br/><br/><center><div class=\"loader-box\"><div class=\"loader-7\"></div></div></center></p>');
+                    loadingInterval = setInterval(function() {
+                      // Update the loading time every second
+                      var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+                      $('#loadingTime').html('Elapsed time: ' + elapsedTime + ' seconds');
+                    }, 1000);
+                },
+            })
+            .done(function(response){
+                // Calculate the loading time and append it to the response message
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#'+action).html(response);
+                refresh_table(action);
+                table.page(currentPage).draw(false);
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            //$(loadurl).html(loadurl);
+            $this.tab('show');
+        return false;
+    });
+{% endif %}
+</script>
+{% endblock custom_js %}

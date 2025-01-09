@@ -1,0 +1,150 @@
+﻿{% extends 'common_template/base_template_2.html' %}
+
+{% block main_content %}
+
+{% load static %}
+
+	<div class="row">
+		<div class="col-xl-12">
+			<div class="d-flex flex-wrap mb-3">
+				<a href="javascript:void(0);" data-toggle="modal" data-target="#addContactModal" class="btn btn-outline-primary  mr-auto mb-2">新增印表機</a>
+				<!-- Add Order -->
+				<div class="modal fade" id="addContactModal">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Add Contact</h5>
+								<button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="form-group">
+										<label class="text-black font-w500">XXFirst Name</label>
+										<input type="text" class="form-control">
+									</div>
+									<div class="form-group">
+										<label class="text-black font-w500">Last Name</label>
+										<input type="text" class="form-control">
+									</div>
+									<div class="form-group">
+										<label class="text-black font-w500">Address</label>
+										<input type="text" class="form-control">
+									</div>
+									<div class="form-group">
+										<button type="button" class="btn btn-primary">SAVE</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<select class="form-control style-2 mr-3 mb-2 default-select ">
+					<option>Filter</option>
+					<option>Date</option>
+				</select>
+				<select class="form-control style-2 mb-2 default-select ">
+					<option>Newest</option>
+					<option>Oldest</option>
+				</select>
+			</div>
+			<div class="table-responsive" id="contentBody">
+
+			</div>
+		</div>
+	</div>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        var table;
+
+        $("#searchinput").on("keyup", function() {
+			var oTable = $('#contentTable').dataTable();
+			oTable.fnFilter($(this).val());
+        });
+
+        function load_table() {
+            $("#contentTable").html('<br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>');
+            $.ajax({
+                url:'{% url 'printer_response_2' %}',
+                type:'POST',
+                data:{action:'printer_list'},
+            })
+
+            .done(function(response){
+                $("#contentBody").html(response);
+                refresh_table();
+            })
+
+            .fail(function(xhr, status, error){
+                $("#contentBody").html(xhr.responseText);
+            })
+        }
+
+        function refresh_table() {
+            table = $('#contentTable').DataTable({
+                "paging": true,
+                "dom": '<"toolbar">fBrtip',
+                "order": [],
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                buttons: [
+                    {   extend: "copy"    },
+                    {   extend: "pdf"     },
+                    {   extend: "csv"   },
+                    {
+                        extend: "print",
+                        customize: function(win)
+                        {
+                            var last = null;
+                            var current = null;
+                            var bod = [];
+
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+
+                            style.type = 'text/css';
+                            style.media = 'print';
+
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+                            head.appendChild(style);
+                        }
+                    },
+                ],
+            });
+            $("div.toolbar").html('<b><font size=3>印表機列表</font></b>&nbsp;&nbsp;&nbsp;');
+        }
+
+        $("#add_button").click(function(){
+            $("#action").val("add");
+        });
+
+        $("#update_button").click(function(){
+            $("#action").val("edit");
+        });
+
+        $("#remove_button").click(function(){
+            $("#action").val("delete");
+        });
+
+
+        load_table()
+    })
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

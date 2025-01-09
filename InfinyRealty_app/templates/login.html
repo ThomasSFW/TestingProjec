@@ -1,0 +1,113 @@
+﻿{% load static %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>InfinyRealty.com 管理系統</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+	<link href="{% static "uena/vendor/sweetalert2/dist/sweetalert2.min.css" %}" rel="stylesheet">
+	<link href="{% static "uena/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" %}" rel="stylesheet">
+    <link href="{% static "uena/css/style.css" %}" rel="stylesheet">
+</head>
+
+<body>
+	<div class="authincation d-flex flex-column flex-lg-row flex-column-fluid">
+		<!--<div class="login-aside text-center  d-flex flex-column flex-row-auto">`
+			<div class="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
+				<h3 class="mb-2">歡迎使用</h3>
+				<h2 class="text-center mb-4 text-black">zen智能零售系統</h2>
+				<img src="/static/dist/img/east.png" width="300px" style="padding-left:50px"><br>
+			</div>
+			<div class="aside-image" style="background-image:url(images/background/pic1.svg);"></div>
+		</div>-->
+		<div class="container flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
+			<div class="d-flex justify-content-center h-100 align-items-center">
+				<div class="authincation-content style-2">
+					<div class="row no-gutters">
+						<div class="col-xl-12 tab-content">
+
+							<div id="sign-in" class="auth-form tab-pane fade show active  form-validation">
+								<form   id="dz_login_signin_form"  class="form-validate">
+									<h3 class="text-center mb-2">歡迎使用</h3>
+									<h2 class="text-center mb-4 text-black">InfinyRealty.com 管理系統</h2>
+									<h3 class="text-center mb-4 text-black">登入系統</h3>
+									<div class="form-group">
+										<label class="mb-1 text-black"  for="val-username"><strong>用戶名稱</strong></label>
+										<div>
+											<input type="text" class="form-control" id="val-username" value="" name="val-username" placeholder="輸入你的用戶名稱...">
+										</div>
+									</div>
+									<!--<div class="form-group">
+										<label class="mb-1"  for="val-email"><strong>Email</strong></label>
+										<div>
+											<input type="email" class="form-control"  id="val-email" name="val-email" >
+										</div>
+									</div>-->
+									<div class="form-group">
+										<label class="mb-1 text-black"><strong>用戶密碼</strong></label>
+										<input type="password" class="form-control" id="val-password" value="" placeholder="輸入你的用戶密碼...">
+									</div>
+									<div class="form-row d-flex justify-content-between mt-4 mb-2">
+										<div class="form-group">
+										   <div class="custom-control custom-checkbox ml-1">
+												<input type="checkbox" class="custom-control-input" id="basic_checkbox_1">
+												<label class="custom-control-label" for="basic_checkbox_1">記住</label>
+											</div>
+										</div>
+										<!--<div class="form-group">
+											<a href="#forgot-password" data-toggle="tab">忘記密碼?</a>
+										</div>-->
+									</div>
+									<div class="text-center form-group">
+										<button type="submit" class="btn btn-primary btn-block" id="dz-signin-submit">登入</button>
+									</div>
+								</form>
+								<!--<div class="new-account mt-3">
+									<p>沒有帳戶？ <a class="text-primary"  href="#sign-up" data-toggle="tab">註冊</a></p>
+								</div>-->
+							</div>
+							<!--<div id="forgot-password" class="auth-form tab-pane fade form-validation">
+								<form id="dz_login_forgot_form">
+									<h3 class="text-center mb-4 text-black">忘記密碼</h3>
+									<div class="form-group">
+										<label class="mb-1"  for="val-password"><strong>Enter Password</strong></label>
+										<div>
+											<input type="password" class="form-control"  id="val-password" name="val-password" >
+										</div>
+									</div>
+									<div class="text-center form-group">
+										<button type="submit"  class="btn btn-primary btn-block">SUBMIT</button>
+									</div>
+								</form>
+							</div>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--**********************************
+	Scripts
+***********************************-->
+	<!-- Required vendorsxx -->
+	<script src="{% static "uena/vendor/global/global.min.js" %}"></script>
+	<script src="{% static "uena/vendor/bootstrap-select/dist/js/bootstrap-select.min.js" %}"></script>
+	<script src="{% static "uena/js/custom.js" %}"></script>
+	<script src="{% static "uena/vendor/sweetalert2/dist/sweetalert2.min.js" %}"></script>
+	<!-- Jquery Validation -->
+    <script src="{% static "uena/vendor/jquery-validation/jquery.validate.min.js" %}"></script>
+	
+	<script src="{% static "uena/js/login-form.js" %}"></script>
+	<script src="{% static "uena/js/deznav-init.js" %}"></script>
+</body>
+</html>
+
+{% endblock %}

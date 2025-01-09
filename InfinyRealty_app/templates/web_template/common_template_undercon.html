@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <title>InfinyRealty 承灃物業</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon Start Here -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'dist/img-web/main/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'Homlisti/css/jquery-ui.css' %}">
+    <!-- Bootstrap Css Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/css/bootstrap.min.css' %}">
+    <!-- Animate Css Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/css/animate.min.css' %}">
+    <!-- Owl Carousel Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/vendor/owlcarousel/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'Homlisti/vendor/owlcarousel/owl.theme.default.min.css' %}">
+    <!-- Swiper Css Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/css/swiper-bundle.min.css' %}">
+    <!-- Flaticon Css Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/css/flaticon/font/flaticon.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/photoswipe.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/daterange-picker.css' %}">
+    <!-- Select Css Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/css/nice-select.css' %}">
+    <!-- Animate Css Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/css/animate.min.css' %}">
+    <!-- Pop Up Css Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/css/magnific-popup.css' %}">
+    <!-- noUIrangle slider -->
+    <link rel="stylesheet" href="{% static 'Homlisti/vendor/noUiSlider/nouislider.min.css' %}">
+    <!-- All min Css Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/css/all.min.css' %}">
+    <!-- Pannellum -->
+    <link rel="stylesheet" href="{% static 'Homlisti/css/pannellum.css' %}">
+    <!-- Style Css Start Here -->
+    <link rel="stylesheet" href="{% static 'Homlisti/style.css' %}">
+    {% if request.session.lang == 'en' %}<link rel="stylesheet" href="{% static 'Homlisti/style_en.css' %}">{% endif %}
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/sweetalert2.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/datatables.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/date-picker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Koho/assets/css/vendors/photoswipe.css' %}">
+   <!-- Google Font Start Here -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .floating-icon {
+            position: fixed;
+            bottom: 80px; /* Distance from the bottom */
+            right: 30px; /* Distance from the right */
+            background-color: #330066; /* Background color */
+            color: white; /* Icon color */
+            border-radius: 50%; /* Circular shape */
+            width: 40px; /* Width */
+            height: 40px; /* Height */
+            display: flex; /* Center icon */
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+            cursor: pointer; /* Pointer cursor */
+            transition: background-color 0.3s; /* Transition effect */
+        }
+
+        .floating-icon:hover {
+            color: white; /* Icon color */
+            background-color: #B13B3C; /* Darker on hover */
+        }
+    </style>
+</head>
+
+<body class="sticky-header">
+    <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
+    <!--=====================================-->
+    <!--=   Preloader     Start             =-->
+    <!--=====================================-->
+
+    <div id="preloader"></div>
+    <!--=====================================-->
+    <!--=   Preloader     End               =-->
+    <!--=====================================-->
+
+
+    <div class="wrapper" id="wrapper">
+
+    {% block top_content %}
+    {% endblock top_content %}
+    {% include 'web_template/top_undercon.html' %}
+
+    {% block breadcrumb %}
+    {% endblock breadcrumb %}
+
+    {% block main_content %}
+    {% endblock main_content %}
+
+    {% block footer_content %}
+    {% endblock footer_content %}
+    {% include 'web_template/footer_undercon.html' %}
+    </div>
+    <div id="template-search" class="template-search">
+        <button type="button" class="close">×</button>
+        <form class="search-form">
+          <input type="search" value="" placeholder="Search" />
+          <button type="submit" class="search-btn btn-ghost style-1">
+            <i class="flaticon-search"></i>
+          </button>
+        </form>
+    </div>
+
+    <script src="{% static 'Homlisti/js/jquery-3.6.0.min.js' %}"></script>
+    <!-- Popper Js Start Here -->
+    <script src="{% static 'Homlisti/js/popper.min.js' %}"></script>
+    <!-- Bootstrap Js Start Here -->
+    <script src="{% static 'Homlisti/js/bootstrap.min.js' %}"></script>
+    <!-- Wow Js Start Here -->
+    <script src="{% static 'Homlisti/js/wow.min.js' %}"></script>
+    <!-- Owl Carousel Js Start Here -->
+    <script src="{% static 'Homlisti/vendor/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'Homlisti/js/swiper-bundle.min.js' %}"></script>
+    <!-- Count down Js Start Here -->
+    <script src="{% static 'Homlisti/js/jquery.appear.min.js' %}"></script>
+    <!-- Pop up Js Start Here -->
+    <script src="{% static 'Homlisti/js/jquery.magnific-popup.min.js' %}"></script>
+    <!-- Nice Select Js Start Here -->
+    <script src="{% static 'Homlisti/js/jquery.nice-select.min.js' %}"></script>
+    <!-- Parallaxie Js Start Here -->
+    <script src="{% static 'Homlisti/js/parallaxie.js' %}"></script>
+    <!-- Tween Js Start Here -->
+    <script src="{% static 'Homlisti/js/tween-max.js' %}"></script>
+    <!-- Appear Js Start Here -->
+    <script src="{% static 'Homlisti/js/appear.min.js' %}"></script>
+    <!-- Isotope Js Start Here -->
+    <script src="{% static 'Homlisti/js/isotope.pkgd.min.js' %}"></script>
+    <!-- Imagesloaded Js Start Here -->
+    <script src="{% static 'Homlisti/js/imagesloaded.pkgd.min.js' %}"></script>
+    <!-- noUiRangeSlider -->
+    <script src="{% static 'Homlisti/vendor/noUiSlider/nouislider.min.js' %}"></script>
+    <script src="{% static 'Homlisti/vendor/noUiSlider/wNumb.js' %}"></script>
+    <!-- Validator Slider -->
+    <script src="{% static 'Homlisti/js/validator.min.js' %}"></script>
+    <!-- Pannellum  -->
+    <script src="{% static 'Homlisti/js/pannellum.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/photoswipe/photoswipe.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/photoswipe/photoswipe-ui-default.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/photoswipe/photoswipe.js' %}"></script>
+    <!-- Zoom Image  -->
+    <script src="{% static 'Homlisti/js/jquery.zoom.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/datepicker/date-picker/datepicker.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/datepicker/date-picker/datepicker.en.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/datepicker/date-picker/datepicker.custom.js' %}"></script>
+
+    <script src="{% static 'Koho/assets/js/datepicker/daterange-picker/moment.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/datepicker/daterange-picker/daterangepicker.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/datepicker/daterange-picker/daterange-picker.custom.js' %}"></script>
+
+    <script src="{% static 'Koho/assets/js/notify/bootstrap-notify.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/sweet-alert/sweetalert.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/datatable/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/animation/scroll-reveal/scrollreveal.min.js' %}"></script>
+    <script src="{% static 'Koho/assets/js/animation/scroll-reveal/reveal-custom.js' %}"></script>
+    <!-- Main Js Start Here -->
+    <script src="{% static 'Homlisti/js/main.js' %}"></script>
+    <!-- jquery printThis -->
+    <script src="{% static 'jquery-printThis/printThis.js' %}"></script>
+{% comment %} For Custom JS {% endcomment %}
+{% block custom_js %}
+
+{% endblock custom_js %}
+</body>
+
+</html>

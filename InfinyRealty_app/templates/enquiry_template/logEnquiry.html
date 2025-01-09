@@ -1,0 +1,1131 @@
+{% extends 'common_template/base_template.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3>Log Enquiry</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb" style="float:right">
+    {% for displayitem in menuitem %}
+    <li><i class="fa fa-dashboard"></i></li>
+    <li>{{displayitem.tabName}}</li>
+    <li>{{displayitem.catName}}</li>
+    <li class="active">{{displayitem.subCatName}}</li>
+    {% endfor %}
+    </ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+	select:focus, input:focus {
+		border: 2px solid #FF0000 !important;
+	}
+    .nopadding {
+	   padding: 0!important;
+	   margin: 0!important;
+	}
+	.btn-grey {
+		color: #fff;
+		background-color: #C6C4CA;
+		border-color: #A7A7A7;
+	}
+	.btn-purple {
+		color: #fff;
+		background-color: #D0AAFF;
+		border-color: #BC87FE;
+	}
+</style>
+
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">			
+            <!-- general form elements -->
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <!-- Filter -->
+					<div class="col-md-2 nopadding">
+                        <span class="label label-primary">Filter</span>
+                        <b>Keyword</b>
+                        <div class="input-group">
+                            <input type="text" name="q" id="searchinput" class="form-control" placeholder="Search for ...">
+                                <span class="input-group-btn">
+									<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                </span>
+						</div>                        
+                    </div>
+                    <div class="col-md-2">
+                        <b>Enquiry</b>
+                        <select id="cboLogType" name="cboLogType" class="form-control select-box">                            
+							<option value="0">- All Enquiry Types -</option>
+							{% for logtype in logtypes %}
+								{% if 1359 in request.session.accessright and logtype.logtypeid == 1 or 1360 in request.session.accessright and logtype.logtypeid == 2 or 1361 in request.session.accessright and logtype.logtypeid == 3 or 1362 in request.session.accessright and logtype.logtypeid == 4 or 1363 in request.session.accessright and logtype.logtypeid == 5 or 1364 in request.session.accessright and logtype.logtypeid == 6 or 1365 in request.session.accessright and logtype.logtypeid == 7 or 1366 in request.session.accessright and logtype.logtypeid == 8 or 1367 in request.session.accessright and logtype.logtypeid == 9 or 1368 in request.session.accessright and logtype.logtypeid == 10 %}
+								<option value="{{logtype.logtypeid}}" {% if user_logtypeid == logtype.logtypeid %} selected {% endif %}>{{logtype.logtypedesc}}</option>{% endif %}
+							{% endfor %}
+                        </select>
+                    </div>					
+                    <div class="col-md-3 nopadding">
+                        <b>Period</b><br>
+						<div class="input-group date">
+							<div id="datepicker_range" class="form-control select-box" style="background: #fff; cursor: pointer; padding: 5px 3px; border: 1px solid #ccc; width: 360px">
+								<i class="fa fa-calendar"></i>&nbsp;
+									<span></span><i class="fa fa-caret-down"></i>
+							</div>
+						</div>						
+				    </div>
+                    <div class="col-md-5">
+                        <b>Status</b>
+						<div>
+						<select id="cboStatus" name="cboStatus" multiple="multiple" class="form-control select-box select2-style" style="background: #fff; cursor: pointer; padding: 5px 3px; border: 1px solid #ccc; width: 220px">
+							<option value="Open">Open ({{logreccountstatus.0.open_count}})</option>
+							<option value="In Progress">In Progress ({{logreccountstatus.0.in_progress_count}})</option>
+							<option value="Waiting Reply">Waiting Reply ({{logreccountstatus.0.waiting_count}})</option>
+							<option value="Closed">Closed ({{logreccountstatus.0.close_count}})</option>
+						</select>
+						</div>
+                    </div>
+                    <div class="col-md-8 nopadding">
+                        <div style="margin-left:10px;margin-top:5px;margin-bottom:5px;display:inline-block">
+                            {% if 192 in request.session.accessright %}<a class="btn btn-default btn-xs open_modal_event" data-toggle="modal" data-target="#LogModal" action="add" logtypeid="0"><i class="fa fa-plus"></i> Create New Log</a>&nbsp;&nbsp;{% endif %}
+                            {% if 1359 in request.session.accessright %}<a class="btn btn-warning btn-xs open_modal_event" data-toggle="modal" data-target="#LogModal" action="add" logtypeid="2"><i class="fa fa-plus"></i> Q Log - ESDA</a>&nbsp;&nbsp;{% endif %}
+                            {% if 1359 in request.session.accessright %}<a class="btn btn-danger btn-xs open_modal_event" data-toggle="modal" data-target="#LogModal" action="add" logtypeid="4"><i class="fa fa-plus"></i> Q Log - PI, SHS, KPM</a>&nbsp;&nbsp;{% endif %}
+                            {% if 1359 in request.session.accessright %}<a class="btn btn-success btn-xs open_modal_event" data-toggle="modal" data-target="#LogModal" action="add" logtypeid="5"><i class="fa fa-plus"></i> Q Log - APASO</a>&nbsp;&nbsp;{% endif %}
+							{% if 1360 in request.session.accessright %}<a class="btn btn-info btn-xs open_modal_event" data-toggle="modal" data-target="#LogModal" action="add" logtypeid="1" contactschool="教育局 質素保證分部"><i class="fa fa-plus"></i> Q Log - QAIP</a>&nbsp;&nbsp;{% endif %}
+                            {% if 1368 in request.session.accessright %}<a class="btn btn-primary btn-xs open_modal_event" data-toggle="modal" data-target="#LogModal" action="add" logtypeid="10"><i class="fa fa-plus"></i> Q Log - Enhanced SDA</a>&nbsp;&nbsp;{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+
+
+                <div id="contentBody" class="box-body"><br/><br/><br/><br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>
+                </div>
+            </div>
+            <!-- /.card -->
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="LogModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLongTitle"><b><span id="LogTitle"></span></b><button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button></h4>
+            </div>
+            <div class="modal-message"></div>
+            <div class="modal-body" style="height:100%">
+				<table>
+				<tr>
+					<td>
+						<div class="col-md-6" id="tbllogenquiry">
+							<div class="col-md-5">
+								<div class="form-group">
+									<input type="hidden" class="form-control" id="logitemid">
+									<input type="hidden" class="form-control" id="action">
+									<label>Type of Enquiry</label>
+									<select id="LogType" class="form-control">
+										<option value="0">-- Select Type of Enquiry --</option>
+									{% for logtype in logtypes %}
+										{% if 1359 in request.session.accessright and logtype.logtypeid == 1 or 1360 in request.session.accessright and logtype.logtypeid == 2 or 1361 in request.session.accessright and logtype.logtypeid == 3 or 1362 in request.session.accessright and logtype.logtypeid == 4 or 1363 in request.session.accessright and logtype.logtypeid == 5 or 1364 in request.session.accessright and logtype.logtypeid == 6 or 1365 in request.session.accessright and logtype.logtypeid == 7 or 1366 in request.session.accessright and logtype.logtypeid == 8 or 1367 in request.session.accessright and logtype.logtypeid == 9 or 1368 in request.session.accessright and logtype.logtypeid == 10 %}
+										<option value="{{logtype.logtypeid}}" {% if user_logtypeid == logtype.logtypeid %} selected {% endif %}>{{logtype.logtypedesc}}</option>
+										{% endif %}
+									{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-md-7">
+								<div class="form-group">
+									<label for="logschool">School / Organization</label>
+									<div class="input-group date">
+										<input type="text" class="form-control" id="txtContactSchool" list="logschool" autocomplete="off" placeholder="Enter or Select school / organization" value="" schoolid="">
+											<datalist id="logschool">
+											{% for school in schoollist|dictsort:"schoolnamee" %}
+												<option value="{{school.schoolnamee|trim}}" data-schoolid="{{school.schoolid|trim}}" {% if school == current_school %}selected="selected"{% endif %}>
+												</option>
+												<option value="{{school.schoolnamec|trim}}" data-schoolid="{{school.schoolid|trim}}" {% if school == current_school %}selected="selected"{% endif %}>
+												</option>
+											{% endfor %}
+											</datalist>
+										<div class="input-group-addon" style="cursor:pointer">
+											<i class="fa fa-language" onclick="javascript:get_school_name_trans()"></i>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<label>Category</label>
+									<div id="LogCategoryList"></div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Name</label>
+										<input type="text" id="txtContactName" autocomplete="off" class="form-control">
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label>Phone</label>
+										<input type="text" id="txtContactPhone" autocomplete="off" class="form-control">
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<label>Sub Category</label>
+									<div id="LogSubCategoryList"></div>
+								</div>
+							</div>
+							<div class="col-md-7">
+								<div class="form-group">
+									<label>Email</label>
+										<input type="text" id="txtContactEmail" autocomplete="off" class="form-control">
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="form-group">
+									<label>Log Date</label>
+									<div class="input-group date">
+										<div class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</div>
+										<input type="text" class="form-control" name="SelectLogdate" id="SelectLogdate" autocomplete="off" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-7">
+
+							</div>
+							<div class="col-md-7">
+								<div class="form-group">
+									<label>Logged By</label>
+									<select id="cboLogStaffID" name="cboLogStaffID" class="form-control">
+										<option value="">-- Select post --</option>
+									{% for logstaff in userlist|dictsort:"PostDesc"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+										{% if tmpTeam != logstaff.Team %}<optgroup label="{{logstaff.Team}}">{% endif %}
+										<option value="{{logstaff.LoginID}}" {% if request.session.loginid == logstaff.LoginID %} selected {% endif %}>{{logstaff.PostDesc}} - {{logstaff.LoginNameDesc}}</option>
+										{% setvar logstaff.Team as tmpTeam %}
+									{% endfor %}
+									</select>
+								</div>
+							</div>
+
+							<div class="col-md-12">
+							   <div class="form-group">
+									<label>Communication Type</label>
+									<div class="form-group clearfix" style="min-width:500px">
+										<div class="icheck-success d-inline" style="margin-right:10px">
+											<input type="radio" id="radCommTypeP" name="rCommType" checked>
+											<label for="radCommTypeP" value="1"><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:10px">
+											<input type="radio" id="radCommTypeE" name="rCommType">
+											<label for="radCommTypeE" value="2"><i class="fa fa-envelope" aria-hidden="true"></i> E-mail</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:10px">
+											<input type="radio" id="radCommTypeF" name="rCommType">
+											<label for="radCommTypeF" value="3"><i class="fa fa-fax" aria-hidden="true"></i> Fax</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:10px">
+											<input type="radio" id="radCommTypeS" name="rCommType">
+											<label for="radCommTypeS" value="4"><i class="fa fa-users" aria-hidden="true"></i> Seminar</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:10px">
+											<input type="radio" id="radCommTypeQ" name="rCommType">
+											<label for="radCommTypeQ" value="5"><i class="fa fa-globe" aria-hidden="true"></i> QAIP</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="col-md-12">
+							   <div class="form-group">
+								   <div class="row">
+										<div class="col-md-1"><label>Log </label>
+										</div>
+										<div class="col-md-2"><a href="#" style="width:100px;" class="btn btn-warning btn-xs" id="start-btn"><i class="fa fa-microphone" style="font-size:14px;" id="start-icon"></i>&nbsp;&nbsp;Voice Input</a></div>
+										<div class="col-md-5"><div id="result"></div></div>
+									    <div class="col-md-4" style="text-align:right">
+											<div class="form-group clearfix">
+												<div class="icheck-success d-inline">
+													<input type="checkbox" class="form-check-input" id="rLogITMD" name="rLogITMD">
+													<label for="rLogITMD" value="1">Related to ITMD</label>
+												</div>
+											</div>
+										</div>
+								   </div>
+								   <textarea id="txaLogItemDesc" class="form-control" rows="5"></textarea>
+							   </div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-group">
+									<label>Status</label>
+									<div class="form-group clearfix">
+										<div class="icheck-success d-inline" style="margin-right:20px">
+											<input type="radio" id="radStatusO" name="rStatus" checked>
+											<label for="radStatusO" value="Open">Open</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:20px">
+											<input type="radio" id="radStatusIP" name="rStatus">
+											<label for="radStatusIP" value="In Progress">In Progress</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:20px">
+											<input type="radio" id="radStatusWR" name="rStatus">
+											<label for="radStatusWR" value="Waiting Reply">Waiting Reply</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:20px">
+											<input type="radio" id="radStatusC" name="rStatus">
+											<label for="radStatusC" value="Closed">Closed</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6" id="tbllogresponse">
+							<div class="col-md-5">
+								<div class="form-group">
+									<label>Response Log Date</label>
+									<div class="input-group date">
+										<div class="input-group-addon">
+											<i class="fa fa-calendar"></i>
+										</div>
+										<input type="text" class="form-control" name="SelectRLogdate" id="SelectRLogdate" autocomplete="off" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-7">
+							</div>
+							<div class="col-md-7">
+								<div class="form-group">
+									<label>Response Logged By</label>
+									<select id="cboRLogStaffID" name="cboRLogStaffID" class="form-control">
+										<option value="">-- Select post --</option>
+									{% for logstaff in userlist|dictsort:"PostDesc"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+										{% if tmpTeam != logstaff.Team %}<optgroup label="{{logstaff.Team}}">{% endif %}
+										<option value="{{logstaff.LoginID}}" {% if request.session.loginid == logstaff.LoginID %} selected {% endif %}>{{logstaff.PostDesc}} - {{logstaff.LoginNameDesc}}</option>
+										{% setvar logstaff.Team as tmpTeam %}
+									{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-md-12">
+							   <div class="form-group">
+									<label>Response Communication Type</label>
+									<div class="form-group clearfix">
+										<div class="icheck-success d-inline" style="margin-right:15px">
+											<input type="radio" id="radRCommTypeP" name="rRCommType" checked>
+											<label for="radRCommTypeP" value="1"><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:15px">
+											<input type="radio" id="radRCommTypeE" name="rRCommType">
+											<label for="radRCommTypeE" value="2"><i class="fa fa-envelope" aria-hidden="true"></i> E-mail</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:15px">
+											<input type="radio" id="radRCommTypeF" name="rRCommType">
+											<label for="radRCommTypeF" value="3"><i class="fa fa-fax" aria-hidden="true"></i> Fax</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:15px">
+											<input type="radio" id="radRCommTypeS" name="rRCommType">
+											<label for="radRCommTypeS" value="4"><i class="fa fa-users" aria-hidden="true"></i> Seminar</label>
+										</div>
+										<div class="icheck-success d-inline" style="margin-right:15px">
+											<input type="radio" id="radRCommTypeQ" name="rRCommType">
+											<label for="radRCommTypeQ" value="5"><i class="fa fa-globe" aria-hidden="true"></i> QAIP</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+							   <div class="form-group">
+									<div class="col-md-4"><label>Response Content</label></div>
+									<div class="col-md-3"><a href="#" style="width:100px;" class="btn btn-warning btn-xs" id="start-r-btn"><i class="fa fa-microphone" style="font-size:14px;" id="start-r-icon"></i>&nbsp;&nbsp;Voice Input</a></div>
+									<div class="col-md-5"><div id="result-r"></div></div>
+									<textarea id="txaLogResponseDesc" class="form-control" rows="3"></textarea>
+							   </div>
+							   <div class="form-group">
+									<span id="logenquiry_response_list"></span>
+							   </div>
+						  </div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			</div>
+            <div class="modal-footer">
+				<!-- <div class="col-md-12"> -->
+				
+					<div class="form-group row" id ="tblsavedeleteclose">
+							
+						
+							
+							<button type="button" class="btn btn-warning" id="save_button" action="add"><i class="fa fa-save"></i> Save Log</button>
+							<button type="button" class="btn btn-danger" id="delete_button" action="delete"><i class="fa fa-trash"></i> Delete Log</button>
+							<button type="button" class="btn btn-purple" id="copy_button" action="add"><i class="fa fa-copy"></i> Copy Log</button>
+
+							<button type="button" class="btn btn-secondary d-inline" id="close_button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> Close</button>
+	
+					
+					</div>
+					<div class="col-md-6" id ="tbladdresponse">
+						<button type="button" class="btn btn-primary" id="save_response_button" action="add"><i class="fa fa-plus"></i> Add Response</button>
+					</div>
+				<!-- </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		var voiceSwitch = 1;
+	  // Check if browser supports speech recognition
+	  if ('webkitSpeechRecognition' in window) {
+		var recognition = new webkitSpeechRecognition();
+		recognition.continuous = true;
+		recognition.interimResults = true;
+
+		var startButton = $('#start-btn');
+		var startIcon = $('#start-icon');
+		var startResponseButton = $('#start-r-btn');
+		var startResponseIcon = $('#start-r-icon');
+		var resultDiv = $('#result');
+		var resultResponseDiv = $('#result-r');
+
+		startButton.on('click', function() {
+		  recognition.start();
+		  voiceSwitch = 1;
+		  startButton.attr("class","btn btn-danger btn-xs");
+		  startResponseButton.attr("class","btn btn-warning btn-xs");
+		  startIcon.attr("class","fa fa-circle");
+		  startResponseIcon.attr("class","fa fa-microphone");
+		});
+
+
+		startResponseButton.on('click', function() {
+		  recognition.start();
+		  voiceSwitch = 2;
+		  startResponseButton.attr("class","btn btn-danger btn-xs");
+		  startButton.attr("class","btn btn-warning btn-xs");
+		  startIcon.attr("class","fa fa-microphone");
+		  startResponseIcon.attr("class","fa fa-circle");
+		});
+
+		recognition.onresult = function(event) {
+		  var interimTranscript = '';
+		  var finalTranscript = '';
+
+		  for (var i = event.resultIndex; i < event.results.length; ++i) {
+			if (event.results[i].isFinal) {
+			  finalTranscript += event.results[i][0].transcript;
+			} else {
+			  interimTranscript += event.results[i][0].transcript;
+			}
+		  }
+
+		  if (voiceSwitch == 1) {
+			  resultDiv.html(finalTranscript);
+			  //CKEDITOR.instances['txaLogItemDesc'].setData(CKEDITOR.instances['txaLogItemDesc'].getData()+finalTranscript);
+			  editor.setData(editor.getData()+finalTranscript);
+		  }
+
+		  if (voiceSwitch == 2) {
+			  resultResponseDiv.html(finalTranscript);
+		      $("#txaLogResponseDesc").val($("#txaLogResponseDesc").val()+finalTranscript);
+		  }
+
+		};
+
+		recognition.onerror = function(event) {
+		  console.log('Speech recognition error occurred: ', event.error);
+		};
+	  } else {
+		console.log('Speech recognition not supported in this browser.');
+	  }
+	});
+
+	var editor;
+
+	ClassicEditor
+		.create( document.querySelector( '#txaLogItemDesc' ) , {
+        toolbar: [ 'heading', '|', 'bold', 'italic', 'underline' ],
+	    })
+		.then( newEditor => {
+			editor = newEditor;
+			editor.ui.view.editable.element.style.height = '100px';
+		} )
+		.catch( error => {
+			console.error( error );
+		} );
+
+
+    var today = moment();
+    if (today.format('MM') < '09') {
+		var start = (parseInt(today.format('YYYY'))-1)+'-09-01';
+		var end = parseInt(today.format('YYYY'))+'-08-31';
+	} else {
+		var start = parseInt(today.format('YYYY'))+'-09-01';
+		var end = (parseInt(today.format('YYYY'))+1)+'-08-31';
+	}
+	var start_current_sch_yr = new Date(start);
+	var end_current_sch_yr = new Date(end);
+	start = moment(start, "YYYY-MM-DD").subtract(0, 'years');
+	end = moment(end, "YYYY-MM-DD");
+
+	$('#datepicker_range').daterangepicker({
+		"autoApply": true,
+		startDate: start,
+		endDate: end,
+		ranges: {
+			'Current School Year': [start.format('MM/DD/YYYY'), end.format('MM/DD/YYYY')],
+			'3-School Year': [moment(start_current_sch_yr).subtract(3, 'years'), end],
+			'Last 7 days': [moment().subtract(6, 'days'), moment()],
+		}
+	}, cb);
+
+	$('input[name="SelectLogdate"]').daterangepicker({
+		singleDatePicker: true,
+		showDropdowns: false,
+		autoUpdateInput: false,
+		minYear: 2000,
+		maxYear: parseInt(moment().format('YYYY'),10),
+		locale: {format:'YYYY-MM-DD (ddd)'},
+		}, function(start, end, label) {
+			$(this).val(start.format('YYYY-MM-DD (ddd)'));
+		console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+
+    $('input[name="SelectLogdate"]').on('apply.daterangepicker', function (ev, picker) {
+		$(this).val(picker.startDate.format('YYYY-MM-DD'));		
+	});
+	
+    $('input[name="SelectRLogdate"]').daterangepicker({
+		singleDatePicker: true,
+		showDropdowns: false,
+		autoUpdateInput: false,
+		minYear: 2000,
+		maxYear: parseInt(moment().format('YYYY'),10),
+		locale: {format:'YYYY-MM-DD (ddd)'},
+		}, function(start, end, label) {
+			$(this).val(start.format('YYYY-MM-DD (ddd)'));
+		console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+
+    $('input[name="SelectRLogdate"]').on('apply.daterangepicker', function (ev, picker) {
+		$(this).val(picker.startDate.format('YYYY-MM-DD'));		
+	});
+	
+	function cb(start, end) {
+		if ((start.format('YYYY-MM-DD') == end.format('YYYY-MM-DD')) && (start.format('YYYY-MM-DD') == today.format('YYYY-MM-DD'))) {
+			$('#datepicker_range span').html('Current Year : ' + start.format('YYYY-MM-DD (ddd)') + ' ~ ' + end.format('YYYY-MM-DD (ddd)'));
+		} else {
+			$('#datepicker_range span').html($('#datepicker_range').data('daterangepicker').chosenLabel + ' : ' + start.format('YYYY-MM-DD (ddd)') + ' ~ ' + end.format('YYYY-MM-DD (ddd)'));
+		}
+		get_logenquiry_list(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+	}
+
+	function cb_init(start, end) {
+		//$('#datepicker_range span').html('3-School Year : ' + start.subtract(3, 'years').format('YYYY-MM-DD (ddd)') + ' ~ ' + end.format('YYYY-MM-DD (ddd)'));
+		$('#datepicker_range span').html('Current School Year : ' + start.subtract(0, 'years').format('YYYY-MM-DD (ddd)') + ' ~ ' + end.format('YYYY-MM-DD (ddd)'));
+		//get_logenquiry_list(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+	}
+
+	cb_init(moment(start_current_sch_yr), moment(end_current_sch_yr));
+
+	$('#datepicker_range').on('apply.daterangepicker', function (cb, picker) {
+		start = picker.startDate;
+		end = picker.endDate;
+	});
+
+	$(".select2-style").select2({
+		tags: true,
+		tokenSeparators: ['|', ''],
+		placeholder: "All Status ({{logreccountstatus.0.total_count}})",
+	})
+
+	$("#cboStatus").on('click', function(){
+		alert("ccc");
+		var val = $(this).val(), varString = "";
+	});
+
+	$("#cboStatus").on('change', function(){
+		var val = $(this).val(), varString = "";
+		if (val == 0) val = '';
+		var valArr = val.toString().split(",");
+		for(i = 0; i < valArr.length; i++) {
+			if (i != valArr.length - 1)
+				varString = varString + valArr[i] + "|";
+			else
+				varString = varString + valArr[i];
+		}
+		if ($(this).attr('id') == 'cboStatus') var col = 6;
+		table.column( col )
+			.search(varString, true, false)
+			.draw();
+		$("div.toolbar").html('<b><font size=4>Enquiry for period '+start.format('YYYY-MM-DD')+' to '+end.format('YYYY-MM-DD')+'</font></b>&nbsp;&nbsp;&nbsp;'+'<b><font size=4><div class="label label-primary">'+varString.replace("|"," & ")+'</div></font></b>');
+	});
+
+    var table;
+
+	$("#searchinput").on("keyup", function() {
+		var oTable = $('#contentTable').dataTable();
+		oTable.fnFilter($(this).val());
+	});
+
+	$("#cboLogType").on('change', function(){
+		var val = $(this).val();
+		if (val == 0) val = '';
+		table.column( 1 )
+			.search(val, true, false)
+			.draw();
+		$("div.toolbar").html('<b><font size=4>Enquiry for period '+start.format('YYYY-MM-DD')+' to '+end.format('YYYY-MM-DD')+'</font></b>&nbsp;&nbsp;&nbsp;'+'<b><font size=4><div class="label label-success">'+$("#cboLogType option:selected").text()+'</div></font></b>');
+	});
+
+	$("#LogType").on('change', function(){
+		var cboLogType = $(this).val();
+		load_category_list(cboLogType, 0);
+	});
+
+	function load_category_list(id, catid) {
+		//alert("load_category_list")
+		$.ajax({
+			url:'{% url 'logEnquiry_response' %}',
+			type:'POST',
+			data:{action:'category_list', logtypeid:id, logcategoryid:catid},
+		})
+
+		.done(function(response){
+			$('#LogCategoryList').html(response);
+			catid = $("#cboLogCategory option:selected").val() | 0;
+			subcatid = $("#cboLogSubCategory option:selected").val() | 0;
+			//alert(subcatid)
+			//alert("tt"+catid+"xx"+subcatid)
+			//if ($(".open_modal_event").attr("action") == "add")
+			if (subcatid == 0) {
+				load_subcategory_list(catid, 0);
+			}
+		})
+
+		.fail(function(xhr, status, error){
+			alert("yyy"+xhr.responseText);
+		})
+	}
+
+	function load_subcategory_list(catid, subcatid) {
+		if (logcategoryid == "undefined")
+			catid = $("#cboLogCategory option:selected").val() | 0;
+		//alert("xx"+catid)
+		//alert("xxyy"+subcatid)
+		$.ajax({
+			url:'{% url 'logEnquiry_response' %}',
+			type:'POST',
+			data:{action:'subcategory_list', logcategoryid:catid, logsubcategoryid:subcatid},
+		})
+
+		.done(function(response){
+			$('#LogSubCategoryList').html(response);
+		})
+
+		.fail(function(xhr, status, error){
+			alert(xhr.responseText);
+		})
+	}
+
+	function get_school_name_trans() {
+		schoolname = $("#txtContactSchool").val()
+		//alert(schoolname)
+		$.ajax({
+			url:'{% url 'logEnquiry_response' %}',
+			type:'POST',
+			data:{action:'get_schoolname', schoolname:schoolname},
+		})
+
+		.done(function(response){
+			$('#txtContactSchool').val(response);
+		})
+
+		.fail(function(xhr, status, error){
+			prompt('',xhr.responseText);
+		})
+	}
+	function get_logenquiry_list(startdate, enddate) {
+		$("#contentTable").html('<br/><br/><br/><br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>');
+		$.ajax({
+			url:'{% url 'logEnquiry_response' %}',
+			type:'POST',
+			data:{action:'logenquiry_list', startdate:moment(startdate).format('YYYY-MM-DD'), enddate:moment(enddate).format('YYYY-MM-DD')},
+		})
+
+		.done(function(response){
+			$("#contentBody").html(response);
+			refresh_table();
+		})
+
+		.fail(function(xhr, status, error){
+			$("#contentBody").html(xhr.responseText);
+			//alert("xxx"+xhr.responseText);
+		})
+	}
+
+	function get_logenquiry_response_list(logitemid) {
+		$.ajax({
+			url:'{% url 'logEnquiry_response' %}',
+			type:'POST',
+			data:{action:'logenquiry_response_list', logitemid: logitemid},
+		})
+		.done(function(response){
+			$("#logenquiry_response_list").html(response);
+		})
+		.fail(function(xhr, status, error){
+			alert(xhr.responseText);
+		})
+	}
+
+	$(document).on("click", "#contentTable tbody tr", "tr.group-start", function() {
+			var name = $(this).data('name');
+			collapsedGroups[name] = !collapsedGroups[name];
+			table.draw(false);
+	});
+
+	$("#LogModal").on("hidden.bs.modal", function (e) {
+		$("#txaLogResponseDesc").val("");
+		$("#cboRLogStaffID").val({{request.session.loginid}});
+		$("#SelectRLogdate").val(moment().format('YYYY-MM-DD'));
+		$("#radRCommTypeP").prop("checked", true);
+	})
+
+	$(document).on("click", "#save_button, #delete_button", function(){
+		//Disabling the Button while data is being saved in Server
+		//$(this).attr("disabled", "disabled")
+		//$(this).text("Confirming...")
+		//console.log("SAVE")
+
+		action = $(this).attr("action");
+
+		if (action == "delete") {
+			if (!window.confirm("These items will be permanently deleted and cannot be recovered. Are you sure?")) {
+				return false;
+			}
+		}
+
+		var contactschool = $('#txtContactSchool').val()
+		var schoolid = $('#logschool option').filter(function() {
+			return this.value == contactschool;
+		}).data('schoolid');
+		logitemid = $("#logitemid").val();
+		logtypeid = $("#LogType").val();
+		logcategoryid = $("#cboLogCategory").val();
+		logsubcategoryid = $("#cboLogSubCategory").val();
+		contactname = $("#txtContactName").val();
+		contactemail = $("#txtContactEmail").val();
+		contactphone = $("#txtContactPhone").val();
+		logcommtypeid = '';
+		if ($("#radCommTypeP").is(':checked')) logcommtypeid = 1;
+		if ($("#radCommTypeE").is(':checked')) logcommtypeid = 2;
+		if ($("#radCommTypeF").is(':checked')) logcommtypeid = 3;
+		if ($("#radCommTypeS").is(':checked')) logcommtypeid = 4;
+		if ($("#radCommTypeQ").is(':checked')) logcommtypeid = 5;
+		logitemdate = $("#SelectLogdate").val() || '1900-01-01 00:00:00';
+		logitemdate = logitemdate.substring(0, 10);
+		logstaffid = $("#cboLogStaffID").val();
+		statusid = '';
+		if ($("#radStatusO").is(':checked')) statusid = 1;
+		if ($("#radStatusIP").is(':checked')) statusid = 2;
+		if ($("#radStatusWR").is(':checked')) statusid = 3;
+		if ($("#radStatusC").is(':checked')) statusid = 4;
+		var checkbox = document.getElementById('rLogITMD');
+		if (checkbox.checked)
+			logitmd = 1;
+		else
+		 	logitmd = 0;
+		//logitemdesc = $("#txaLogItemDesc").val();
+		//logitemdesc = CKEDITOR.instances['txaLogItemDesc'].getData();
+
+		if (editor) {
+			var logitemdesc = editor.getData();
+		} else {
+			console.log("Editor is not initialized yet.");
+		}
+
+		if ((logtypeid == "") || (logtypeid == "0")) {
+			alert("Please select Type of Enquiry");
+			return false;
+		}
+		if (logstaffid == "") {
+			alert("Please select Post (Logged By)");
+			return false;
+		}
+		if ((contactemail != '') && (isInvalidEmail(contactemail)))
+			{
+				alert('Wrong email format was found.');
+				return false;
+			}
+		if (logitemdesc == "") {
+			alert("Please enter Description before submit.");
+			return false;
+		}
+		$("#txaLogResponseDesc").val("");
+		// Saving Data into Database
+		$.ajax({
+			url:'{% url 'logEnquiry_save' %}',
+			type:'POST',
+			data:{action:action, logitemid:logitemid, logtypeid:logtypeid, logcategoryid:logcategoryid, logsubcategoryid:logsubcategoryid, logitemdesc:logitemdesc, logitemdate:logitemdate, contactschool:contactschool, contactname:contactname, contactemail:contactemail, contactphone:contactphone, logstaffid:logstaffid, statusid:statusid, logcommtypeid:logcommtypeid, schoolid:schoolid, logitmd:logitmd},
+		})
+
+		.done(function(response){
+			get_logenquiry_list(start, end);
+			if (response == "True") {
+				$.notify({
+					message: "Log Enquiry Updated Successfully."
+					},{
+					type: 'info',
+						placement: {
+							from: "top",
+							align: "center"
+						},
+						offset: 20,
+						spacing: 10,
+						z_index: 1031,
+				});
+				$("#LogModal").modal("toggle");
+			} else {
+				alert(response)
+			}
+		})
+
+		.fail(function(xhr, status, error){
+			$(".modal-message").html(xhr.responseText);
+			// alert the error if any error occured
+			//alert(xhr.responseText);
+		})
+	})
+
+	$(document).on("click", "#copy_button", function(){
+		//Disabling the Button while data is being saved in Server
+		//$(this).attr("disabled", "disabled")
+		//$(this).text("Confirming...")
+		//console.log("SAVE")
+
+		action = $(this).attr("action");
+
+		var contactschool = $('#txtContactSchool').val()
+		var schoolid = $('#logschool option').filter(function() {
+			return this.value == contactschool;
+		}).data('schoolid');
+		logitemid = $("#logitemid").val();
+		logtypeid = $("#LogType").val();
+		logcategoryid = $("#cboLogCategory").val();
+		logsubcategoryid = $("#cboLogSubCategory").val();
+		contactname = $("#txtContactName").val();
+		contactemail = $("#txtContactEmail").val();
+		contactphone = $("#txtContactPhone").val();
+		logcommtypeid = '';
+		if ($("#radCommTypeP").is(':checked')) logcommtypeid = 1;
+		if ($("#radCommTypeE").is(':checked')) logcommtypeid = 2;
+		if ($("#radCommTypeF").is(':checked')) logcommtypeid = 3;
+		if ($("#radCommTypeS").is(':checked')) logcommtypeid = 4;
+		if ($("#radCommTypeQ").is(':checked')) logcommtypeid = 5;
+		logitemdate = $("#SelectLogdate").val() || '1900-01-01 00:00:00';
+		logitemdate = today.format('YYYY-MM-DD');
+		logstaffid = $("#cboLogStaffID").val();
+		statusid = '';
+		if ($("#radStatusO").is(':checked')) statusid = 1;
+		if ($("#radStatusIP").is(':checked')) statusid = 2;
+		if ($("#radStatusWR").is(':checked')) statusid = 3;
+		if ($("#radStatusC").is(':checked')) statusid = 4;
+		var checkbox = document.getElementById('rLogITMD');
+		if (checkbox.checked)
+			logitmd = 1;
+		else
+		 	logitmd = 0;
+		//logitemdesc = $("#txaLogItemDesc").val();
+		//logitemdesc = CKEDITOR.instances['txaLogItemDesc'].getData();
+
+		if (editor) {
+			var logitemdesc = editor.getData();
+		} else {
+			console.log("Editor is not initialized yet.");
+		}
+
+		if ((logtypeid == "") || (logtypeid == "0")) {
+			alert("Please select Type of Enquiry");
+			return false;
+		}
+		if (logstaffid == "") {
+			alert("Please select Post (Logged By)");
+			return false;
+		}
+		if ((contactemail != '') && (isInvalidEmail(contactemail)))
+			{
+				alert('Wrong email format was found.');
+				return false;
+			}
+		if (logitemdesc == "") {
+			alert("Please enter Description before submit.");
+			return false;
+		}
+		logitemdesc = "";
+
+		$("#txaLogResponseDesc").val("");
+		// Saving Data into Database
+		$.ajax({
+			url:'{% url 'logEnquiry_save' %}',
+			type:'POST',
+			data:{action:action, logitemid:logitemid, logtypeid:logtypeid, logcategoryid:logcategoryid, logsubcategoryid:logsubcategoryid, logitemdesc:logitemdesc, logitemdate:logitemdate, contactschool:contactschool, contactname:contactname, contactemail:contactemail, contactphone:contactphone, logstaffid:logstaffid, statusid:statusid, logcommtypeid:logcommtypeid, schoolid:schoolid, logitmd:logitmd},
+		})
+
+		.done(function(response){
+			get_logenquiry_list(start, end);
+			if (response == "True") {
+				$.notify({
+					message: "Log Enquiry Updated Successfully."
+					},{
+					type: 'info',
+						placement: {
+							from: "top",
+							align: "center"
+						},
+						offset: 20,
+						spacing: 10,
+						z_index: 1031,
+				});
+				$("#LogModal").modal("toggle");
+			} else {
+				alert(response)
+			}
+		})
+
+		.fail(function(xhr, status, error){
+			$(".modal-message").html(xhr.responseText);
+			// alert the error if any error occured
+			//alert(xhr.responseText);
+		})
+	})
+
+	$(document).on("click", "#save_response_button", function(){
+		action = $(this).attr("action");
+		logresponseid = $("#logresponseid").val();
+		logitemid = $("#logitemid").val();
+		logresponsedesc = $("#txaLogResponseDesc").val();
+		logresponsestaffid = $("#cboRLogStaffID").val();
+		logresponsedate = $("#SelectRLogdate").val() || '1900-01-01 00:00:00';
+		logresponsedate = logresponsedate.substring(0, 10);
+		logresponsecommtypeid = '';
+		if ($("#radRCommTypeP").is(':checked')) logresponsecommtypeid = 1;
+		if ($("#radRCommTypeE").is(':checked')) logresponsecommtypeid = 2;
+		if ($("#radRCommTypeF").is(':checked')) logresponsecommtypeid = 3;
+		if ($("#radRCommTypeS").is(':checked')) logresponsecommtypeid = 4;
+		if ($("#radRCommTypeQ").is(':checked')) logresponsecommtypeid = 5;
+
+		if (logresponsedesc == "") {
+			alert("Please enter Description before submit.");
+			return false;
+		}
+
+		// Saving Data into Database
+		$.ajax({
+			url:'{% url 'logEnquiryResponse_save' %}',
+			type:'POST',
+			data:{action:action, logitemid:logitemid, logresponsedesc:logresponsedesc, logstaffid:logresponsestaffid, logresponsedate:logresponsedate, logcommtypeid:logresponsecommtypeid},
+		})
+
+		.done(function(response){
+			$.notify({
+				message: "Log Enquiry Updated Successfully."
+				},{
+				type: 'info',
+					placement: {
+						from: "top",
+						align: "center"
+					},
+					offset: 20,
+					spacing: 10,
+					z_index: 1031,
+			});
+			//$("#LogModal").modal("toggle");
+			get_logenquiry_response_list(logitemid);
+			$("#txaLogResponseDesc").val("");
+			$("#cboRLogStaffID").val({{request.session.loginid}});
+			$("#SelectRLogdate").val(moment().format('YYYY-MM-DD'));
+			$("#radRCommTypeP").prop("checked", true);
+		})
+
+		.fail(function(xhr, status, error){
+			$(".modal-message").html(xhr.responseText);
+			// alert the error if any error occured
+			//alert(xhr.responseText);
+		})
+	})
+	function deleteLog(){
+		if (window.confirm("These items will be permanently deleted and cannot be recovered. Are you sure?")) {
+			action = "delete";
+			//logresponseid = $("#logresponseid").val();
+			logitemid = $("#logitemid").val();
+			// Saving Data into Database
+			$.ajax({
+				url:'{% url 'logEnquiry_save' %}',
+				type:'POST',
+				data:{action:action, logitemid:logitemid},
+			})
+
+			.done(function(response){
+				get_logenquiry_list(start, end);
+				$.notify({
+					message: "Log Enquiry Updated Successfully."
+					},{
+					type: 'info',
+						placement: {
+							from: "top",
+							align: "center"
+						},
+						offset: 20,
+						spacing: 10,
+						z_index: 1031,
+				});
+				$("#LogModal").modal("toggle");
+			})
+
+			.fail(function(xhr, status, error){
+				$(".modal-message").html(xhr.responseText);
+				alert("fail");
+				// alert the error if any error occured
+				//alert(xhr.responseText);
+			})
+		}
+	}
+	function refresh_table() {
+		var paging = true;
+		// "dom": '<"top"i>rt<"bottom"flp><"clear">',
+		// "dom": '<"toolbar">fBrtipl',
+		table = $('#contentTable').DataTable({
+			destroy: true,
+			"paging": paging,
+			"dom": '<"toolbar">fBrtlpi',
+			order: [[ 0, "desc" ]],
+			"lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+			buttons: [
+				{   extend: "copy",text: 'Copy'    },
+				{
+					extend: "print",
+					customize: function(win)
+					{
+						var last = null;
+						var current = null;
+						var bod = [];
+
+						var css = '@page { size: landscape; }',
+							head = win.document.head || win.document.getElementsByTagName('head')[0],
+							style = win.document.createElement('style');
+
+						style.type = 'text/css';
+						style.media = 'print';
+
+						if (style.styleSheet)
+						{
+						  style.styleSheet.cssText = css;
+						}
+						else
+						{
+						  style.appendChild(win.document.createTextNode(css));
+						}
+						head.appendChild(style);
+					}
+				},
+                {
+                    text: 'All ({{logreccountstatus.0.total_count}})',
+                    action: function(e, dt, node, config) {
+                        // Custom button action
+						var varString = ""
+						var col = 6;
+						table.column( col )
+							.search(varString, true, false)
+							.draw();
+                    },
+                    className: 'btn-primary'
+                },
+                {% if logreccountstatus.0.open_count != 0 %}
+                {
+                    text: 'Open ({{logreccountstatus.0.open_count}})',
+                    action: function(e, dt, node, config) {
+                        // Custom button action
+						var varString = "Open"
+						var col = 6;
+						table.column( col )
+							.search(varString, true, false)
+							.draw();
+                    },
+                    className: 'btn-danger'
+                },
+                {% endif %}
+                {% if logreccountstatus.0.in_progress_count != 0 %}
+                {
+                    text: 'In Progress ({{logreccountstatus.0.in_progress_count}})',
+                    action: function(e, dt, node, config) {
+                        // Custom button action
+						var varString = "In Progress"
+						var col = 6;
+						table.column( col )
+							.search(varString, true, false)
+							.draw();
+                    },
+                    className: 'btn-warning'
+                },
+                {% endif %}
+                {% if logreccountstatus.0.waiting_count != 0 %}
+                {
+                    text: 'Waiting ({{logreccountstatus.0.waiting_count}})',
+                    action: function(e, dt, node, config) {
+                        // Custom button action
+						var varString = "Waiting Reply"
+						var col = 6;
+						table.column( col )
+							.search(varString, true, false)
+							.draw();
+                    },
+                    className: 'btn-grey'
+                },
+                {% endif %}
+                {% if logreccountstatus.0.itmd_outstanding_count != 0 %}
+                {
+                    text: 'ITMD ({{logreccountstatus.0.itmd_outstanding_count}})',
+                    action: function(e, dt, node, config) {
+                        // Custom button action
+						var varString = "1"
+						var col = 5;
+						table.column( col )
+							.search(varString, true, false)
+							.draw();
+                    },
+                    className: 'btn-purple'
+                },
+                {% endif %}
+			],
+		});
+		table.column(5).visible(false);
+		$("div.toolbar").html('<b><font size=4>Enquiry for period '+start.format('YYYY-MM-DD')+' to '+end.format('YYYY-MM-DD')+'</font></b>&nbsp;&nbsp;&nbsp;');
+	}
+
+	// Initial page
+	get_logenquiry_list(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+	//CKEDITOR.replace('txaLogItemDesc');
+	//CKEDITOR.replace('txaLogResponseDesc');
+
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}

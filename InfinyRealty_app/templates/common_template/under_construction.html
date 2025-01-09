@@ -1,0 +1,34 @@
+{% extends 'web_template/common_template_undercon.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">網頁建設中</h3>
+    </section>
+{% endblock page_title %}
+
+{% block main_content %}
+{% load static %}
+
+<section class="content">
+    <div id="contentBlock">
+        <div align=center>
+            <br><br><br><br>
+            <span class="title" style="font-size:18px"><br><br><br><br>
+                <h3><img src="{% static 'dist/img/unauthorize-150x150.png' %}" width=40 valign=absmiddle> <b>系統升級中</b></h3><br>
+            <h3>不便之處，敬請原諒</h3><br>
+            <br><br><br><br>
+            </span>
+        </div>
+    </div>
+</section>
+{% endblock main_content %}
+
+{% block custom_js %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}

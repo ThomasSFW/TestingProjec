@@ -1,0 +1,169 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"最新成交"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+    <style>
+        .property-wrap2 {
+          padding: 0px 0px 50px!important;;
+        }
+    </style>
+
+    <!--=====================================-->
+    <!--=   Account     Start               =-->
+    <!--=====================================-->
+    <div class="article-head"><br>
+        <h5 class="text-center" style="font-weight:600">{{"最新成交"|showlang:request.session.lang}}</h5>
+    </div>
+    <section class="property-wrap2">
+        <div class="container">
+            <div class="item-heading-center mb-20">
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <input type="text" name="q" id="searchinput" class="form-control" placeholder="{{"關鍵字"|showlang:request.session.lang}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <ul class="nav nav-tabs" role="tablist">
+                      <!--
+                      <li class="nav-item"><a class="nav-link active" id="index2-commercial-tab" data-bs-toggle="tab" href="#index2-commercial" role="tab" action="transaction_page" usage="商業" display="1" aria-controls="index2-commercial" aria-selected="true"><i class="icofont icofont-ui-home"></i>商業</a></li>
+                      <li class="nav-item"><a class="nav-link" id="index2-industrial-tab" data-bs-toggle="tab" href="#index2-industrial" role="tab" action="transaction_page" usage="工業" display="2" aria-controls="index2-industrial" aria-selected="false"><i class="icofont icofont-man-in-glasses"></i>工業</a></li>
+                      <li class="nav-item"><a class="nav-link" id="index2-shop-tab" data-bs-toggle="tab" href="#index2-shop" role="tab" action="transaction_page" usage="商舗" display="3" aria-controls="index2-shop" aria-selected="false"><i class="icofont icofont-contacts"></i>商舗</a></li>
+                      -->
+                      <li class="nav-item"><a class="nav-link active" id="index2-commercial-tab" data-bs-toggle="tab" href="#index2-commercial" role="tab" action="transaction_page" usage="{{"寫字樓"|showlang:request.session.lang}}" display="1" aria-controls="index2-commercial" aria-selected="true"><i class="icofont icofont-ui-home"></i>{{"商業"|showlang:request.session.lang}}</a></li>
+                      <li class="nav-item"><a class="nav-link" id="index2-industrial-tab" data-bs-toggle="tab" href="#index2-industrial" role="tab" action="transaction_page" usage="{{"工業"|showlang:request.session.lang}}" display="2" aria-controls="index2-industrial" aria-selected="false"><i class="icofont icofont-man-in-glasses"></i>{{"工業"|showlang:request.session.lang}}</a></li>
+                      <li class="nav-item"><a class="nav-link" id="index2-shop-tab" data-bs-toggle="tab" href="#index2-shop" role="tab" action="transaction_page" usage="{{"商舖"|showlang:request.session.lang}}" display="3" aria-controls="index2-shop" aria-selected="false"><i class="icofont icofont-contacts"></i>{{"商舖"|showlang:request.session.lang}}</a></li>
+                      <li class="nav-item"><a class="nav-link" id="index2-carpark-tab" data-bs-toggle="tab" href="#index2-carpark" role="tab" action="transaction_page" usage="{{"車位"|showlang:request.session.lang}}" display="3" aria-controls="index2-carpark" aria-selected="false"><i class="icofont icofont-contacts"></i>{{"車位"|showlang:request.session.lang}}</a></li>
+                    </ul>
+                </div>
+                <div class="tab-content justify-content-spaced-around" id="index2-tabContent">
+                  <div class="tab-pane fade show active" id="index2-commercial" role="tabpanel" aria-labelledby="index2-commercial-tab">
+                      <img src="{% static 'Homlisti/img/loader.gif' %}" alt="loader">
+                  </div>
+                  <div class="tab-pane fade justify-content-spaced-around" id="index2-industrial" role="tabpanel" aria-labelledby="index2-industrial-tab">
+                      <img src="{% static 'Homlisti/img/loader.gif' %}" alt="loader">
+                  </div>
+                  <div class="tab-pane fade justify-content-spaced-around" id="index2-shop" role="tabpanel" aria-labelledby="index2-shop-tab">
+                      <img src="{% static 'Homlisti/img/loader.gif' %}" alt="loader">
+                  </div>
+                  <div class="tab-pane fade justify-content-spaced-around" id="index2-carpark" role="tabpanel" aria-labelledby="index2-carpark-tab">
+                      <img src="{% static 'Homlisti/img/loader.gif' %}" alt="loader">
+                  </div>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    action = "transaction_page";
+    //usage = "商業";
+    usage = "{{"寫字樓"|showlang:request.session.lang}}";
+    var display = 1;
+    pagetype3 = "#index2-commercial";
+
+    $.ajax({
+        url:'{% url 'main_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, usage:usage, display:display},
+    })
+    .done(function(response){
+        $(pagetype3).html(response);
+        refresh_table1("#contentTable"+display);;
+    })
+    .fail(function(xhr, status, error){
+        $('#errormessage').html(xhr.responseText);
+    })
+
+    $("#searchinput").on("keyup", function() {
+        var oTable = $('#contentTable1, #contentTable2, #contentTable3, #contentTable4').dataTable();
+        oTable.fnFilter($(this).val());
+    });
+
+    var selectTab
+    $('[data-bs-toggle="tab"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-bs-target'),
+            action = $this.attr('action');
+            usage = $this.attr('usage');
+            display = $this.attr('display');
+
+            $.ajax({
+                url:'{% url 'main_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, usage:usage, display:display},
+            })
+            .done(function(response){
+                //  alert(pagetype)
+                $(pagetype).html(response);
+                refresh_table1("#contentTable"+display);
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            $this.tab('show');
+        return false;
+    });
+	function refresh_table1(page) {
+        table = $(page).DataTable({
+            destroy: true,
+            //"paging": false,
+            "dom": 'tip',
+            order: [[ 0, "desc" ]],
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+               language: {
+                   "sProcessing": "處理中...",
+                   "sLengthMenu": "顯示 _MENU_ 項結果",
+                   "sZeroRecords": "{{"沒有匹配結果"|showlang:request.session.lang}}",
+                   "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                   "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                   "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                   "sInfoPostFix": "",
+                   "sSearch": "搜索：",
+                   "sUrl": "",
+                   "oPaginate": {
+                       "sFirst": "首頁",
+                       "sPrevious": "上一頁",
+                       "sNext": "下一頁",
+                       "sLast": "末頁"
+                   },
+               },
+        });
+	}
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

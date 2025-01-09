@@ -1,0 +1,253 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">一手新盤管理</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<section class="content">
+    <div class="row">
+        <!-- Zero Configuration  Starts-->
+        <div class="col-sm-12">
+            <div class="card">
+
+                <div class="card-header pb-0" style="display:none">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label" for="cboTeam">地區</label>
+                            <select id="cboUsage" class="form-select">
+                                <option value="" {% if user_area == "" %}selected{% endif %}>- 所有地區 -</option>
+                                <option value="{{usages.code_detail_name}}" {% if user_area == usages.code_detail_name %}selected{% endif %}>{{usages.code_detail_name}}</option>
+                            </select>
+                            <div id="propertyid">{{user_propertyid}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal" id="PictureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="width:515px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>上載圖片</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+					<input type="hidden" class="form-control" id="action">
+				</div>
+                <div class="form-group col-sm-12">
+                    <table border="2" class="table table-striped" bordercolor="grey">
+                        <colgroup>
+                            <col style="width:20%;background-color: #f2f2f2;">
+                            <col style="width:30%;">
+                            <col style="width:20%;background-color: #e6e6e6;">
+                            <col style="width:30%;">
+                        </colgroup>
+                        <thead>
+                            <td align="center" class="bg-success" colspan="4"><b>物業資料</b></td>
+                        </thead>
+                        <tr>
+                            <td width="200"><b>物業編號：</b></td>
+                            <td colspan="3"><span id="propertyno_picture"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>物業名稱：</b></td>
+                            <td colspan="3"><span id="propertyname_picture"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>物業地址：</b></td>
+                            <td colspan="3"><span id="address_picture"></span></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="form-group col-sm-12">
+                    <div class="product-info">
+                      <h3 class="mt-4" style="font-weight:600">物業圖片</h3>
+                      <form class="dropzone dropzone-primary" id="multiFileUpload" action="/upload/">
+    					<input type="hidden" class="form-control" id="proprertyid">
+                        <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
+                          <h4>將文件拖放到此處或點擊上傳。</h4><span class="note needsclick"></span>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+			</div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-plus" aria-hidden="true"></i>&nbsp;&nbsp;加入</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Root element of PhotoSwipe. Must have class pswp.-->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+    <div class="pswp__scroll-wrap">
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+      <div class="pswp__ui pswp__ui--hidden">
+        <div class="pswp__top-bar">
+          <div class="pswp__counter"></div>
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script type="text/javascript">
+    var table;
+
+    const myModal = document.getElementById('PictureModal');
+
+    // Add an event listener to the modal
+    myModal.addEventListener('hidden.bs.modal', function () {
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+    });
+
+    $("#cboArea").on('change', function(){
+        var val = $(this).val();
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        var propertyEditElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('area', val);
+        var propertyEditElement = document.getElementById('property_edits'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('area', val);
+        var propertyEditElement = document.getElementById('request_reviews'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('area', val);
+
+        //$("#"+activeTabPanel.id+"1").attr("usage",val);
+		//$('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+		$('a[href="#property_view"]').trigger('click');
+    });
+
+	function load_menu() {
+		action = "menutab";
+		area = $("#cboArea").val();
+		propertyid = $("#propertyid").html();
+		lising_id = $("#lising_id").html();
+		$('#contentBody').html("<br/><center><div class=\"loader-box\"><div class=\"loader-7\"></div></div></center>");
+		$.ajax({
+			url:'{% url 'newPropertyMain_response' %}',
+			type:'POST',
+			data:{action:action, area:area, propertyid:lising_id, lising_id:lising_id},
+		})
+
+		.done(function(response){
+			$('#contentBody').html(response);
+		})
+
+		.fail(function(xhr, status, error){
+            $('.box-header').html(xhr.responseText);
+			//alert(xhr.responseText);
+		})
+	}
+
+	function refresh_table() {
+        table = $('#contentTable').DataTable({
+            destroy: true,
+            //"paging": false,
+            "dom": 'Brtip',
+            order: [[ 0, "asc" ]],
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+               language: {
+                   "sProcessing": "處理中...",
+                   "sLengthMenu": "顯示 _MENU_ 項結果",
+                   "sZeroRecords": "沒有匹配結果",
+                   "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                   "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                   "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                   "sInfoPostFix": "",
+                   "sSearch": "搜索：",
+                   "sUrl": "",
+                   "oPaginate": {
+                       "sFirst": "首頁",
+                       "sPrevious": "上一頁",
+                       "sNext": "下一頁",
+                       "sLast": "末頁"
+                   },
+               },
+        });
+	}
+
+    // Initialize Dropzone
+    Dropzone.autoDiscover = false;
+    var myDropzone = new Dropzone("#multiFileUpload", {
+        url: "/upload/",
+        params: {
+          property_id: "",
+          filetype: ""
+        },
+        maxFilesize: 200, // Maximum file size in MB
+        maxFiles: 20, // Maximum number of files allowed
+        acceptedFiles: ".jpg, .jpeg, .png, .pdf, .docs, .xlsx, .mp4", // Allowed file extensions
+        addRemoveLinks: true, // Show remove file links
+        dictRemoveFile: "刪除", // Text for the remove file link
+        init: function() {
+          this.on("success", function(file, response) {
+            // Handle success after file upload
+            console.log("File uploaded successfully: " + file.name + property_id);
+          });
+          this.on("error", function(file, errorMessage) {
+            // Handle error after file upload
+            console.log("Error uploading file: " + file.name + " - " + errorMessage);
+          });
+        }
+    });
+
+
+    // Initial page
+    load_menu()
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

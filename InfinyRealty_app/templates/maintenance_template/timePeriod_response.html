@@ -1,0 +1,130 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "code_detail_list" %}
+        <table id="contentTable" class="table table-bordered table-striped" data-page-length="15">
+            <thead>
+                <tr class="skin-blue">
+                    <th width="20">ID</th>
+                    <th style="text-align:center;" width="60">編碼</th>
+                    <th width="150">名稱</th>
+                    <th>名稱(英)</th>
+                    <th style="text-align:center;" width="100">有效時間</th>
+                    <th style="text-align:center;" width="100">附加費(%)</th>
+                    <th style="text-align:center;" width="80">次序</th>
+                    <th style="text-align:center;" width="100">圖片</th>
+                    {% if user_team == "" %}
+                    <th style="text-align:center;" width="80">店舖</th>
+                    {% endif %}
+                    <th width="50" align="center">狀態</th>
+                    <th width="20">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for displaydata in code_detail_list %}
+                <tr>
+                    <td style="text-align:center;">{{ displaydata.code_detail_id }}</td>
+                    <td style="text-align:center;" data-filter="{{ displaydata.code_key }}">{{ displaydata.code_key }}</td>
+                    <td data-filter="{{ displaydata.code_detail_name }}">{{ displaydata.code_detail_name }}</td>
+                    <td data-filter="{{ displaydata.code_detail_name_e }}">{{ displaydata.code_detail_name_e }}</td>
+                    <td style="text-align:center;" data-filter="{{ displaydata.time_period }}">{{ displaydata.time_period }}</td>
+                    <td style="text-align:center;" data-filter="{{ displaydata.charge }}">{{ displaydata.charge }}</td>
+                    <td style="text-align:center;" data-filter="{{ displaydata.sequence }}">{{ displaydata.sequence }}</td>
+                    <td data-filter="{{ displaydata.code_detail_photo }}">{{ displaydata.code_detail_photo|default_if_none:"" }}</td>
+                    {% if user_team == "" %}
+                    <td style="text-align:center;" data-filter="{{ displaydata.shop }}">{{ displaydata.shop }}</td>
+                    {% endif %}
+                    <td style = "text-align: center;">
+                        {% if displaydata.status == 1 %}
+                        <div class="label label-success">正常</div>
+                        {% else %}
+                        <div class="label label-default">失效</div>
+                        {% endif %}
+                    </td>
+                    <td align="center">
+                        {% if 81 not in request.session.accessright %}
+                        <a href="#" class="btn btn-default btn-xs btn-block open_modal_edit" data-target="#EditModal"><i class="fa fa-lock"></i>&nbsp;&nbsp;編輯</a>
+                        {% else %}
+                        <a href="#" class="btn btn-warning btn-xs btn-block open_modal_edit" data-toggle="modal" data-target="#EditModal" action="edit" formtype="code_info" formname="Code Information" shop="{{ displaydata.shop }}" code_detail_id="{{ displaydata.code_detail_id }}" code_id="{{ displaydata.code_id }}" code_key="{{ displaydata.code_key }}" code_detail_name="{{ displaydata.code_detail_name }}" code_detail_name_e="{{ displaydata.code_detail_name_e }}" time_period="{{ displaydata.time_period }}" charge="{{ displaydata.charge }}" sequence="{{ displaydata.sequence }}" code_detail_photo="{{ displaydata.code_detail_photo }}" code_detail_icon="{{ displaydata.code_detail_icon }}" status="{{ displaydata.status }}"><i class="fa fa-edit"></i>&nbsp;&nbsp;編輯</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td align="center" colspan="10">沒有記錄</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "code_detail_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#action").val($(this).attr("action"));
+                $("#SelectTeam").val($(this).attr("shop"));
+                $("#code_detail_id").val($(this).attr("code_detail_id"));
+                $("#code_id").val($(this).attr("code_id"));
+                $("#TxtCodeKey").val($(this).attr("code_key"));
+                $("#TxtCodeDetailName").val($(this).attr("code_detail_name"));
+                $("#TxtCodeDetailNameE").val($(this).attr("code_detail_name_e"));
+                $("#TxtTimePeriod").val($(this).attr("time_period"));
+                $("#TxtCharge").val($(this).attr("charge"));
+                $("#TxtSequence").val($(this).attr("sequence"));
+                $("#TxtCodeDetailPhoto").html($(this).attr("code_detail_photo"));
+                $("#TxtCodeDetailIcon").html($(this).attr("code_detail_icon"));
+                if ($("#cboTeam").val() == "") {
+                    $("#SelectTeam").prop("disabled", false);
+                } else {
+                    $("#SelectTeam").val($("#cboTeam").val());
+                    $("#SelectTeam").prop("disabled", true);
+                }
+                if ($(this).attr("status") == "1")
+                    $("#radioActive").prop("checked", true);
+                else
+                    $("#radioInActive").prop("checked", true);
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                //var showuploadname = document.getElementById("showuploadname");
+                //var showfilename = document.getElementById("showfilename");
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='fa fa-trash'></i>&nbsp;&nbsp;<b>新增時段</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    //showuploadname.style.display = "";
+                    //showfilename.style.display = "none";
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                } else {
+                    $("#FunctionTitle").html("<i class='fa fa-edit'></i>&nbsp;&nbsp;<b>編輯時段</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    //showuploadname.style.display = "none";
+                    //showfilename.style.display = "";
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

@@ -1,0 +1,301 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"會員專區"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Account     Start               =-->
+    <!--=====================================-->
+
+    <main class="site-main content-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-sm-12 col-12">
+                    <div class="page-content-block">
+                        <div class="col-md-12 rtcl-login-form-wrap">
+                            <h4 style="font-weight:600">{{"登入"|showlang:request.session.lang}}</h4>
+                            <form id="rtcl-login-form" class="form-horizontal" method="post" novalidate="novalidate">
+                                <div class="form-group">
+                                    <label for="rtcl-username-login" class="control-label">
+                                        {{"登入名稱"|showlang:request.session.lang}}
+                                        <strong class="rtcl-required">*</strong>
+                                    </label>
+                                    <input type="text" name="username" autocomplete="username" value="" id="rtcl-username-login" class="form-control" required=""/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rtcl-password-login" class="control-label">
+                                        {{"登入密碼"|showlang:request.session.lang}} <strong class="rtcl-required">*</strong>
+                                    </label>
+                                    <input type="password" name="password" id="rtcl-password-login" autocomplete="current-password" class="form-control" required=""/>
+                                </div>
+                                <div class="form-group d-flex align-items-center">
+                                    <button type="button" id="rtcl-login" name="rtcl-login" class="btn btn-primary" action="login">
+                                        {{"登入"|showlang:request.session.lang}}
+                                    </button>
+                                    <div class="form-check">
+                                        <input type="checkbox" name="rememberme" id="rtcl-rememberme" value="forever"/>
+                                        <label class="form-check-label" for="rtcl-rememberme"> {{"記住"|showlang:request.session.lang}}</label>
+                                    </div>
+                                </div>
+                                <!--<div class="form-group">
+                                    <p class="rtcl-forgot-password">
+                                        <a href="#">忘記密碼</a>
+                                    </p>
+                                </div>-->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12 col-12">
+                    <div class="page-content-block">
+                        <div class="col-md-12 rtcl-login-form-wrap">
+                            <h4 style="font-weight:600">{{"會員註冊"|showlang:request.session.lang}}</h4>
+                            <form id="rtcl-login-form" class="form-horizontal" method="post" novalidate="novalidate">
+                                <div id="message"></div>
+                                <div class="form-group">
+                                    <label for="rtcl-member_name" class="control-label">
+                                        {{"會員名稱"|showlang:request.session.lang}}
+                                        <strong class="rtcl-required">*</strong>
+                                    </label>
+                                    <input type="text" name="member_name" autocomplete="member_name" value="" id="rtcl-member_name" class="form-control" required="" maxlength="100"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rtcl-username" class="control-label">
+                                        {{"登入名稱"|showlang:request.session.lang}}
+                                        <strong class="rtcl-required">*</strong>
+                                    </label>
+                                    <input type="text" name="username" autocomplete="username" value="" id="rtcl-username" class="form-control" required="" maxlength="20"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rtcl-password" class="control-label">
+                                        {{"登入密碼"|showlang:request.session.lang}} <strong class="rtcl-required">*</strong>
+                                    </label>
+                                    <input type="password" name="password" id="rtcl-password" autocomplete="current-password" class="form-control" required="" value="" maxlength="20"/>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-4">
+                                        <label for="phone_area_code" class="control-label">{{"區號"|showlang:request.session.lang}}</label><br>
+                                        <select id="phone_area_code" class="form-control">
+                                            <option value="+852" selected>+852 ({{"香港"|showlang:request.session.lang}})</option>
+                                            <option value="+853">+853 ({{"澳門"|showlang:request.session.lang}})</option>
+                                            <option value="+86">+86 ({{"中國"|showlang:request.session.lang}})</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label for="rtcl-phone_number" class="control-label">{{"電話號碼"|showlang:request.session.lang}} <strong class="rtcl-required">*</strong></label>
+                                        <input type="number" class="form-control" id="rtcl-phone_number" placeholder="{{"請輸入電話號碼"|showlang:request.session.lang}}" value="" size="8" maxlength="8">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rtcl-email" class="control-label">
+                                        {{"電郵地址"|showlang:request.session.lang}}
+                                    </label>
+                                    <input type="text" name="email" autocomplete="email" value="" id="rtcl-email" class="form-control" required=""/>
+                                </div>
+                                <div class="form-group d-flex align-items-center">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="agree" id="rtcl-agree" value="agree"/><label class="form-check-label" for="rtcl-agree"> {{"本人確認以上資料正確無誤，並已閱讀、同意及接受"|showlang:request.session.lang}}<span class="byv03c-34 hIvipw">{{"使用條款"|showlang:request.session.lang}}</span>、<span class="byv03c-34 hIvipw">{{"收集個人資料聲明"|showlang:request.session.lang}}</span>{{"及"|showlang:request.session.lang}}<span class="byv03c-34 hIvipw">{{"私隱政策聲明"|showlang:request.session.lang}}</span></label>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex align-items-center">
+                                    <button type="button" id="rtcl-register" name="rtcl-register" class="btn btn-primary" action="register">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{"註冊"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).on("click", "#rtcl-register", function(){
+        var action = $(this).attr("action");
+        var member_name = $("#rtcl-member_name").val();
+        var username = $("#rtcl-username").val();
+        var password = $("#rtcl-password").val();
+        var area_code = $("#phone_area_code").val();
+        var phone_number = $("#rtcl-phone_number").val();
+        var email = $("#rtcl-email").val();
+        var agree = $("#rtcl-agree").val();
+        if ((action == "register")) {
+            if (member_name == '') {
+                alert('{{"請輸入會員名稱"|showlang:request.session.lang}}');
+                $("#rtcl-member_name").focus();
+                return false;
+            }
+            if (username == '') {
+                alert('{{"請輸入登入名稱"|showlang:request.session.lang}}');
+                $("#rtcl-username").focus();
+                return false;
+            }
+            if (password == '') {
+                alert('{{"請輸入登入密碼"|showlang:request.session.lang}}');
+                $("#rtcl-password").focus();
+                return false;
+            }
+            if (phone_number == '') {
+                alert('{{"請輸入電話號碼"|showlang:request.session.lang}}');
+                $("#rtcl-phone_number").focus();
+                return false;
+            }
+            if (!($('#rtcl-agree').prop('checked'))) {
+                alert('{{"請確認以上資料正確無誤，並已閱讀、同意及接受使用條款、收集個人資料聲明及私隱政策聲明"|showlang:request.session.lang}}');
+                return false;
+            }
+
+            if (action == "register") {
+                if (!(window.confirm("{{"以上資料，你確定嗎？"|showlang:request.session.lang}}"))) {
+                    return false;
+                }
+            }
+            $.ajax({
+                url:'{% url 'account_save' %}',
+                type:'POST',
+                data:{action:action, member_name:member_name, username:username, password:password, area_code:area_code, phone_number:phone_number, email:email},
+            })
+
+            .done(function(response){
+                if (response == "Username exist") {
+                    $.notify({
+                        message: "{{"對不起，登入名稱已存在！請重新再試"|showlang:request.session.lang}}"
+                        },{
+                            type: 'danger',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    $("#rtcl-username").focus();
+                }
+                if (response == "Phone Number exist") {
+                    $.notify({
+                        message: "{{"對不起，電話號碼已存在！請重新再試"|showlang:request.session.lang}}"
+                        },{
+                            type: 'danger',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    $("#rtcl-phone_number").focus();
+                }
+                if (response == "Success") {
+                    document.location.href = "/main"
+                }
+            })
+
+            .fail(function(xhr, status, error){
+                // alert the error if any error occured
+                alert(xhr.responseText);
+                $("#message").html(xhr.responseText)
+            })
+        }
+
+    });
+
+    $(document).on("click", "#rtcl-login", function(){
+        var action = $(this).attr("action");
+        var username = $("#rtcl-username-login").val();
+        var password = $("#rtcl-password-login").val();
+        if ((action == "login")) {
+            if (username == '') {
+                alert('{{"請輸入登入名稱"|showlang:request.session.lang}}');
+                $("#rtcl-username-login").focus();
+                return false;
+            }
+            if (password == '') {
+                alert('{{"請輸入登入密碼"|showlang:request.session.lang}}');
+                $("#rtcl-password-login").focus();
+                return false;
+            }
+            $.ajax({
+                url:'{% url 'account_save' %}',
+                type:'POST',
+                data:{action:action, username:username, password:password},
+            })
+
+            .done(function(response){
+                if (response == "Wrong Username") {
+                    $.notify({
+                        message: "{{"登入名稱錯誤"|showlang:request.session.lang}}"
+                        },{
+                            type: 'danger',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    $("#rtcl-username-login").focus();
+                }
+                if (response == "Wrong Password") {
+                    $.notify({
+                        message: "{{"登入密碼錯誤"|showlang:request.session.lang}}"
+                        },{
+                            type: 'danger',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    $("#rtcl-password-login").focus();
+                }
+                if (response == "Success") {
+                    $.notify({
+                        message: "{{"註冊成功"|showlang:request.session.lang}}"
+                        },{
+                            type: 'success',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    document.location.href = "/main"
+                }
+
+            })
+
+            .fail(function(xhr, status, error){
+                // alert the error if any error occured
+                $("#message").html(xhr.responseText)
+                //alert(xhr.responseText);
+            })
+        }
+    });
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

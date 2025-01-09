@@ -1,0 +1,425 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">會員管理</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+    .modal-dialog {
+              width: 80% !important;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <label class="form-label" for="datepicker_range">關鍵字</label>
+                            <div class="input-group">
+                                <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="datepicker_range">日期範圍</label>
+                            <div id="datepicker_range" class="form-select">
+                                <i class="fa fa-calendar"></i>&nbsp;
+                                    <span></span><i class="fa fa-caret-down"></i>
+                            </div>
+                        </div>
+                        <!--
+                        <div class="col-md-2">
+                            <label class="form-label" for="cboUser">用戶</label>
+                            <select id="cboUser" name="cboUser" class="form-control select-box" {% if not 1322 in request.session.accessright %} disabled{% endif %}>
+                            </select>
+                            <div class="invalid-feedback">Please select a valid state.</div>
+                        </div>
+                        -->
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="MemberModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+				<h4 class="modal-title" id="exampleModalLongTitle"><b><span id="SchoolInfoTitle"></span></b><button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button></h4>
+            </div>
+            <div class="modal-message"></div>
+            <div class="modal-body" style="height:100%"><br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" id="print_button" buttontype="print"><i class="fa fa-print"></i> Print this page</button>
+                <button type="button" class="btn btn-default" id="close_button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script type="text/javascript">
+    var table;
+
+    var today = moment();
+    //var start = moment().subtract(14, 'days');
+    var start = '2024-01-01';
+    var end = moment();
+    var start_current = new Date(start);
+    var end_current = new Date(end);
+
+
+    function cb(start, end) {
+        $('#datepicker_range span').html($('#datepicker_range').data('daterangepicker').chosenLabel + ' : ' + start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
+    }
+
+    function cb_change(start, end) {
+        $('#datepicker_range span').html(start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
+        $('#datepicker_range').daterangepicker({
+            "autoApply": true,
+            startDate: start,
+            endDate: end,
+            ranges: {
+            }
+        }, cb);
+
+        //$('#cboYear option:selected').removeAttr('selected');
+        //$('#cboYear option[value="'+start.format('YYYY')+'"]').attr('selected', 'selected');
+        $('#cboPeriod option').each(function(){
+            if($(this).val() < 8) {
+                $(this).text($(this).text().substring(0, 3)+' '+end.format('YYYY'));
+            }
+            else {
+                $(this).text($(this).text().substring(0, 3)+' '+start.format('YYYY'));
+            }
+        });
+    }
+
+    function cb_change_period(start, end) {
+        $('#datepicker_range span').html(start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
+        $('#datepicker_range').daterangepicker({
+            "autoApply": true,
+            startDate: start,
+            endDate: end,
+            ranges: {
+            }
+        }, cb);
+    }
+
+    cb_change(moment(start_current), moment(end_current));
+    start = moment(start_current);
+    end = moment(end_current);
+
+    $('#datepicker_range').on('apply.daterangepicker', function (cb, picker) {
+        start = picker.startDate;
+        end = picker.endDate;
+    });
+
+    $("#searchinput").on("keyup", function() {
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        //$("#"+activeTabPanel.id).attr('loginid',val);
+
+        var oTable = $('#contentTable-'+activeTabPanel.id).dataTable();
+        oTable.fnFilter($(this).val());
+    });
+
+    $("#cboUser").on('change', function(){
+        var val = $(this).val();
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        $("#"+activeTabPanel.id).attr('loginid',val);
+		$('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+    });
+
+	function load_menu() {
+		action = "menutab";
+		start_date = (start.format('YYYY-MM-DD'));
+		end_date = (end.format('YYYY-MM-DD')+" 23:59:59");
+		team = $("#cboTeam").val();
+		loginid = $("#cboUser").val();
+		$('#contentBody').html("<br/><center><b>LOADING</b><br/><img src='{% static 'images/calculator.gif' %}' width=80></center>");
+		$.ajax({
+			url:'{% url 'member_response' %}',
+			type:'POST',
+			data:{action:action, start_date:start_date, end_date:end_date, team:team, loginid:loginid},
+		})
+
+		.done(function(response){
+			$('#contentBody').html(response);
+		})
+
+		.fail(function(xhr, status, error){
+            $('.box-header').html(xhr.responseText);
+			//alert(xhr.responseText);
+		})
+	}
+
+    function load_user() {
+        member_id = $("#cboUser").val();
+        $.ajax({
+            url:'{% url 'member_response' %}',
+            type:'POST',
+            data:{action:'team_list', member_id:member_id},
+        })
+
+        .done(function(response){
+            $("#cboUser").html(response);
+        })
+
+        .fail(function(xhr, status, error){
+            $("#contentBody").html(xhr.responseText);
+        })
+    }
+
+    function load_table() {
+        //$("#contentTable").html('<br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>');
+        team = $("#cboTeam").val();
+        member_id = $("#cboUser").val();
+        alert(team)
+        $.ajax({
+            url:'{% url 'member_response' %}',
+            type:'POST',
+            data:{action:'member_list', start_date:start_date, end_date:end_date, team:team, member_id:member_id},
+        })
+
+        .done(function(response){
+            $("#contentBody").html(response);
+            refresh_table();
+        })
+
+        .fail(function(xhr, status, error){
+            $("#contentBody").html(xhr.responseText);
+        })
+    }
+
+    function refresh_table(action) {
+        table = $('#contentTable-'+action).DataTable({
+            "paging": true,
+            "dom": 'Brtip',
+            "order": [],
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+               language: {
+                   "sProcessing": "處理中...",
+                   "sLengthMenu": "顯示 _MENU_ 項結果",
+                   "sZeroRecords": "沒有匹配結果",
+                   "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                   "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                   "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                   "sInfoPostFix": "",
+                   "sSearch": "搜索：",
+                   "sUrl": "",
+                   "oPaginate": {
+                       "sFirst": "首頁",
+                       "sPrevious": "上一頁",
+                       "sNext": "下一頁",
+                       "sLast": "末頁"
+                   },
+               },
+            buttons: [
+                {   extend: "copy",
+                    text: '<i class="fa fa-copy"></i>&nbsp;&nbsp;複製',
+                    className: 'btn-warning'
+                },
+                {
+                    extend: "print",
+                    text: '<i class="fa fa-print"></i>&nbsp;&nbsp;列印',
+                    customize: function(win)
+                    {
+                        var last = null;
+                        var current = null;
+                        var bod = [];
+
+                        var css = '@page { size: landscape; }',
+                            head = win.document.head || win.document.getElementsByTagName('head')[0],
+                            style = win.document.createElement('style');
+
+                        style.type = 'text/css';
+                        style.media = 'print';
+
+                        if (style.styleSheet)
+                        {
+                          style.styleSheet.cssText = css;
+                        }
+                        else
+                        {
+                          style.appendChild(win.document.createTextNode(css));
+                        }
+                        head.appendChild(style);
+                    },
+                    className: 'btn-primary'
+                },
+            ],
+        });
+
+        $("#contentTable tfoot th").each( function ( i ) {
+            if ($(this).text() !== '') {
+                var isCodeColumn = (($(this).text() == 'ESR Code') ? true : false);
+                var isInspectionDatesColumn = (($(this).text() == 'ESR Period') ? true : false);
+                var isSchoolColumn = (($(this).text() == 'School Name') ? true : false);
+                var isStatusColumn = (($(this).text() == 'Action') ? true : false);
+                if (!isStatusColumn) {
+                    var select = $('<select style="padding: 4px;"><option value=""></option></select>')
+                        .appendTo( $(this).empty() )
+                        .on( 'change', function () {
+                            var val = $(this).val();
+
+                            table.column( i )
+                                .search( val ? '^'+$(this).val()+'$' : val, true, false )
+                                .draw();
+                        } );
+                }
+                // Get the Status values a specific way since the status is a anchor/image
+                if ((isCodeColumn) || (isSchoolColumn) || (isInspectionDatesColumn) || (isStatusColumn)) {
+                    var statusItems = [];
+
+                    /* ### IS THERE A BETTER/SIMPLER WAY TO GET A UNIQUE ARRAY OF <TD> data-filter ATTRIBUTES? ### */
+                    table.column( i ).nodes().to$().each( function(d, j){
+                        var thisStatus = $(j).attr("data-filter");
+                        if($.inArray(thisStatus, statusItems) === -1) statusItems.push(thisStatus);
+                    } );
+
+                    statusItems.sort();
+
+                    $.each( statusItems, function(i, item){
+                        select.append( '<option value="'+item+'">'+item+'</option>' );
+                    });
+                }
+                // All other non-Status columns (like the example)
+                else {
+                    table.column( i ).data().unique().sort().each( function ( d, j ) {
+                        select.append('<option value="'+d+'">'+d+'</option>');
+                    } );
+                }
+            }
+        } );
+    }
+
+    $(document).on("click", "#FormE11ERModal #print_button", function(){
+        //Disabling the Button while data is being saved in Server
+        //$(this).attr("disabled", "disabled")
+        //$(this).text("Confirming...")
+
+        var buttontype = $(this).attr("buttontype");
+
+        if (buttontype == 'print') {
+            //my_window= window.open ("","mywindow1");
+
+            sRestricted = '';
+
+            var sheader = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+            sheader = sheader + '<style>';
+            sheader = sheader + 'body{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'table tr td{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'body { margin: 0; padding: 15;  box-sizing: border-box;}';
+            sheader = sheader + '</style>';
+
+            var sstyle = '<link rel="stylesheet" href="{% static 'dist/css/Adminlte.css' %}" /><link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.css' %}"/>';
+
+            //my_window.document.write( sheader );
+            var tabobj = $('<div width=780px></div>').html($('#e11er_form').html() );
+            //tabobj.find('button').hide();
+
+            shtml = tabobj.html();
+            tabobj.printThis();
+
+            my_window.document.write( '<html><head>' +sheader + '</head>' + sstyle + '<body>' + shtml + '</body></html>');
+        }
+    })
+
+    $(document).on("click", " #print_button", function(){
+        var buttontype = $(this).attr("buttontype");
+        var clickedButtonId = event.target.id;
+        var printButton = document.getElementById("print_button");
+        var previousDiv = printButton.previousElementSibling;
+        //alert($('#'+selectTab).html())
+
+        if (buttontype == 'print') {
+            sRestricted = '';
+
+            var sheader = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+            sheader = sheader + '<style>';
+            sheader = sheader + 'body{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'table tr td{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'body { margin: 0; padding: 15;  box-sizing: border-box;}';
+            sheader = sheader + '</style>';
+
+            var sstyle = '<link rel="stylesheet" href="{% static 'dist/css/Adminlte.css' %}" /><link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.css' %}"/>';
+
+            //my_window.document.write( sheader );
+            var tabobj = $('<div width=780px></div>').html($('#'+selectTab).html());
+            tabobj.find('button').hide();
+
+            shtml = tabobj.html();
+            tabobj.printThis();
+
+            //my_window.document.write( '<html><head>' +sheader + '</head>' + sstyle + '<body>' + shtml + '</body></html>');
+        }
+    })
+
+    $(document).on("click", "#copy_button", function(){
+        var elm = document.getElementById(selectTab);
+        // for Internet Explorer
+        if(document.body.createTextRange) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(elm);
+            range.select();
+            document.execCommand("Copy");
+            alert("Copied Content to clipboard.\nTry to paste the content (e.g. ctrl+v) afterwards in a different application (e.g. Excel/Word), to see the effect.");
+        }
+        else if(window.getSelection) {
+            // other browsers
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(elm);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand("Copy");
+            alert("Copied Content to clipboard.\nTry to paste the content (e.g. ctrl+v) afterwards in a different application (e.g. Excel/Word), to see the effect.");
+        }
+    })
+
+	$("#btnGenerate").click(function(){
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+		$('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+	});
+
+    // Initial page
+    load_user();
+    //load_table();
+    //refresh_table();
+    load_menu()
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

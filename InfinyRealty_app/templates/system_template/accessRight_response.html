@@ -1,0 +1,535 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+<link rel="stylesheet" href="{% static 'common/formCommon.css' %}">
+	{% if action == "menutab" %}
+		<div class="col-md-12">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs nav-primary">
+				  <!--<li class="active"><a href="#overview" data-toggle="tabajax" action="overview" year="{{year}}" start_date="{{start_date}}" end_date="{{end_date}}"><b>Overview</b></a></li>-->
+				  <li class="nav-item active"><a class="nav-link active" href="#user_view" data-toggle="tabajax" action="user_view" team="{{team}}" loginid="{{user}}"{% if 1406 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>用戶列表</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#access_control" data-toggle="tabajax" action="access_control" team="{{team}}" loginid="{{user}}"{% if 1410 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>用戶權限設定</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#request_review" data-toggle="tabajax" action="request_review" team="{{team}}" loginid="{{user}}"{% if 1304 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>審批申請</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#function_main" data-toggle="tabajax" action="function_main" team="{{team}}" loginid="{{user}}"{% if 1408 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>子功能管理</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#access_list" data-toggle="tabajax" action="access_list" team="{{team}}" loginid="{{user}}"{% if 1410 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>用戶權限列表</b></a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane fade show active" id="user_view"></div>
+					<div class="tab-pane fade" id="access_control"></div>
+					<div class="tab-pane fade" id="request_review"></div>
+					<div class="tab-pane fade" id="function_main"></div>
+					<div class="tab-pane fade" id="access_list"></div>
+				</div>
+				<div id="errormessage"></div>
+			</div>
+		</div>
+	{% endif %}
+	{% if action == "user_view" %}
+		<div class="box-body">
+        {% setvar "" as tmpTeam %}
+        {% setvar 0 as tmpCount %}
+        {% for displaydata in user_view_list|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displaydata.Team %}
+                {% if tmpTeam == "" %}
+                    {% setvar 0 as tmpCount %}
+                    {% setvar 0 as colCount %}
+                <p class="mb-0 m-t-30">
+                    <div class="box-header">
+                        <h3 class="box-title"><i class="icon-home"></i>&nbsp;&nbsp;<b>{{ displaydata.TeamFullDesc }}</b></h3>
+                    </div>
+                    <table border="2" class="table table-hover" data-page-length="100">
+                        <tr bgcolor="#FFFFCC">
+                             <th>姓名</th>
+                             <th width="200">登入名稱</th>
+                             <th class="text-center" width="100">電話</th>
+                             <th class="text-center" width="200">電郵地址</th>
+                             <th class="text-center" width="80">其他</th>
+                        </tr>
+                {% else %}
+                    {% setvar colCount|add:1 as colCount %}
+                    {% if colCount == 1 %}
+                        {% setvar tmpCount as oddCount %}
+                    {% else %}
+                        {% if oddCount != tmpCount and colCount == 2 and oddCount > tmpCount%}
+                            {% setvar oddCount|subtract:tmpCount as rangeCount %}
+                            {% for num in "123456789"|slice:rangeCount %}
+                                <tr bgcolor="#ECF0F5" style="height:40px">
+                                    <td>&nbsp;</td>
+                                    <td align="center"></td>
+                                    <td align="center"></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        {% setvar 0 as colCount %}
+                    {% endif %}
+                    {% setvar tmpCount as oddCount %}
+                    {% setvar 0 as tmpCount %}
+                    </table>
+                </div>
+                </p>
+                <p class="mb-0 m-t-30">
+                    <div class="box-header bg-blue-gradient">
+                        <h3 class="box-title"><i class="icon-home"></i>&nbsp;&nbsp;<b>{{ displaydata.TeamFullDesc }}</b></h3>
+                    </div>
+                    <table border="2" class="table table-hover" data-page-length="100">
+                        <tr bgcolor="#FFFFCC">
+                            <th class="text-center">姓名</th>
+                            <th class="text-center" width="100">登入名稱</th>
+                            <th class="text-center" width="100">電話</th>
+                            <th class="text-center" width="200">電郵地址</th>
+                            <th class="text-center" width="80">其他</th>
+                        </tr>
+                {% endif %}
+            {% endif %}
+                        {% setvar tmpCount|add:1 as tmpCount %}
+                        <tr>
+                            <td>
+                                {% if displaydata.awaysecond > 28800%}
+                                    <img src="{% static 'dist/img/offline_teams.png' %}" style="padding-right:3px;" title="{{displaydata.activeDate|timesince:today}} away">
+                                {% elif displaydata.awaysecond < 1800 %}
+                                    <img src="{% static 'dist/img/online_teams.png' %}" style="padding-right:3px;" title="">
+                                {% else %}
+                                    <img src="{% static 'dist/img/away_teams.png' %}" style="padding-right:3px;" title="{{displaydata.activeDate|timesince:today}} away">
+                                {% endif %}&nbsp;{{displaydata.LoginNameDesc}}
+                            </td>
+                            <td>{{displaydata.username|default_if_none:""}}</td>
+                            <td align="center">{{displaydata.Phone|default_if_none:"N/A"}}</td>
+                            <td>{{displaydata.email|default_if_none:"N/A"}}</td>
+                            <td class="text-center">
+                                {% if displaydata.Phone|default_if_none:"" != "" %}
+                                <a href="https://wa.me/{{displaydata.Phone}}"><i class="icon-whatsapp"></i></a>
+                                {% endif %}
+                                {% if displaydata.email|default_if_none:"N/A" != "" %}
+                                <a href="mailto:{{displaydata.email}}?body=Dear {{displaydata.LoginNameDesc}}%0D%0A%0D%0A%0D%0A%0D%0ARegards%0D%0A{{request.session.loginnamedesc}}%0D%0A{{request.session.post}}%0D%0ATel: {{request.session.phone}}"><img src="{% static 'dist/img/email.png' %}" style="padding-right:3px;width:25px" border="0"></a>
+                                {% endif %}
+                            </td>
+                        </tr>
+            {% if forloop.last %}
+                    </table>
+                </p>
+            {% endif %}
+            {% setvar displaydata.Team as tmpTeam %}
+        {% endfor %}
+		</div>
+    {% endif %}
+	{% if action == "access_control" %}
+        <div class="table-responsive">
+            <br>
+            <div class="row g-3">
+                <div class="col-md-4" align="left"><h4><b>功能列表</b></h4>
+                </div>
+                <div class="col-md-8" align="right">
+                {% if 1303 not in request.session.accessright %}
+                    <button type="button" class="btn btn-default" id="request_button" buttontype="print" lock="1"><i class="icon-lock"></i>&nbsp;&nbsp;申請權限</button>
+                {% else %}
+                    <button type="button" class="btn btn-danger" id="request_button" buttontype="print" lock="0"><i class="icon-time"></i>&nbsp;&nbsp;申請權限</button>
+                {% endif %}
+                    <button type="button" class="btn btn-info" id="print_button" buttontype="print"><i class="icon-printer"></i>&nbsp;&nbsp;列印此頁</button>
+                    <button type="button" class="btn btn-warning" id="copy_button" buttontype="print"><i class="icon-files"></i>&nbsp;&nbsp;複製</button>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <table id="contentTable-{{action}}" class="table" data-page-length="300">
+                    <thead>
+                        <tr class="skin-blue" style="background-color: #84BABE;color:white">
+                            <td width="240"><b>功能列表</b></td>
+                        {% for displayuser in user_view_list %}
+                            <td align="center" width="100px"><b>{{displayuser.LoginNameDesc|default_if_none:""}}</b></td>
+                        {% endfor %}
+                            <td><b>備註</b></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% setvar 0 as tmpTabID %}
+                        {% setvar 0 as tmpCatID %}
+                        {% for displaydata in function_list %}
+                            {% if tmpTabID != displaydata.tabID %}
+                            <tr style="background-color:#9AAD00">
+                                <td colspan="{{user_view_list|length|add:2}}"><b>{{displaydata.tabName}}</b></td>
+                            </tr>
+                            {% endif %}
+                            {% if tmpCatID != displaydata.catID %}
+                            <tr style="background-color:#EAB200">
+                                <td colspan="{{user_view_list|length|add:2}}" bgcolor="#EAB200"><b>{{displaydata.catName}}</b></td>
+                            </tr>
+                            {% endif %}
+                            {% if displaydata.functionName == "Access this page" %}
+                            <tr style="background-color:#F3F3F3">
+                                <td style="font-weight:600"><b>{{displaydata.subCatName}}</b></td>
+                                {% for displayuser in user_view_list %}
+                                    {% setvar displayuser.username|addstr:"_"|addstr:displaydata.functionID as accessVar %}
+                                    {% setvar displaydata.functionID|getAccessRight:displayuser.username as approval %}
+                                <td align="center"{% if displayuser.username == request.session.username %} style="background-color:#FFFFCC"{% endif %}{% if approval == 0 %}class="bg-success"{% endif %}><input class="checkBoxSingle form-check-input chkRight" type="checkbox" id="chkRight" name="chkRight" value="{{displayuser.username}},{{displaydata.functionID}}" {% if approval > -1 %}checked{% endif %}></td>
+                                {% endfor %}
+                                <td align="center"></td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td style="padding-left:20px">{{displaydata.functionName}}</td>
+                                {% for displayuser in user_view_list %}
+                                    {% setvar displayuser.username|addstr:"_"|addstr:displaydata.functionID as accessVar %}
+                                    {% setvar displaydata.functionID|getAccessRight:displayuser.username as approval %}
+                                <td align="center"{% if displayuser.username == request.session.username %} style="background-color:#FFFFCC"{% endif %}{% if approval == 0 %}class="bg-success"{% endif %}><input class="checkBoxSingle form-check-input chkRight" type="checkbox" id="chkRight" name="chkRight" value="{{displayuser.username}},{{displaydata.functionID}}" {% if approval > -1 %}checked{% endif %}></td>
+                                {% endfor %}
+                                <td align="center"></td>
+                            </tr>
+                            {% endif %}
+                            {% setvar displaydata.catID as tmpCatID %}
+                            {% setvar displaydata.tabID as tmpTabID %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+	{% if action == "request_review" %}
+        <table id="contentTable-{{action}}" class="table table-hover table-bordered" data-page-length="15">
+            <thead class="thead-dark">
+                <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                    <th width="120">申請日期</th>
+                    <th width="150">店舖</th>
+                    <th width="100">用戶名稱</th>
+                    <th width="200">功能分類</th>
+                    <th width="200">系統功能</th>
+                    <th>功能</th>
+                    <th align="center" width="150">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for displaydata in userapproveright_list|dictsort:"LastUpdated" %}
+                    <tr>
+                        <td align="center">{{displaydata.LastUpdated|date:'Y-m-d H:i'}}</td>
+                        <td>{{displaydata.Team|teamtosection}}</td>
+                        <td>{{displaydata.username}}</td>
+                        <td>{{displaydata.catName}}</td>
+                        <td>{{displaydata.subCatName}}</td>
+                        <td>{{displaydata.functionName}}</td>
+                        <td align="center">
+                            <a href="#" class="btn btn-danger btn-xs btn-block quick_approval" data-toggle="modal" data-target="#ApproveModal" action="approve" team="{{ displaydata.Team }}" username="{{ displaydata.username }}" functionid="{{ displaydata.FunctionID }}" approve="1"><i class="fa fa-edit fa-2x"></i>&nbsp;&nbsp;特快審批</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td align="center" colspan="7">無任何存取權限請求記錄</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+	{% if action == "function_main" %}
+        <br>
+        <div class="row g-3">
+            <div class="col-md-4" align="left"><h4><b>功能列表</b></h4>
+            </div>
+            <div class="col-md-8" align="right">
+                <button type="button" class="btn btn-info" id="print_button" buttontype="print"><i class="fa fa-print"></i>&nbsp;&nbsp;列印此頁</button>
+                <button type="button" class="btn btn-warning" id="copy_button" buttontype="print"><i class="fa fa-copy"></i>&nbsp;&nbsp;複製</button>
+            </div>
+        </div>
+        <table id="contentTable-{{action}}" class="table table-hover table-bordered" data-page-length="300">
+            <thead class="thead-dark">
+                <tr class="skin-blue" style="background-color: #84BABE;color:white">
+                    <td><b>功能描述</b></td>
+                    <td align="center" width="100px"><b>操作</b></td>
+                    <td align="center" width="150"><b>使用用戶數目</b></td>
+                    <td align="center" width="80"><b>次序</b></td>
+                    <td align="center" width="100"><b>功能編號</b></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% setvar 0 as tmpTabID %}
+                {% setvar 0 as tmpCatID %}
+                {% for displaydata in function_list %}
+                    {% setvar displaydata.functionID|getFunctionCount as functionCount %}
+                    {% if tmpTabID != displaydata.tabID %}
+                    <tr style="background-color:#9AAD00">
+                        <td colspan="5"><b>{{displaydata.tabName}}</b></td>
+                    </tr>
+                    {% endif %}
+                    {% if tmpCatID != displaydata.catID %}
+                    <tr style="background-color:#EAB200">
+                        <td colspan="5"><b>{{displaydata.catName}}</b></td>
+                    </tr>
+                    {% endif %}
+                    {% if displaydata.functionName == "Access this page" %}
+                    <tr style="background-color:#F3F3F3">
+                        <td style="font-weight:600"><b>{{displaydata.subCatName}}</b></td>
+                        <td align="center">
+                            <a href="#" style="width:80px" class="btn btn-danger btn-xs btn-block open_modal_edit" data-bs-toggle="modal" data-bs-target="#EditModal" action="add" tabname="{{ displaydata.tabName }}" categoryname="{{ displaydata.catName }}" subcategoryname="{{ displaydata.subCatName }}" sequence="{{ displaydata.function_sequence }}" functionid="{{ displaydata.FunctionID }}" subcatid="{{ displaydata.subCatID }}" isenabled="{{ displaydata.isenabled }}" functioncount="{{ functionCount }}"><i class="icon-plus"></i>&nbsp;&nbsp;新增</a>
+                        </td>
+                        <td align="center">{{functionCount}}</td>
+                        <td align="center">{% if displaydata.function_sequence == 0 %}不適用{% else %}{{displaydata.function_sequence}}{% endif %}</td>
+                        <td align="center">{% if displaydata.function_sequence == 0 %}<i>{{displaydata.subCatID}}</i>{% else %}{{displaydata.functionID}}{% endif %}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td style="padding-left:20px">{{displaydata.functionName}}</td>
+                        <td align="center">
+                            <a href="#" style="width:80px" class="btn btn-primary btn-xs btn-block open_modal_edit" data-bs-toggle="modal" data-bs-target="#EditModal" action="edit" tabname="{{ displaydata.tabName }}" categoryname="{{ displaydata.catName }}" subcategoryname="{{ displaydata.subCatName }}" functionname="{{ displaydata.functionName }}" sequence="{{ displaydata.function_sequence }}" subcatid="{{ displaydata.subCatID }}" functionid="{{ displaydata.functionID }}" isenabled="{{ displaydata.isenabled }}" functioncount="{{ functionCount }}"><i class="fa fa-edit"></i>&nbsp;&nbsp;編輯</a>
+                        </td>
+                        <td align="center">{{functionCount}}</td>
+                        <td align="center">{% if displaydata.function_sequence == 0 %}不適用{% else %}{{displaydata.function_sequence}}{% endif %}</td>
+                        <td align="center">{% if displaydata.function_sequence == 0 %}<i>{{displaydata.subCatID}}</i>{% else %}{{displaydata.functionID}}{% endif %}</td>
+                    </tr>
+                    {% endif %}
+                    {% setvar displaydata.catID as tmpCatID %}
+                    {% setvar displaydata.tabID as tmpTabID %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+	{% if action == "access_list" %}
+        <div class="table-responsive">
+            <br>
+            <div class="row g-3">
+                <div class="col-md-4" align="left"><h4><b>功能列表</b></h4>
+                </div>
+                <div class="col-md-8" align="right">
+                {% if 1303 not in request.session.accessright %}
+                    <button type="button" class="btn btn-default" id="request_button" buttontype="print" lock="1"><i class="icon-lock"></i>&nbsp;&nbsp;申請權限</button>
+                {% else %}
+                    <button type="button" class="btn btn-danger" id="request_button" buttontype="print" lock="0"><i class="icon-time"></i>&nbsp;&nbsp;申請權限</button>
+                {% endif %}
+                    <button type="button" class="btn btn-info" id="print_button" buttontype="print"><i class="icon-printer"></i>&nbsp;&nbsp;列印此頁</button>
+                    <button type="button" class="btn btn-warning" id="copy_button" buttontype="print"><i class="icon-files"></i>&nbsp;&nbsp;複製</button>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <table id="contentTable-{{action}}" class="table" data-page-length="300">
+                    <thead>
+                        <tr class="skin-blue" style="background-color: #84BABE;color:white">
+                            <td width="240"><b>功能列表</b></td>
+                        {% for displayuser in user_view_list %}
+                            <td align="center" width="100px"><b>{{displayuser.LoginNameDesc|default_if_none:""}}</b></td>
+                        {% endfor %}
+                            <td><b>備註</b></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% setvar 0 as tmpTabID %}
+                        {% setvar 0 as tmpCatID %}
+                        {% for displaydata in function_list %}
+                            {% if tmpTabID != displaydata.tabID %}
+                            <tr style="background-color:#9AAD00">
+                                <td colspan="{{user_view_list|length|add:2}}"><b>{{displaydata.tabName}}</b></td>
+                            </tr>
+                            {% endif %}
+                            {% if tmpCatID != displaydata.catID %}
+                            <tr style="background-color:#EAB200">
+                                <td colspan="{{user_view_list|length|add:2}}" bgcolor="#EAB200"><b>{{displaydata.catName}}</b></td>
+                            </tr>
+                            {% endif %}
+                            {% if displaydata.functionName == "Access this page" %}
+                            <tr style="background-color:#F3F3F3">
+                                <td style="font-weight:600"><b>{{displaydata.subCatName}}</b></td>
+                                {% for displayuser in user_view_list %}
+                                    {% setvar displayuser.username|addstr:"_"|addstr:displaydata.functionID as accessVar %}
+                                    {% setvar displaydata.functionID|getAccessRight:displayuser.username as approval %}
+                                <td align="center"{% if displayuser.username == request.session.username %} style="background-color:#FFFFCC"{% endif %}{% if approval == 0 %}class="bg-success"{% endif %}>{% if approval > -1 %}Y{% endif %}</td>
+                                {% endfor %}
+                                <td align="center"></td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td style="padding-left:20px">{{displaydata.functionName}}</td>
+                                {% for displayuser in user_view_list %}
+                                    {% setvar displayuser.username|addstr:"_"|addstr:displaydata.functionID as accessVar %}
+                                    {% setvar displaydata.functionID|getAccessRight:displayuser.username as approval %}
+                                <td align="center"{% if displayuser.username == request.session.username %} style="background-color:#FFFFCC"{% endif %}{% if approval == 0 %}class="bg-success"{% endif %}>{% if approval > -1 %}Y{% endif %}</td>
+                                {% endfor %}
+                                <td align="center"></td>
+                            </tr>
+                            {% endif %}
+                            {% setvar displaydata.catID as tmpCatID %}
+                            {% setvar displaydata.tabID as tmpTabID %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+	{% if action == "team_list" %}
+        {% setvar "" as tmpTeam %}
+            <option value="">- 所有用戶 -</option>
+        {% for displayuser in userlist|dictsort:"username"|dictsort:"rank_sequence"|dictsort:"team_sequence" %}
+            {% if tmpTeam != displayuser.Team %}{% if tmpTeam == "" %}<optgroup label="{{displayuser.teamFullDesc}}">{% else %}</optgroup><optgroup label="{{displayuser.teamFullDesc}}">{% endif %}{% endif %}
+            <option value="{{displayuser.LoginID}}" {% if user_loginid == displayuser.LoginID %} selected {% endif %}>{{displayuser.LoginNameDesc}} ({{displayuser.rankDesc}})</option>
+            {% setvar displayuser.Team as tmpTeam %}
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+{% if action == "access_control" %}
+    $('input[type="checkbox"][name="chkRight"]').on('click', function() {
+        $(this).closest('td').attr('class','bg-danger');
+    });
+{% endif %}
+{% if action == "request_review" %}
+    $(document).ready(function(){
+        $(".quick_approval").click(function(){
+            action = $(this).attr("action");
+            team = $(this).attr("team");
+            username = $(this).attr("username");
+            functionid = $(this).attr("functionid");
+            approve = $(this).attr("approve");
+
+            if (action == "approve") {
+                $.ajax({
+                    url:'{% url 'accessRight_response' %}',
+                    type:'POST',
+                    data:{action:"request_review_update", team:team, username:username, functionid:functionid, approve:approve},
+                })
+                .done(function(response){
+                    $.notify({
+                        message: username+"的權限申請已獲批准."
+                        },{
+                            type: 'success',
+                            allow_dismiss: true,
+                            positon: 'top right',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    var tabContent = document.querySelector('.tab-content');
+                    var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+                    $('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+                })
+                .fail(function(xhr, status, error){
+                    $('.modal-message').html(xhr.responseText);
+                    alert(xhr.responseText);
+                })
+            }
+
+        });
+    })
+{% endif %}
+{% if action == "function_main" %}
+    $(document).ready(function(){
+        $(".open_modal_edit").click(function(){
+            // Adding the Value from Table to Modal form
+            $(".modal-header").css('color', '#FFFFFF');
+            $("#functionid").val($(this).attr("functionid"));
+            $("#subcatid").val($(this).attr("subcatid"));
+            $("#action").val($(this).attr("action"));
+            $("#TxtTabName").val($(this).attr("tabname"));
+            $("#TxtCategoryName").val($(this).attr("categoryname"));
+            $("#TxtSubCategoryName").val($(this).attr("subcategoryname"));
+            $("#TxtFunctionName").val($(this).attr("functionname"));
+            $("#TxtSequence").val($(this).attr("sequence"));
+            if (($(this).attr("isenabled") == "1") || ($(this).attr("isenabled") == ""))
+                $("#radioActive").prop("checked", true);
+            else
+                $("#radioInActive").prop("checked", true);
+            var functioncount = $(this).attr("functioncount");
+            var id = $(this).attr("recordid");
+            var action = $(this).attr("action");
+            if (action == 'add') {
+                $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增功能內權限</b>");
+                $(".modal-header").css('background-color', '#DD4B39');
+                $("#add_button").show();
+                $("#edit_button").hide();
+                $("#remove_button").hide();
+                $("#SelectTabName").val(1);
+                $("#SelectURLType").val(0);
+            } else {
+                $("#FunctionTitle").html("<i class='icon-pencil-alt'></i>&nbsp;&nbsp;<b>編輯功能內權限</b>");
+                $(".modal-header").css('background-color', '#F39C12');
+                $("#add_button").hide();
+                $("#edit_button").show();
+                //if (functioncount > 0)
+                //    $("#remove_button").hide();
+                //else
+                    $("#remove_button").show();
+            }
+        });
+    })
+{% endif %}
+{% if action == "menutab" %}
+    action = "user_view";
+    team = $("#cboTeam").val();
+    loginid = $("#cboUser").val();
+    $.ajax({
+        url:'{% url 'accessRight_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, team:team, loginid:loginid},
+        beforeSend: function(){
+            $('#user_view').html('<br/><br/><br/><br/><br/><br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}" width=80><br/><br/><br/><br/></center></p>');
+        },
+    })
+    .done(function(response){
+        $('#user_view').html(response);
+        //refresh_table(action);
+        $("div.toolbar").html('<b><font size=3>USER LOGIN LOG LIST</font></b>&nbsp;&nbsp;&nbsp;');
+    })
+    .fail(function(xhr, status, error){
+        $('#user_view').html(xhr.responseText);
+        //alert(xhr.responseText);
+    })
+    var selectTab
+    $('[data-toggle="tabajax"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+        if ($("#cboTeam").val() == "") $("#cboTeam").val("admin");
+        $this.attr('team',$("#cboTeam").val());
+        $this.attr('loginid',$("#cboUser").val());
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-target'),
+            action = $this.attr('action');
+            team = $this.attr('team');
+            loginid = $this.attr('loginid');
+            lock = $this.attr('lock');
+            if (lock == 1) {
+                alert("\u26A0 沒有存取此頁面的存取權限！欲了解更多信息，請聯絡系統管理員。");
+                return false;
+            }
+
+            $.ajax({
+                url:'{% url 'accessRight_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, team:team, loginid:loginid},
+                beforeSend: function(){
+                    // Display the loading message with the current time
+                    var startTime = new Date().getTime();
+                    $('#'+action).html('<br/><br/><br/><br/><br/><center><b>CALCULATING</b><br/><span id="loadingTime"></span><br/><img src="{% static 'images/calculator.gif' %}" width=80><br/><br/><br/><br/></center></p>');
+                    loadingInterval = setInterval(function() {
+                      // Update the loading time every second
+                      var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+                      $('#loadingTime').html('Elapsed time: ' + elapsedTime + ' seconds');
+                    }, 1000);
+                },
+            })
+            .done(function(response){
+                // Calculate the loading time and append it to the response message
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#'+action).html(response);
+                //refresh_table(action);
+                if (action == "user_view") $("div.toolbar").html('<b><font size=3>用戶列表</font></b>&nbsp;&nbsp;&nbsp;');
+                if (action == "access_control") $("div.toolbar").html('<b><font size=3>用戶權限列表</font></b>&nbsp;&nbsp;&nbsp;');
+                if (action == "request_review") $("div.toolbar").html('<b><font size=3>審批申請列表</font></b>&nbsp;&nbsp;&nbsp;');
+                if (action == "function_main") $("div.toolbar").html('<b><font size=3>功能細明列表</font></b>&nbsp;&nbsp;&nbsp;');
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            //$(loadurl).html(loadurl);
+            $this.tab('show');
+        return false;
+    });
+{% endif %}
+</script>
+{% endblock custom_js %}

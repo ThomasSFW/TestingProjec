@@ -1,0 +1,202 @@
+﻿{% block breadcrumb %}
+
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+    <div class="row">
+    {% if request.session.display_mode == "list" %}
+        {% for displayproperty in property_search_list %}
+        <div class="col-lg-12">
+            <div class="property-box2 property-box4 wow animated">
+                <div class="item-img" style="height:200px">
+                    <a href="/property_show/{{displayproperty.PropertyID}}"><img src="/static/dist/img-web/property-cms/{{displayproperty.PropertyID}}/{{displayproperty.FileName|showwatermark}}" alt="blog" width="250" height="200"></a>
+                    <div class="item-category-box1">
+                        <div class="item-category">{{displayproperty.OfferType|showlang:request.session.lang}}</div>
+                    </div>
+                </div>
+                <div class="item-content item-content-property">
+                    <div class="react-icon react-icon-2">
+                        <ul>
+                            <li>
+                                {% if displayproperty.PropertyID|safe in favorites_cookies %}
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" onclick="toggleFavorites('{{displayproperty.PropertyID}}')" class="favorite-add" member_id="{{request.session.member_id}}" property_id="{{displayproperty.PropertyID}}" title="{{"刪除我的最愛"|showlang:request.session.lang}}">
+                                    <i class="flaticon-check"></i>
+                                </a>
+                                {% else %}
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" onclick="toggleFavorites('{{displayproperty.PropertyID}}')" class="favorite-add" member_id="{{request.session.member_id}}" property_id="{{displayproperty.PropertyID}}" title="{{"加入我的最愛"|showlang:request.session.lang}}">
+                                    <i class="flaticon-heart"></i>
+                                </a>
+                                {% endif %}
+                            </li>
+                            <li>
+                                <a href="https://wa.me/+85221191189?text=查詢{{displayproperty.District}}{{displayproperty.SubDistrict}}{{displayproperty.Street}}{% if displayproperty.StreetNo|default_if_none:"" != "" %}{{displayproperty.StreetNo}}號{{displayproperty.Building}}{% endif %}{% if displayproperty.FloorZone|default_if_none:"" != "" %}{{displayproperty.FloorZone}}{% endif %}" data-toggle="tooltip" data-placement="bottom" title="{{"查詢"|showlang:request.session.lang}}">
+                                    <i class="flaticon-chat"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="verified-area">
+                        <a href="/property_show/{{displayproperty.PropertyID}}">
+                            <!--{% if displayproperty.District == "港島" %}{{"香港"|showlang:request.session.lang}}{% else %}{{displayproperty.District|showlang:request.session.lang}}{% endif %}-->
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                <h3 class="item-title">{{displayproperty.Street}}{% if displayproperty.StreetNo|default_if_none:"" != "" %}{{displayproperty.StreetNo}}號{{displayproperty.Building}}{% endif %}{% if displayproperty.FloorZone|default_if_none:"" != "" %}{{displayproperty.FloorZone|showlang:request.session.lang}}{% endif %}</h3>
+                            {% elif request.session.lang == "sc" %}
+                                <h3 class="item-title">{{displayproperty.Street_s}}{% if displayproperty.StreetNo|default_if_none:"" != "" %}{{displayproperty.StreetNo}}號{{displayproperty.Building_s}}{% endif %}{% if displayproperty.FloorZone|default_if_none:"" != "" %}{{displayproperty.FloorZone|showlang:request.session.lang}}{% endif %}</h3>
+                            {% else %}
+                                <h3 class="item-title">{{displayproperty.Building_e}}</h3>
+                                <div style="font-size:16px;line-height: 30px;">{% if displayproperty.FloorZone|default_if_none:"" != "" %}{{displayproperty.FloorZone|showlang:request.session.lang}}{% endif %}</div>
+                                <div style="font-size:16px;line-height: 30px;">
+                                    {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                        {{displayproperty.SubDistrict}}
+                                    {% elif request.session.lang == "sc" %}
+                                        {{displayproperty.SubDistrict_s}}
+                                    {% else %}
+                                        {{displayproperty.SubDistrict_e}}
+                                    {% endif %}
+                                    {% if displayproperty.StreetNo|default_if_none:"" != "" %}No.{{displayproperty.StreetNo}} {{displayproperty.Street_e}}{% endif %}
+                                </div>
+                            {% endif %}
+                        </a>
+                    </div>
+                    {% if request.session.lang == "" or request.session.lang == "tc" or request.session.lang == "sc" %}
+                    <div class="location-area"><i class="flaticon-maps-and-flags"></i>
+                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                            {{displayproperty.SubDistrict}}
+                        {% elif request.session.lang == "sc" %}
+                            {{displayproperty.SubDistrict_s}}
+                        {% else %}
+                            {{displayproperty.SubDistrict_e}}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="item-categoery3">
+                        {% if displayproperty.GrossArea|default_if_none:"" != "" %}
+                        <ul>
+                            <li>{{displayproperty.Usage|showlang:request.session.lang}}</li>
+                            <li><i class="flaticon-two-overlapping-square"></i>{{"約"|showlang:request.session.lang}}&nbsp;<font size="5">{{displayproperty.GrossArea|default_if_none:""|format_number_with_commas}}</font>&nbsp;{{"平方呎"|showlang:request.session.lang}}{{"(建築)"|showlang:request.session.lang}}</li>
+                        </ul>
+                        {% endif %}
+                        {% if displayproperty.NetArea|default_if_none:"" != "" %}
+                        <ul>
+                            <li>{{displayproperty.Usage}}</li>
+                            <li><i class="flaticon-two-overlapping-square"></i><font size="5">{{displayproperty.NetArea|default_if_none:""|format_number_with_commas}}</font> {{"平方呎"|showlang:request.session.lang}}{{"(實用)"|showlang:request.session.lang}}</li>
+                        </ul>
+                        {% endif %}
+                        <ul>
+                            <li>
+                                {% if displayproperty.OfferType == "放售" or displayproperty.OfferType == "連租約售" or displayproperty.OfferType == "租售" %}
+                                  {{"售"|showlang:request.session.lang}}：<div class="item-price">HK${{displayproperty.SellingPrice|default_if_none:""|format_number_with_commas}}{% if displayproperty.UnitPrice|default_if_none:"" != "" %} / @HK${{displayproperty.UnitPrice|format_number_with_commas}}{% endif %}</div>
+                                {% endif %}
+                                {% if displayproperty.OfferType == "放租" or displayproperty.OfferType == "租售" %}
+                                  {{"租"|showlang:request.session.lang}}：<div class="item-price">HK${{displayproperty.Rent|default_if_none:""|format_number_with_commas}}{% if displayproperty.UnitRent|default_if_none:"" != "" %} / @HK${{displayproperty.UnitRent|format_number_with_commas}}{% endif %}</div>
+                                {% endif %}
+                            </li>
+                            {% if displayproperty.OfferType == "連租約售" or displayproperty.OfferType == "租售" %}
+                            <li>{{"回報率"|showlang:request.session.lang}}：{{displayproperty.Yield|default_if_none:"0.00"}}
+                            </li>
+                            {% endif %}
+                        </ul>
+                        <ul>
+                            <li>{{"物業編號"|showlang:request.session.lang}}：{{displayproperty.PropertyNo}}</li>
+                            <li>{{"更新日期"|showlang:request.session.lang}}：{{displayproperty.ModifyDate|date:'Y/m/d'}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        {% for displayproperty in property_search_list %}
+            <div class="col-lg-4 col-md-4">
+                <div class="property-box2 wow animated fadeInUp" data-wow-delay=".3s">
+                    <div class="item-img">
+                        <a href="/property_show/{{displayproperty.PropertyID}}"><img src="/static/dist/img-web/property-cms/{{displayproperty.PropertyID}}/{{displayproperty.FileName|showwatermark}}" alt="blog" width="510" height="340"></a>
+                        <div class="item-category-box1">
+                            <div class="item-category">{{displayproperty.OfferType|showlang:request.session.lang}}</div>
+                        </div>
+                        <div class="rent-price">
+                            {% if displayproperty.OfferType == "放售" %}
+                              <div class="item-price">HK${{displayproperty.SellingPrice|default_if_none:""|format_number_with_commas}}</div>
+                            {% else %}
+                              <div class="item-price">HK${{displayproperty.Rent|default_if_none:""|format_number_with_commas}}/{{"月"|showlang:request.session.lang}}</div>
+                            {% endif %}
+                        </div>
+                        <div class="react-icon">
+                            <ul>
+                                <li>
+                                    {% if displayproperty.PropertyID|safe in favorites_cookies %}
+                                    <a href="#" data-toggle="tooltip" data-placement="top" onclick="toggleFavorites('{{displayproperty.PropertyID}}')" class="favorite-add" member_id="{{request.session.member_id}}" property_id="{{displayproperty.PropertyID}}" title="{{"刪除我的最愛"|showlang:request.session.lang}}">
+                                        <i class="flaticon-check"></i>
+                                    </a>
+                                    {% else %}
+                                    <a href="#" data-toggle="tooltip" data-placement="top" onclick="toggleFavorites('{{displayproperty.PropertyID}}')" class="favorite-add" member_id="{{request.session.member_id}}" property_id="{{displayproperty.PropertyID}}" title="{{"加入我的最愛"|showlang:request.session.lang}}">
+                                        <i class="flaticon-heart"></i>
+                                    </a>
+                                    {% endif %}
+                                </li>
+                                <li>
+                                    <a href="https://wa.me/+85221191189?text=查詢{{displayproperty.PropertyName}}" data-toggle="tooltip" data-placement="top" title="{{"查詢"|showlang:request.session.lang}}">
+                                        <i class="flaticon-chat"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="item-category10"><a href="/property_show/{{displayproperty.PropertyID}}">{{displayproperty.Usage|showlang:request.session.lang}}</a></div>
+                    <div class="item-content">
+                        <div class="verified-area">
+                            <a href="/property_show/{{displayproperty.PropertyID}}">
+                                <h3 class="item-title">{{displayproperty.Building_e}}</h3>
+                                <div style="font-size:16px;line-height: 30px;">{% if displayproperty.FloorZone|default_if_none:"" != "" %}{{displayproperty.FloorZone|showlang:request.session.lang}}{% endif %}</div>
+                                <div style="font-size:16px;line-height: 30px;">
+                                    {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                        {{displayproperty.SubDistrict}}
+                                    {% elif request.session.lang == "sc" %}
+                                        {{displayproperty.SubDistrict_s}}
+                                    {% else %}
+                                        {{displayproperty.SubDistrict_e}}
+                                    {% endif %}
+                                    {% if displayproperty.StreetNo|default_if_none:"" != "" %}No.{{displayproperty.StreetNo}} {{displayproperty.Street_e}}{% endif %}
+                                </div>
+                            </a>
+                        </div>
+                        <div class="location-area"><i class="flaticon-maps-and-flags"></i>
+                        {% if request.session.lang == "" or request.session.lang == "tc" %}
+                            {{displayproperty.SubDistrict}}
+                        {% elif request.session.lang == "sc" %}
+                            {{displayproperty.SubDistrict_s}}
+                        {% else %}
+                            {{displayproperty.SubDistrict_e}}
+                        {% endif %}
+                        </div>
+                        <div class="item-categoery3">
+                            <ul>
+                                <!--<li><i class="flaticon-bed"></i>Beds: 03</li>-->
+                                <li>{{"物業編號"|showlang:request.session.lang}}：{{displayproperty.PropertyNo}}</li>
+                                {% if displayproperty.NetArea|default_if_none:""|format_number_with_commas != "" %}
+                                <li><i class="flaticon-two-overlapping-square"></i>{{displayproperty.NetArea|default_if_none:""|format_number_with_commas}} {{"平方呎"|showlang:request.session.lang}}</li>
+                                {% else %}
+                                <li></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

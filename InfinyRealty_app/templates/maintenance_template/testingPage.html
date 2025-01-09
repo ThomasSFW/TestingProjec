@@ -1,0 +1,43 @@
+{% extends 'common_template/base_template.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3>Testing Page</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="box">
+                <!-- /.card-header -->
+                <div id="contentBody" class="box-body"><br/><center>{{printer_ip}}{{printer_port}}{{shop_name}}</center>
+                </div>
+            </div>
+            <!-- /.card -->
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}

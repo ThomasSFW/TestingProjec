@@ -1,0 +1,593 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">建立盤紙</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+    .modal-dialog {
+              width: 80% !important;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <!-- Zero Configuration  Starts-->
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0" style="display:none">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label" for="cboTeam">用途</label>
+                            <select id="cboUsage" class="form-select">
+                            {% if 1400 in request.session.accessright %}<option value="" {% if user_usage == "" %}selected{% endif %}>- 所有用途 -</option>{% endif %}
+                            {% for usages in usagelist %}
+                                <option value="{{usages.code_detail_name}}" {% if user_usage == usages.code_detail_name %}selected{% endif %}>{{usages.code_detail_name}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="action">
+                <input type="hidden" class="form-control" id="contactid">
+                <input type="hidden" class="form-control" id="propertyid">
+				<div class="form-group">
+					<label for="SelectContactType">聯絡人身份</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio1" name="SelectContactType">
+								<label for="radio1" value="1">業主</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio2" name="SelectContactType">
+								<label for="radio2" value="1">買家</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio3" name="SelectContactType">
+								<label for="radio3" value="1">租客</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio4" name="SelectContactType">
+								<label for="radio4" value="1">其他</label>
+							</div>
+						</div>
+			    </div>
+				<div class="form-group">
+					<label for="TxtCompany">公司</label>
+						<input type="text" class="form-control" id="TxtCompany" placeholder="輸入公司名稱" value="">
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-3">
+                        <label for="TxtTitle">職位</label>
+                            <input type="text" class="form-control" id="TxtTitle" placeholder="輸入職位" value="">
+    			    </div>
+                    <div class="form-group col-sm-9">
+                        <label for="TxtPerson">姓名</label>
+                            <textarea type="text" class="form-control" id="TxtPerson" placeholder="輸入姓名" value=""></textarea>
+    			    </div>
+			    </div>
+				<div class="form-group">
+					<label for="TxtAddress">地址</label>
+						<input type="text" class="form-control" id="TxtAddress" placeholder="輸入地址" value="">
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-3">
+                        <label>聯絡類型</label>
+                        <select id="SelectInfoType" class="form-control">
+                            <option value="手機">手機</option>
+                            <option value="公司">公司</option>
+                            <option value="住宅">住宅</option>
+                            <option value="電郵">電郵</option>
+                            <option value="其他" selected>其他</option>
+                        </select>
+    			    </div>
+                    <div class="form-group col-sm-9">
+                        <label for="TxtContactInfo">聯絡資料</label>
+                            <input type="text" class="form-control" id="TxtContactInfo" placeholder="輸入手機號碼或聯絡資料" value="">
+    			    </div>
+			    </div>
+                <div class="form-group">
+                    <label for="TxtCTCPerson">CTC Person</label>
+                        <input type="text" class="form-control" id="TxtCTCPerson" placeholder="輸入CTC Person" value="">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="add_contact_button" action="add_contact"><i class="icon-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="button" class="btn btn-warning" id="edit_contact_button" action="edit_contact"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                {% if 1421 in request.session.accessright %}
+                <button type="button" class="btn btn-danger" id="delete_contact_button" action="delete_contact"><i class="icon-trash"></i>&nbsp;&nbsp;刪除</button>
+                {% endif %}
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="FollowModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="action">
+                <input type="hidden" class="form-control" id="followid">
+                <input type="hidden" class="form-control" id="propertyid">
+				<div class="form-group">
+					<label for="SelectStatus">狀態</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio5" name="SelectStatus">
+								<label for="radio5" value="1">開單</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio6" name="SelectStatus">
+								<label for="radio6" value="1">跟進</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio7" name="SelectStatus">
+								<label for="radio7" value="1">還價</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio8" name="SelectStatus">
+								<label for="radio8" value="1">完成</label>
+							</div><br>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio9" name="SelectStatus">
+								<label for="radio9" value="1">已租</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio10" name="SelectStatus">
+								<label for="radio10" value="1">已售</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radio11" name="SelectStatus">
+								<label for="radio11" value="1">連租約售</label>
+							</div>
+						</div>
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-6">
+                        <label for="TxtUnitPrice">業主叫價(@)</label>
+                            <input type="number" class="form-control" id="TxtUnitPrice" placeholder="輸入業主叫價(@)" value="">
+    			    </div>
+                    <div class="form-group col-sm-6">
+                        <label for="TxtSellingPrice">業主叫價(M)</label>
+                            <input type="number" class="form-control" id="TxtSellingPrice" placeholder="輸入業主叫價(M)" value="">
+    			    </div>
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-6">
+                        <label for="TxtUnitRent">業主租金(@)</label>
+                            <input type="number" class="form-control" id="TxtUnitRent" placeholder="輸入業主租金(@)" value="">
+    			    </div>
+                    <div class="form-group col-sm-6">
+                        <label for="TxtRent">業主租金(K)</label>
+                            <input type="number" class="form-control" id="TxtRent" placeholder="輸入業主租金(M)" value="">
+    			    </div>
+			    </div>
+                <div class="row g-3">
+                    <div class="form-group col-sm-12">
+                        <label for="TxtDescription">描述</label>
+                            <textarea type="text" class="form-control" id="TxtDescription" placeholder="輸入描述" value="" rows="5"></textarea>
+    			    </div>
+			    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="add_follow_button" action="add_follow"><i class="icon-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="button" class="btn btn-warning" id="edit_follow_button" action="edit_follow"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PictureModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width:515px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+					<input type="hidden" class="form-control" id="action">
+				</div>
+                <div class="form-group col-sm-12">
+                    <div class="product-info">
+                      <h3 class="mt-4" style="font-weight:600">物業資料</h3>
+                        <div class="form-group col-sm-12">
+                            <label>物業編號</label><br>&nbsp;<span id="propertyno_picture"></span>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label>物業名稱</label><br>&nbsp;<span id="propertyname_picture"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-sm-12">
+                    <div class="product-info">
+                      <h3 class="mt-4" style="font-weight:600">圖片</h3>
+                      <form class="dropzone dropzone-primary" id="multiFileUpload" action="/upload/">
+    					<input type="hidden" class="form-control" id="proprertyid">
+                        <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
+                          <h4>將文件拖放到此處或點擊上傳。</h4><span class="note needsclick"></span>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+			</div>
+            <div class="modal-footer">
+                <!--<button type="submit" class="btn btn-danger" id="upload_button" action="add"><i class="icon-upload"></i>&nbsp;&nbsp;上傳</button>-->
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script type="text/javascript">
+    var table;
+
+    $("#cboUsage").on('change', function(){
+        var val = $(this).val();
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        var propertyEditElement = document.getElementById('property_views'); // Get the element with ID "property_edit"
+        propertyEditElement.setAttribute('usage', val);
+
+		$('a[href="#property_view"]').trigger('click');
+    });
+
+	function load_menu() {
+		action = "menutab";
+		usage = $("#cboUsage").val();
+		$('#contentBody').html("<br/><center><div class=\"loader-box\"><div class=\"loader-7\"></div></div></center>");
+		$.ajax({
+			url:'{% url 'oddsheet_response' %}',
+			type:'POST',
+			data:{action:action, usage:usage},
+		})
+
+		.done(function(response){
+			$('#contentBody').html(response);
+		})
+
+		.fail(function(xhr, status, error){
+            $('.box-header').html(xhr.responseText);
+			//alert(xhr.responseText);
+		})
+	}
+
+	function refresh_table() {
+        table = $('#contentTable').DataTable({
+            columnDefs: [
+              {
+                targets: [0, 12], // Specify the column indices (0-based) that should not be sortable
+                orderable: false,
+              },
+              {
+                targets: [0], // Specify the column indices (0-based) that should not be sortable
+                'checkboxes': {
+                   'selectRow': true
+                }
+              },
+            ],
+            destroy: true,
+            //"paging": false,
+            "dom": 'Brtip',
+            order: [[ 0, "desc" ]],
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+               language: {
+                   "sProcessing": "處理中...",
+                   "sLengthMenu": "顯示 _MENU_ 項結果",
+                   "sZeroRecords": "沒有匹配結果",
+                   "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                   "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                   "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                   "sInfoPostFix": "",
+                   "sSearch": "搜索：",
+                   "sUrl": "",
+                   "oPaginate": {
+                       "sFirst": "首頁",
+                       "sPrevious": "上一頁",
+                       "sNext": "下一頁",
+                       "sLast": "末頁"
+                   },
+               },
+        });
+	}
+
+    $(document).on("click", "#add_item_button", function(){
+        var itemname = '<div class="col-sm-2"><label class="form-label"><h4>'+$("#itemname").val()+'</h4></label></div>'
+        var itemcontent = '<div class="col-sm-10"><h4 style="font-weight:600">：'+$("#itemcontent").val()+'</h4></div>'
+        if (itemname == '') {
+            alert('請輸入項目名稱');
+            return false;
+        }
+        if (itemcontent == '') {
+            alert('請輸入項目內容');
+            return false;
+        }
+        var checked = 0;
+        if ($("#itemname").val() == "預設：最新售價") {
+            var oddsheet_sell = "<strike><font color=red>"+$("#oddsheet_sell").attr("content")+"</font></strike>";
+            $("#oddsheet_sell").html("<h4 style=\"font-weight:600\">：港幣$"+oddsheet_sell+"&nbsp;&nbsp;"+$("#itemcontent").val()+"</h4>");
+            checked = 1;
+        }
+        if ($("#itemname").val() == "預設：最新租金") {
+            var oddsheet_rent = "<strike><font color=red>"+$("#oddsheet_rent").attr("content")+"</font></strike>";
+            $("#oddsheet_rent").html("<h4 style=\"font-weight:600\">：港幣$"+oddsheet_rent+"&nbsp;&nbsp;"+$("#itemcontent").val()+"</h4>");
+            checked = 1;
+        }
+        if ($("#itemname").val() == "預設：最新管理費") {
+            var oddsheet_managementfee = "<strike><font color=red>"+$("#oddsheet_managementfee").attr("content")+"</font></strike>";
+            $("#oddsheet_managementfee").html("<h4 style=\"font-weight:600\">：港幣$"+oddsheet_managementfee+"&nbsp;&nbsp;"+$("#itemcontent").val()+"</h4>");
+            checked = 1;
+        }
+        if (checked == 0) $("#oddsheet").append(itemname+itemcontent)
+        $("#itemname").val("");
+        $("#itemcontent").val("");
+    });
+
+    $(document).on("click", "#download_oddsheet_button", function(){
+        var buttontype = $(this).attr("buttontype");
+        var propertyno = $("#propertyno").val();
+        var propertyname = $("#propertyname").val();
+        if (buttontype == 'pdf') {
+            var sheader = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">';
+            sheader = sheader + '<style>';
+            sheader = sheader + 'body{font-family:tahoma;font-size:14px;}';
+            sheader = sheader + 'div{font-family:tahoma;font-size:14pt;}';
+            sheader = sheader + 'body { box-sizing: border-box;height: 100%;margin: 0;}';
+            sheader = sheader + '.row, .col-sm-12, .footer-logo-area, .footer-logo-area-2 { height: 100%;}';
+            sheader = sheader + '</style>';
+
+            var sstyle = '<link rel="stylesheet" href="{% static 'Koho/assets/css/style.css' %}"/><link rel="stylesheet" href="{% static 'Koho/assets/css/vendors/bootstrap.css' %}"/>';
+
+            var tabobj = $('<div width=780px></div>').html($('#oddsheet').html());
+            alert(tabobj)
+
+            tabobj.find('button').hide();
+
+            shtml = tabobj.html();
+
+            var pdf = new jsPDF('mm', 'px', 'A4');
+
+            html2canvas(document.getElementById('oddsheet')).then(function(canvas) {
+                var imgData = canvas.toDataURL('image/png');
+                var doc = new jsPDF('mm', 'px', 'A4');
+                doc.addImage(imgData, 'PNG', 10, 10);
+                doc.save(propertyno + ' ' + propertyname+'- 盤紙.pdf');
+                //simulateDownloadImageClick(canvas.toDataURL(), 'file-name.png');
+            });
+
+
+            // Convert the HTML content to a string
+            source = shtml;
+            //source = '<html><head>' +sheader + '</head>' + sstyle + '<body>' + shtml + '<font size=30px><b>Happy Birthday</b></font></body></html>'
+            //var source = $('<div>').append(tabobj.clone()).html();
+
+            // we support special element handlers. Register them with jQuery-style
+            // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+            // There is no support for any other type of selectors
+            // (class, of compound) at this time.
+            specialElementHandlers = {
+                // element with id of "bypass" - jQuery style selector
+                '#bypassme': function (element, renderer) {
+                    // true = "handled elsewhere, bypass text extraction"
+                    return true
+                }
+            };
+            margins = {
+                top: 10,
+                bottom: 20,
+                left: 20,
+                width: 500
+            };
+            // all coords and widths are in jsPDF instance's declared units
+            // 'inches' in this case
+            pdf.fromHTML(
+            source, // HTML string or DOM elem ref.
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width, // max width of content on PDF
+                'elementHandlers': specialElementHandlers
+            },
+
+            function (dispose) {
+                // dispose: object with X, Y of the last line add to the PDF
+                //          this allow the insertion of new lines after html
+                //pdf.save(propertyname+'- 盤紙.pdf');
+            }, margins);
+
+        }
+
+        function simulateDownloadImageClick(uri, filename) {
+          var link = document.createElement('a');
+          if (typeof link.download !== 'string') {
+            window.open(uri);
+          } else {
+            link.href = uri;
+            link.download = filename;
+            accountForFirefox(clickLink, link);
+          }
+        }
+
+        function clickLink(link) {
+          link.click();
+        }
+
+        function accountForFirefox(click) { // wrapper function
+          let link = arguments[1];
+          document.body.appendChild(link);
+          click(link);
+          document.body.removeChild(link);
+        }
+    })
+
+    $(document).on("click", "#download_oddsheet_multi_button", function(){
+        var buttontype = $(this).attr("buttontype");
+        var propertyno = $("#propertyno").val();
+        var propertyname = $("#propertyname").val();
+        if (buttontype == 'pdf') {
+            var sheader = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">';
+            sheader = sheader + '<style>';
+            sheader = sheader + 'body{font-family:tahoma;font-size:14px;}';
+            sheader = sheader + 'div{font-family:tahoma;font-size:10pt;}';
+            sheader = sheader + 'body { margin: 100; padding: 150;  box-sizing: border-box;}';
+            sheader = sheader + '</style>';
+
+            var sstyle = '<link rel="stylesheet" href="{% static 'dist/css/Adminlte.css' %}"/><link rel="stylesheet" href="{% static 'dist/css/skins/_all-skins.min.css' %}"/><link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.css' %}"/>';
+
+
+            var tabobj = $('<div width=780px></div>').html($('#oddsheet').html());
+
+            tabobj.find('button').hide();
+
+            shtml = tabobj.html();
+
+            var pdf = new jsPDF('landscape', 'mm', 'A4');
+
+            html2canvas(document.getElementById('oddsheet')).then(function(canvas) {
+                var imgData = canvas.toDataURL('image/png');
+                var doc = new jsPDF('landscape', 'mm', 'A4');
+                doc.addImage(imgData, 'PNG', 10, 10);
+                doc.save(propertyno + ' ' + propertyname+'- 盤紙.pdf');
+                //simulateDownloadImageClick(canvas.toDataURL(), 'file-name.png');
+            });
+
+
+            // Convert the HTML content to a string
+            source = shtml;
+            //source = '<html><head>' +sheader + '</head>' + sstyle + '<body>' + shtml + '<font size=30px><b>Happy Birthday</b></font></body></html>'
+            //var source = $('<div>').append(tabobj.clone()).html();
+
+            // we support special element handlers. Register them with jQuery-style
+            // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+            // There is no support for any other type of selectors
+            // (class, of compound) at this time.
+            specialElementHandlers = {
+                // element with id of "bypass" - jQuery style selector
+                '#bypassme': function (element, renderer) {
+                    // true = "handled elsewhere, bypass text extraction"
+                    return true
+                }
+            };
+            margins = {
+                top: 10,
+                bottom: 20,
+                left: 20,
+                width: 500
+            };
+            // all coords and widths are in jsPDF instance's declared units
+            // 'inches' in this case
+            pdf.fromHTML(
+            source, // HTML string or DOM elem ref.
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width, // max width of content on PDF
+                'elementHandlers': specialElementHandlers
+            },
+
+            function (dispose) {
+                // dispose: object with X, Y of the last line add to the PDF
+                //          this allow the insertion of new lines after html
+                //pdf.save(propertyname+'- 盤紙.pdf');
+            }, margins);
+
+        }
+
+        function simulateDownloadImageClick(uri, filename) {
+          var link = document.createElement('a');
+          if (typeof link.download !== 'string') {
+            window.open(uri);
+          } else {
+            link.href = uri;
+            link.download = filename;
+            accountForFirefox(clickLink, link);
+          }
+        }
+
+        function clickLink(link) {
+          link.click();
+        }
+
+        function accountForFirefox(click) { // wrapper function
+          let link = arguments[1];
+          document.body.appendChild(link);
+          click(link);
+          document.body.removeChild(link);
+        }
+    })
+
+    // Initialize Dropzone
+    Dropzone.autoDiscover = false;
+    var myDropzone = new Dropzone("#multiFileUpload", {
+        url: "/upload/",
+        params: {
+          property_id: ""
+        },
+        maxFilesize: 5, // Maximum file size in MB
+        maxFiles: 10, // Maximum number of files allowed
+        acceptedFiles: ".jpg, .jpeg, .png", // Allowed file extensions
+        addRemoveLinks: true, // Show remove file links
+        dictRemoveFile: "刪除", // Text for the remove file link
+        init: function() {
+          this.on("success", function(file, response) {
+            // Handle success after file upload
+            console.log("File uploaded successfully: " + file.name + property_id);
+          });
+          this.on("error", function(file, errorMessage) {
+            // Handle error after file upload
+            console.log("Error uploading file: " + file.name + " - " + errorMessage);
+          });
+        }
+    });
+
+
+    // Initial page
+    load_menu()
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

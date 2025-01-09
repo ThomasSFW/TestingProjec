@@ -1,0 +1,481 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">客人記事簿 <a href="#" class="open_modal_info" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="add" formtype="content_info" formname="Code Information"  create_date="{{ today|date:'Y-m-d' }}" login_name="{{request.session.loginid|getLoginName}}"><i class="icofont icofont-plus-circle"></i></a></h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+    .modal-dialog {
+              width: 80% !important;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <label class="form-label" for="datepicker_range">關鍵字</label>
+                            <div class="input-group">
+                                <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="datepicker_range">日期範圍</label>
+                            <div id="datepicker_range" class="form-select">
+                                <i class="fa fa-calendar"></i>&nbsp;
+                                    <span></span><i class="fa fa-caret-down"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="customer_id">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group">
+                    <table border="2" class="table table-striped" bordercolor="grey">
+                        <colgroup>
+                            <col style="width:25%;background-color: #f2f2f2;">
+                            <col style="width:25%;">
+                            <col style="width:25%;background-color: #e6e6e6;">
+                            <col style="width:25%;">
+                        </colgroup>
+                        <thead>
+                            <td align="center" class="bg-primary" colspan="4"><b>客人記事簿</b> (<span id="login_name"></span>)</td>
+                        </thead>
+                        <tr>
+                            <td width="200"><b>客人姓名：</b></td>
+                            <td colspan="3"><input class="form-control" placeholder="請輸入您的客人姓名" type="text" id="customer_name" value=""></td>
+                        </tr>
+                        <tr>
+                            <td><b>電郵地址：</b></td>
+                            <td colspan="3"><input class="form-control" placeholder="請輸入您的電郵地址" type="text" id="email" value=""></td>
+                        </tr>
+                        <tr>
+                            <td><b>電話號碼：</b></td>
+                            <td colspan="3">
+                                <select id="phone_area_code" class="form-control" style="width:150px;display:inline">
+                                        <option value="+852" selected>+852 (香港)</option>
+                                        <option value="+853">+853 (澳門)</option>
+                                        <option value="+86">+86 (中國)</option>
+                                </select>
+                                <input type="number" class="form-control" id="phone_number" placeholder="請輸入您的電話號碼" value=""  maxlength="8" style="width:200px;display:inline">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>職業</b></td>
+                            <td><input class="form-control" placeholder="" type="text" id="industry" value=""></td>
+                            <td><b>查詢盤類：</b></td>
+                            <td>
+                            <select class="form-select" id="offer_type">
+                            {% for offertype in offer_type_list %}
+                                <option value="{{offertype.code_detail_name}}"{%if offertype.code_detail_name == property_list.0.offertype %} selected{% endif %}>{{offertype.code_detail_name}}</option>
+                            {% endfor %}
+                            </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>物業類別：</b></td>
+                            <td colspan="3">
+                                <select class="form-select" id="usage"  style="width:150px;display:inline">
+                                    {% for usage in usage_list %}
+                                        <option value="{{usage.code_detail_name}}"{%if usage.code_detail_name == property_list.0.usage %} selected{% endif %}>
+                                            {{usage.code_detail_name}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>面積範圍：</b></td>
+                            <td colspan="3"><input class="form-control" placeholder="" type="number" id="area_from" value="" style="width:150px;display:inline"> ~ <input class="form-control" placeholder="" type="number" id="area_to" value="" style="width:150px;display:inline"></td>
+                        </tr>
+                        <tr>
+                            <td><b>買入價錢範圍(HK$)：</b></td>
+                            <td colspan="3"><input class="form-control" placeholder="" type="number" id="sellingprice_from" value="" style="width:150px;display:inline"> ~ <input class="form-control" placeholder="" type="number" id="sellingprice_to" value="" style="width:150px;display:inline"></td>
+                        </tr>
+                        <tr>
+                            <td><b>租入價錢範圍(HK$)：</b></td>
+                            <td colspan="3"><input class="form-control" placeholder="" type="number" id="rent_from" value="" style="width:150px;display:inline"> ~ <input class="form-control" placeholder="" type="number" id="rent_to" value="" style="width:150px;display:inline"></td>
+                        </tr>
+                        <tr>
+                            <td><b>備註：</b></td>
+                            <td colspan="3"><textarea id="remarks" class="form-control" rows="1" placeholder="輸入備註" row="3" style="height: 100px;"></textarea></td>
+                        </tr>
+                    </table>
+
+					<label>狀態</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioActive" name="r1">
+								<label for="radioActive" value="1">正常</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioInActive" name="r1">
+								<label for="radioInActive" value="1">失效</label>
+							</div>
+						</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="add_button" action="add"><i class="icon-plus"></i>&nbsp;&nbsp;新增</button>
+                {% if 1452 in request.session.accessright %}
+                <button type="button" class="btn btn-warning" id="edit_button" action="edit"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                {% endif %}
+                {% if 1453 in request.session.accessright %}
+                <button type="button" class="btn btn-danger" id="delete_button" action="delete"><i class="icon-trash"></i>&nbsp;&nbsp;刪除</button>
+                {% endif %}
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            <div class="modal-message">
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="customer_id">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group" id="customer_info">
+                    <center><div class="loader-box"><div class="loader-7"></div></div></center>
+                </div>
+				<div class="form-group" id="property_related_info">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="icon-close" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            <div class="modal-message">
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script type="text/javascript">
+    var table;
+    var currentPage;
+
+    var today = moment();
+    //var start = moment().subtract(14, 'days');
+    var start = '2024-01-01';
+    var end = moment();
+    var start_current = new Date(start);
+    var end_current = new Date(end);
+
+
+    function cb(start, end) {
+        $('#datepicker_range span').html($('#datepicker_range').data('daterangepicker').chosenLabel + ' : ' + start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
+    }
+
+    function cb_change(start, end) {
+        $('#datepicker_range span').html(start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
+        $('#datepicker_range').daterangepicker({
+            "autoApply": true,
+            startDate: start,
+            endDate: end,
+            ranges: {
+            }
+        }, cb);
+
+        //$('#cboYear option:selected').removeAttr('selected');
+        //$('#cboYear option[value="'+start.format('YYYY')+'"]').attr('selected', 'selected');
+        $('#cboPeriod option').each(function(){
+            if($(this).val() < 8) {
+                $(this).text($(this).text().substring(0, 3)+' '+end.format('YYYY'));
+            }
+            else {
+                $(this).text($(this).text().substring(0, 3)+' '+start.format('YYYY'));
+            }
+        });
+    }
+
+    function cb_change_period(start, end) {
+        $('#datepicker_range span').html(start.format('YYYY-MM-DD') + ' ~ ' + end.format('YYYY-MM-DD'));
+        $('#datepicker_range').daterangepicker({
+            "autoApply": true,
+            startDate: start,
+            endDate: end,
+            ranges: {
+            }
+        }, cb);
+    }
+
+    cb_change(moment(start_current), moment(end_current));
+    start = moment(start_current);
+    end = moment(end_current);
+
+    $('#datepicker_range').on('apply.daterangepicker', function (cb, picker) {
+        start = picker.startDate;
+        end = picker.endDate;
+    });
+
+    $("#searchinput").on("keyup", function() {
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+        //$("#"+activeTabPanel.id).attr('loginid',val);
+
+        var oTable = $('#contentTable-'+activeTabPanel.id).dataTable();
+        oTable.fnFilter($(this).val());
+    });
+
+	function load_menu() {
+		action = "menutab";
+		start_date = (start.format('YYYY-MM-DD'));
+		end_date = (end.format('YYYY-MM-DD')+" 23:59:59");
+		$('#contentBody').html("<br/><center><div class=\"loader-box\"><div class=\"loader-7\"></div></div></center>");
+		$.ajax({
+			url:'{% url 'customerNote_response' %}',
+			type:'POST',
+			data:{action:action, start_date:start_date, end_date:end_date},
+		})
+
+		.done(function(response){
+			$('#contentBody').html(response);
+		})
+
+		.fail(function(xhr, status, error){
+            $('#contentBody').html(xhr.responseText);
+			//alert(xhr.responseText);
+		})
+	}
+
+    function load_user() {
+        loginid = $("#cboUser").val();
+        if (loginid == "") loginid = "{{request.session.loginid}}";
+        $.ajax({
+            url:'{% url 'customerNote_response' %}',
+            type:'POST',
+            data:{action:'team_list', loginid:loginid},
+        })
+
+        .done(function(response){
+            $("#cboUser").html(response);
+        })
+
+        .fail(function(xhr, status, error){
+            $("#contentBody").html(xhr.responseText);
+        })
+    }
+
+    function load_table() {
+        //$("#contentTable").html('<br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}"></center>');
+        $.ajax({
+            url:'{% url 'customerNote_response' %}',
+            type:'POST',
+            data:{action:'customer_list', start_date:start_date, end_date:end_date},
+        })
+
+        .done(function(response){
+            alert("sfsf")
+            $("#contentBody").html(response);
+            refresh_table();
+        })
+
+        .fail(function(xhr, status, error){
+            $("#contentBody").html(xhr.responseText);
+        })
+    }
+
+    function refresh_table(action) {
+        table = $('#contentTable-'+action).DataTable({
+            columnDefs: [
+              {
+                targets: [8, 9], // Specify the column indices (0-based) that should not be sortable
+                orderable: false
+              }
+            ],
+            "paging": true,
+            "dom": 'Brtip',
+            "order": [],
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+               language: {
+                   "sProcessing": "處理中...",
+                   "sLengthMenu": "顯示 _MENU_ 項結果",
+                   "sZeroRecords": "沒有匹配結果",
+                   "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                   "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                   "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                   "sInfoPostFix": "",
+                   "sSearch": "搜索：",
+                   "sUrl": "",
+                   "oPaginate": {
+                       "sFirst": "首頁",
+                       "sPrevious": "上一頁",
+                       "sNext": "下一頁",
+                       "sLast": "末頁"
+                   },
+               },
+            buttons: [
+                {   extend: "copy",
+                    text: '<i class="fa fa-copy"></i>&nbsp;&nbsp;複製',
+                    className: 'btn-warning'
+                },
+                {
+                    extend: "print",
+                    text: '<i class="fa fa-print"></i>&nbsp;&nbsp;列印',
+                    customize: function(win)
+                    {
+                        var last = null;
+                        var current = null;
+                        var bod = [];
+
+                        var css = '@page { size: landscape; }',
+                            head = win.document.head || win.document.getElementsByTagName('head')[0],
+                            style = win.document.createElement('style');
+
+                        style.type = 'text/css';
+                        style.media = 'print';
+
+                        if (style.styleSheet)
+                        {
+                          style.styleSheet.cssText = css;
+                        }
+                        else
+                        {
+                          style.appendChild(win.document.createTextNode(css));
+                        }
+                        head.appendChild(style);
+                    },
+                    className: 'btn-primary'
+                },
+            ],
+        });
+    }
+
+    $(document).on("click", "#add_button, #edit_button, #delete_button", function(){
+        //Disabling the Button while data is being saved in Server
+        //$(this).attr("disabled", "disabled")
+        //$(this).text("Confirming...")
+        //console.log("SAVE")
+        action = $(this).attr("action");
+        customer_id = $("#customer_id").val();
+        var customer_name = $("#customer_name").val();
+        var email = $("#email").val();
+        var phone_area_code = $("#phone_area_code").val();
+        var phone_number = $("#phone_number").val();
+        var industry = $("#industry").val();
+        var usage = $("#usage").val();
+        var area_from = $("#area_from").val();
+        var area_to = $("#area_to").val();
+        var offer_type = $("#offer_type").val();
+        var sellingprice_from = $("#sellingprice_from").val();
+        var sellingprice_to = $("#sellingprice_to").val();
+        var rent_from = $("#rent_from").val();
+        var rent_to = $("#rent_to").val();
+        var remarks = $("#remarks").val();
+        if ($("#radioInActive").is(':checked')) status = 0;
+        if ($("#radioActive").is(':checked')) status = 1;
+
+        if (action == 'add') {
+            if (!(window.confirm("新增客人資料，你確定嗎？"))) {
+                return false;
+            }
+        }
+        if (action == 'edit') {
+            if (!(window.confirm("更改客人資料，你確定嗎？"))) {
+                return false;
+            }
+        }
+        if (action == 'delete') {
+            if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                return false;
+            }
+        }
+        $.ajax({
+            url:'{% url "customerNote_save" %}',
+            type:'POST',
+            data:{action:action, customer_id:customer_id, customer_name:customer_name, email:email, phone_area_code:phone_area_code, phone_number:phone_number, industry:industry, usage: usage, area_from: area_from, area_to: area_to, offer_type:offer_type, sellingprice_from:sellingprice_from, sellingprice_to:sellingprice_to, rent_from:rent_from, rent_to:rent_to, remarks:remarks, status:status},
+        })
+
+        .done(function(response){
+            if (response == "Success")
+                var messagetype = "success"
+            else
+                var messagetype = "danger"
+            if (action == "add") messagetext = "客人資料已成功加入"
+            if (action == "edit") messagetext = "客人資料已成功更新"
+            if (action == "delete") messagetext = "客人資料已成功刪除"
+            $.notify({
+                message: messagetext
+                },{
+                    type: messagetype,
+                    allow_dismiss: true,
+                    positon: 'top right',
+                    offset: 20,
+                    spacing: 10,
+                    z_index: 1031,
+            });
+            currentPage = table.page();
+            $('a[href="#customer_list"]').trigger('click');
+            $("#EditModal").modal('hide');
+            //if (action == "delete") $('a[href="#customer_list"]').trigger('click');
+        })
+
+        .fail(function(xhr, status, error){
+            // alert the error if any error occured
+            alert(xhr.responseText);
+            $("#EditModal").html(xhr.responseText);
+        })
+    })
+
+	$("#btnGenerate").click(function(){
+        var tabContent = document.querySelector('.tab-content');
+        var activeTabPanel = tabContent.querySelector('.tab-pane.active');
+		$('a[href="#'+activeTabPanel.id+'"]').trigger('click');
+	});
+
+    // Initial page
+    //load_user();
+    load_menu()
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

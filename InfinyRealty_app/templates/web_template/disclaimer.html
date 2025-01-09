@@ -1,0 +1,63 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"免責聲明"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Terms     Start                 =-->
+    <!--=====================================-->
+        <div class="article-head"><br>
+		    <h5 class="text-center" style="font-weight:600">{{"免責聲明"|showlang:request.session.lang}}</h5>
+			<p class="mb-1 text-center">{{"最後更新"|showlang:request.session.lang}}：{{content_detail.0.modify_date|date:'Y年m月d日'}}</p>
+		</div>
+
+        <section class="about-wrap">
+            <div class="container">
+                <div class="row flex-row-reverse flex-lg-row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="about-box3 wow fadeInUp" data-wow-delay=".2s">
+                            {% if request.session.lang == "" or request.session.lang == "tc" %}
+                                <p>{{content_detail.0.content_detail_name|safe}}</p>
+                            {% elif request.session.lang == "sc" %}
+                                <p>{{content_detail.0.content_detail_name_s|safe}}</p>
+                            {% else %}
+                                <p>{{content_detail.0.content_detail_name_e|safe}}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

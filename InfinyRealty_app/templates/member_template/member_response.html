@@ -1,0 +1,240 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+{% load custom_template_tags %}
+<link rel="stylesheet" href="{% static 'common/formCommon.css' %}">
+	{% if action == "menutab" %}
+		<div class="col-md-12">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs nav-primary">
+				  <!--<li class="active"><a href="#overview" data-toggle="tabajax" action="overview" year="{{year}}" start_date="{{start_date}}" end_date="{{end_date}}"><b>Overview</b></a></li>-->
+				  <li class="nav-item active"><a class="nav-link active" href="#member_list" data-toggle="tabajax" action="member_list" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1400 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>會員記錄</b></a></li>
+				  <li class="nav-item"><a class="nav-link" href="#member_active" data-toggle="tabajax" action="member_active" start_date="{{start_date}}" end_date="{{end_date}}" team="{{team}}" loginid="{{user}}"{% if 1401 not in request.session.accessright %} lock="1"><i class="fa fa-lock"></i>&nbsp;&nbsp;{% else %} lock="0">{% endif %}<b>活躍會員</b></a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="active tab-pane" id="member_list"></div>
+					<div class="tab-pane" id="member_active"></div>
+				</div>
+				<div id="errormessage"></div>
+			</div>
+		</div>
+	{% endif %}
+	{% if action == "member_list" %}
+        <div class="table-responsive">
+            <table id="contentTable-{{action}}" class="display" id="contentTable" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th style="text-align:center;" width="100">加入時間</th>
+                        <th style="text-align:center;" width="80">會員號碼</th>
+                        <th>會員姓名</th>
+                        <!--<th style="text-align:center;" width="40">性別</th>-->
+                        <th style="text-align:center;" width="100">電話</th>
+                        <th style="text-align:center;" width="150">電郵地址</th>
+                        <th style="text-align:center;" width="100">最後登入日期</th>
+                        <th style="text-align:center;" width="60">狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in member_list %}
+                        <tr>
+                            <td style="text-align:center;">{{displaydata.join_date|date:'Y-m-d H:i'}}</td>
+                            <td style="text-align:center;">{{displaydata.member_number}}</td>
+                            <td>{{displaydata.member_name}}</td>
+                            <!--<td align="center">{{displaydata.gender}}</td>-->
+                            <td align="center">{{displaydata.phone_area_code}} {{displaydata.phone_number}}</td>
+                            <td>{{displaydata.email}}</td>
+                            <td align="center">{{displaydata.lastlogin_date|date:'Y-m-d H:i'}}</td>
+                            <td style="text-align:center;">
+                                {% if displaydata.status == 1 %}
+                                <span class="badge badge-success text-md">正常</span>
+                                {% else %}
+                                <span class="badge badge-danger text-md">失效</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+	{% if action == "member_active" %}
+        <div class="table-responsive">
+            <table id="contentTable-{{action}}" class="display" id="contentTable" data-page-length="15">
+                <thead class="thead-dark">
+                    <tr class="skin-blue" style="background-color: #EBA032;color:white">
+                        <th width="100">加入時間</th>
+                        <th width="80">會員號碼</th>
+                        <th>會員姓名</th>
+                        <!--<th style="text-align:center;" width="40">性別</th>-->
+                        <th style="text-align:center;" width="100">電話</th>
+                        <th style="text-align:center;" width="150">電郵地址</th>
+                        <th width="100">最後登入日期</th>
+                        <th style="text-align:center;" width="60">狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in member_active_list %}
+                        <tr>
+                            <td align="center">{{displaydata.join_date|date:'Y-m-d H:i'}}</td>
+                            <td>{{displaydata.member_number}}</td>
+                            <td>{{displaydata.member_name}}</td>
+                            <!--<td align="center">{{displaydata.gender}}</td>-->
+                            <td align="center">{{displaydata.phone_area_code}} {{displaydata.phone_number}}</td>
+                            <td>{{displaydata.email}}</td>
+                            <td align="center">{{displaydata.lastlogin_date|date:'Y-m-d H:i'}}</td>
+                            <td style="text-align:center;">
+                                {% if displaydata.status == 1 %}
+                                <span class="badge badge-success text-md">正常</span>
+                                {% else %}
+                                <span class="badge badge-danger text-md">失效</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+	{% if action == "team_list" %}
+        {% setvar "" as tmpTeam %}
+            <option value="">- 所有會員 -</option>
+        {% for displayuser in userlist %}
+            <option value="{{displayuser.member_id}}" {% if user_member_id == displayuser.member_id %} selected {% endif %}>{{displayuser.member_name}}</option>
+            {% if forloop.last %}</optgroup>{% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+{% if action == "member_list" %}
+    $(document).ready(function(){
+        $(".open_modal_school_info").click(function(){
+            action = $(this).attr("action");
+            formtype = $(this).attr("formtype");
+            formname = $(this).attr("formname");
+            schoolid = $(this).attr("schoolid");
+            year = $(this).attr("year");
+            insptype = $(this).attr("insptype");
+            loginid = $(this).attr("loginid");
+            schoolname = $(this).attr("schoolname");
+            tmpost = $(this).attr("tmpost");
+            code = $(this).attr("code");
+            subcode = $(this).attr("subcode");
+            status = $(this).attr("status");
+
+            if (action == "view") {
+                $("#SchoolInfoTitle").html("<i class='fa fa-eye'/>&nbsp;&nbsp;View - "+formname);
+                //$("#confirm_button").text("Create and save");
+                //$("#confirm_button").attr("action", "add");
+                $("#MemberModal .modal-header").css('background-color', '#00A65A');
+                $("#MemberModal .modal-header").css('color', '#FFFFFF');
+                $("#FormBModal #draft_button").hide();
+                $("#FormBModal #confirm_button").hide();
+                $("#FormBModal #unconfirm_button").show();
+            }
+            if (formtype == "school_info") {
+                $.ajax({
+                    url:'{% url 'member_response' %}',
+                    type:'POST',
+                    data:{action:'school_info', schoolid:schoolid, year:year, insptype:insptype, schoolname:schoolname, loginid:loginid, tmpost:tmpost, subcode:subcode, code:code},
+                })
+                .done(function(response){
+                    $("#MemberModal .modal-body").html(response);
+                })
+                .fail(function(xhr, status, error){
+                    $('#MemberModal .modal-message').html(xhr.responseText);
+                    //alert(xhr.responseText);
+                })
+            }
+        });
+    })
+{% endif %}
+{% if action == "action_log" or action == "member_active" or action == "eform_action_log" %}
+    $(document).ready(function(){
+
+    })
+{% endif %}
+{% if action == "menutab" %}
+    action = "member_list";
+    team = $("#cboTeam").val();
+    loginid = $("#cboUser").val();
+    $.ajax({
+        url:'{% url 'member_response' %}',
+        type:'POST',
+        async:true,
+        data:{action:action, start_date:start_date, end_date:end_date, team:team, loginid:loginid},
+        beforeSend: function(){
+            $('#member_list').html('<br/><br/><br/><br/><br/><br/><center><b>LOADING</b><br/><img src="{% static 'images/lightbox-ico-loading.gif' %}" width=80><br/><br/><br/><br/></center></p>');
+        },
+    })
+    .done(function(response){
+        $('#member_list').html(response);
+        refresh_table(action);
+        $("div.toolbar").html('<b><font size=3>會員列表</font></b>&nbsp;&nbsp;&nbsp;');
+    })
+    .fail(function(xhr, status, error){
+        $('#member_list').html(xhr.responseText);
+        //alert(xhr.responseText);
+    })
+    var selectTab
+    $('[data-toggle="tabajax"]').click(function(e) {
+        var $this = $(this)
+        selectTab = $this.attr('action');
+        $this.attr('start_date',start.format('YYYY-MM-DD'));
+        $this.attr('end_date',end.format('YYYY-MM-DD'));
+        $this.attr('team',$("#cboTeam").val());
+        $this.attr('loginid',$("#cboUser").val());
+
+        var	pagetype = $this.attr('href'),
+            targ = $this.attr('data-target'),
+            action = $this.attr('action');
+            start_date = $this.attr('start_date');
+            end_date = $this.attr('end_date');
+            team = $this.attr('team');
+            loginid = $this.attr('loginid');
+            lock = $this.attr('lock');
+            if (lock == 1) {
+                alert("\u26A0 沒有存取此頁面的存取權限！欲了解更多信息，請聯絡系統管理員。");
+                return false;
+            }
+
+            $.ajax({
+                url:'{% url 'member_response' %}',
+                type:'POST',
+                async:true,
+                data:{action:action, start_date:start_date, end_date:end_date, team:team, loginid:loginid},
+                beforeSend: function(){
+                    // Display the loading message with the current time
+                    var startTime = new Date().getTime();
+                    $('#'+action).html('<br/><br/><br/><br/><br/><center><b>CALCULATING</b><br/><span id="loadingTime"></span><br/><img src="{% static 'images/calculator.gif' %}" width=80><br/><br/><br/><br/></center></p>');
+                    loadingInterval = setInterval(function() {
+                      // Update the loading time every second
+                      var elapsedTime = Math.floor((new Date().getTime() - startTime) / 1000);
+                      $('#loadingTime').html('Elapsed time: ' + elapsedTime + ' seconds');
+                    }, 1000);
+                },
+            })
+            .done(function(response){
+                // Calculate the loading time and append it to the response message
+                clearInterval(loadingInterval); // Clear the loading interval
+                $('#'+action).html(response);
+                refresh_table(action);
+                if (action == "member_list") $("div.toolbar").html('<b><font size=3>會員列表</font></b>&nbsp;&nbsp;&nbsp;');
+                if (action == "member_active") $("div.toolbar").html('<b><font size=3>活躍會員列表</font></b>&nbsp;&nbsp;&nbsp;');
+            })
+            .fail(function(xhr, status, error){
+                $('#errormessage').html(xhr.responseText);
+            })
+            //$(loadurl).html(loadurl);
+            $this.tab('show');
+        return false;
+    });
+{% endif %}
+</script>
+{% endblock custom_js %}

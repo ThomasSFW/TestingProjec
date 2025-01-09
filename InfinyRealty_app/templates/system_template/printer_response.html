@@ -1,0 +1,123 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+	{% if action == "printer_list" %}
+        {% load static %}
+        {% load custom_template_tags %}
+        <table id="contentTable" class="table table-bordered table-striped" data-page-length="15">
+            <thead>
+                <tr class="skin-blue">
+                    <th width="20">ID</th>
+                    <th width="*">印表機名稱</th>
+                    <th width="150">打印機型號</th>
+                    <th width="80">序列號</th>
+                    <th width="80">IP地址</th>
+                    <!--<th width="60">端口</th>-->
+                    <th style="text-align:center;" width="60">位置代號</th>
+                    <th width="80">位置名稱</th>
+                    <th width="60">位置層級</th>
+                    <th style="text-align:center;" width="60">連線</th>
+                    <th style="text-align:center;" width="60">狀態</th>
+                    <th style="text-align:center;" width="20">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for displaydata in printers %}
+                <tr>
+                    <td style = "text-align: center;">{{ displaydata.printer_id }}</td>
+                    <td data-filter="{{ displaydata.printer_name }}">{{ displaydata.printer_name }}</td>
+                    <td data-filter="{{ displaydata.printer_model }}">{{ displaydata.printer_model }}</td>
+                    <td data-filter="{{ displaydata.printer_serial_number }}">{{ displaydata.printer_serial_number }}</td>
+                    <td data-filter="{{ displaydata.ip_address }}">{{ displaydata.ip_address }}</td>
+                    <!--<td data-filter="{{ displaydata.port }}">{{ displaydata.port }}</td>-->
+                    <td style="text-align:center;" data-filter="{{ displaydata.location_code }}">{{ displaydata.location_code }}</td>
+                    <td data-filter="{{ displaydata.location }}">{{ displaydata.location }}</td>
+                    <td style="text-align:center;" data-filter="{{ displaydata.location_level }}">{{ displaydata.location_level }}</td>
+                    <td style="text-align:center;">
+                        {% if displaydata.conn_status == "1" %}
+                        <div class="js_connected oe_icon text-success"><i class="fa fa-wifi" role="img" aria-label="Connected" title="在線"></i></div>
+                        {% else %}
+                        <div class="js_connected oe_icon text-danger"><i class="fa fa-exclamation-triangle" role="img" aria-label="Connected" title="在線"></i></div>
+                        {% endif %}
+                    </td>
+
+                    <td style="text-align:center;">
+                        {% if displaydata.status == 1 %}
+                        <div class="label label-success">正常</div>
+                        {% else %}
+                        <div class="label label-default">失效</div>
+                        {% endif %}
+                    </td>
+                    <td align="center">
+                        {% if 245 not in request.session.accessright %}
+                        <a href="#" class="btn btn-default btn-xs btn-block open_modal_edit" data-target="#EditModal" action="edit" formtype="printer" formname="印表機" printer_id="{{ displaydata.printer_id }}" printer_name="{{ displaydata.printer_name }}" printer_model="{{ displaydata.printer_model }}" printer_client_id="{{ displaydata.printer_client_id }}" printer_serial_number="{{ displaydata.printer_serial_number }}" ip_address="{{ displaydata.ip_address }}" port="{{ displaydata.port }}" location_code="{{ displaydata.location_code }}" location="{{ displaydata.location }}" location_level="{{ displaydata.location_level }}" status="{{ displaydata.status }}"><i class="fa fa-lock"></i>&nbsp;&nbsp;編輯</a>
+                        {% else %}
+                        <a href="#" class="btn btn-warning btn-xs btn-block open_modal_edit" data-toggle="modal" data-target="#EditModal" action="edit" formtype="printer" formname="印表機" printer_id="{{ displaydata.printer_id }}" printer_name="{{ displaydata.printer_name }}" printer_model="{{ displaydata.printer_model }}" printer_client_id="{{ displaydata.printer_client_id }}" printer_serial_number="{{ displaydata.printer_serial_number }}" ip_address="{{ displaydata.ip_address }}" port="{{ displaydata.port }}" location_code="{{ displaydata.location_code }}" location="{{ displaydata.location }}" location_level="{{ displaydata.location_level }}" status="{{ displaydata.status }}"><i class="fa fa-edit"></i>&nbsp;&nbsp;編輯</a>
+                        <!--<a href="#" class="btn btn-primary btn-xs btn-block" data-toggle="modal" data-target="#EditModal" action="print_test" formtype="printer" formname="印表機" printer_id="{{ displaydata.printer_id }}" printer_name="{{ displaydata.printer_name }}" printer_model="{{ displaydata.printer_model }}" printer_serial_number="{{ displaydata.printer_serial_number }}" ip_address="{{ displaydata.ip_address }}" port="{{ displaydata.port }}" location_code="{{ displaydata.location_code }}" location="{{ displaydata.location }}" location_level="{{ displaydata.location_level }}" status="{{ displaydata.status }}"><i class="fa fa-print"></i>&nbsp;&nbsp;列印測試</a>-->
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td style = "text-align: center;" colspan="9">{{ displaydata.printer_id }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "printer_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#printer_id").val($(this).attr("printer_id"));
+                $("#action").val($(this).attr("action"));
+                $("#printer_name").val($(this).attr("printer_name"));
+                $("#printer_model").val($(this).attr("printer_model"));
+                $("#printer_client_id").val($(this).attr("printer_client_id"));
+                $("#printer_serial_number").val($(this).attr("printer_serial_number"));
+                $("#ip_address").val($(this).attr("ip_address"));
+                $("#port").val($(this).attr("port"));
+                $("#location_code").val($(this).attr("location_code"));
+                $("#location").val($(this).attr("location"));
+                $("#location_level").val($(this).attr("location_level"));
+                if (($(this).attr("status") == "1") || ($(this).attr("status") == ""))
+                    $("#status_1").prop("checked", true);
+                else
+                    $("#status_0").prop("checked", true);
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='fa fa-plus'></i>&nbsp;&nbsp;<b>>新增印表機</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                    $("#print_button").hide();
+                } else {
+                    $("#FunctionTitle").html("<i class='fa fa-edit'></i>&nbsp;&nbsp;<b>編輯印表機</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                    $("#print_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

@@ -1,0 +1,397 @@
+{% extends 'common_template/base_template_2.html' %}
+
+{% block page_title %}
+    <section class="content-header">
+      <h3 style="font-weight:600">使用條款</h3>
+    </section>
+{% endblock page_title %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+		{% for displayitem in menuitem %}
+			<li class="breadcrumb-item"><a href="/home" class="home-item" data-bs-original-title="" title="">
+				<i data-feather="home">{{displayitem.tabName}}</i></a>
+			</li>
+			<li class="breadcrumb-item">{{displayitem.catName}}</li>
+			<li class="breadcrumb-item active">{{displayitem.subCatName}}</li>
+		{% endfor %}
+	</ol>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+.phone-input-container {
+  display: flex;
+  align-items: center;
+}
+
+.phone-input-container input:first-child {
+  margin-right: 10px;
+}
+</style>
+<section class="content">
+    <div class="row">
+        <!-- Zero Configuration  Starts-->
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <input type="text" name="q" id="searchinput" class="form-control" placeholder="尋找內容...">
+                                    <span class="input-group-btn">
+                                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                    </span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select id="cboContent" class="form-select"{% if not 1458 in request.session.accessright %} disabled{% endif %}>
+                            <option value="" {% if user_content_id == contents.content_id %}selected{% endif %}>- 所有內容分類 -</option>
+                            {% for contents in content_list %}
+                                <option value="{{contents.content_id}}" {% if user_content_id == contents.content_id %}selected{% endif %}>{{contents.content_name}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="contentBody" class="card-body"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-white" id="ModalTitle"><span id="FunctionTitle"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;<b>Edit</b></span></h3>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="content_detail_id">
+                <input type="hidden" class="form-control" id="content_id">
+                <input type="hidden" class="form-control" id="action">
+				<div class="form-group">
+					<label for="TxtContentDetailName">內容</label>
+                        <textarea id="TxtContentDetailName" class="form-control" rows="5" placeholder="輸入內容"></textarea>
+			    </div>
+				<div class="form-group">
+					<label for="TxtContentDetailNameS">內容(簡)</label>
+                        <textarea id="TxtContentDetailNameS" class="form-control" rows="5" placeholder="輸入內容(簡)"></textarea>
+			    </div>
+				<div class="form-group">
+					<label for="TxtContentDetailNameE">內容(英)</label>
+                        <textarea id="TxtContentDetailNameE" class="form-control" rows="5" placeholder="輸入內容(英)"></textarea>
+			    </div>
+				<div class="form-group">
+					<label for="TxtSequence">次序</label>
+						<input type="number" class="form-control" id="TxtSequence" placeholder="輸入次序，例如1,2,3,..." value="">
+			    </div>
+				<div class="form-group">
+					<label>狀態</label>
+						<div class="form-group clearfix">
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioActive" name="r1">
+								<label for="radioActive" value="1">正常</label>
+							</div>
+							<div class="radio radio-primary d-inline" style="margin-right:20px">
+								<input type="radio" id="radioInActive" name="r1">
+								<label for="radioInActive" value="1">失效</label>
+							</div>
+						</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="add_button" action="add"><i class="fa fa-plus"></i>&nbsp;&nbsp;新增</button>
+                <button type="submit" class="btn btn-warning" id="edit_button" action="edit"><i class="icon-pencil-alt"></i>&nbsp;&nbsp;更新</button>
+                {% if 236 in request.session.accessright %}
+                <button type="submit" class="btn btn-danger" id="remove_button"><i class="fa fa-trash"></i>&nbsp;&nbsp;刪除</button>
+                {% endif %}
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;關閉</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    var editor;
+
+    ClassicEditor
+        .create( document.querySelector( '#TxtContentDetailName' ) , {
+        toolbar: [ 'heading', '|', 'bold', 'italic', 'underline' ],
+        })
+        .then( newEditor => {
+            editor = newEditor;
+            editor.ui.view.editable.element.style.height = '100px';
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+
+    var editor1;
+
+    ClassicEditor
+        .create( document.querySelector( '#TxtContentDetailNameS' ) , {
+        toolbar: [ 'heading', '|', 'bold', 'italic', 'underline' ],
+        })
+        .then( newEditor => {
+            editor1 = newEditor;
+            editor1.ui.view.editable.element.style.height = '100px';
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+
+    var editor2;
+
+    ClassicEditor
+        .create( document.querySelector( '#TxtContentDetailNameE' ) , {
+        toolbar: [ 'heading', '|', 'bold', 'italic', 'underline' ],
+        })
+        .then( newEditor => {
+            editor2 = newEditor;
+            editor2.ui.view.editable.element.style.height = '100px';
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+
+    $(document).ready(function(){
+        var table;
+
+        $("#searchinput").on("keyup", function() {
+			var oTable = $('#contentTable').dataTable();
+			oTable.fnFilter($(this).val());
+        });
+
+        $("#cboContent").on('change', function(){
+            load_table();
+        });
+
+        function load_table() {
+            $("#contentTable").html('<br/><center><div class=\"loader-box\"><div class=\"loader-2\"></div></div></center>');
+            var content_id = $("#cboContent").val();
+            $.ajax({
+                url:'{% url 'terms_main_response' %}',
+                type:'POST',
+                data:{action:'content_detail_list', content_id:content_id},
+            })
+
+            .done(function(response){
+                $("#contentBody").html(response);
+                refresh_table();
+            })
+
+            .fail(function(xhr, status, error){
+                $("#contentBody").html(xhr.responseText);
+            })
+        }
+
+        function refresh_table() {
+            table = $('#contentTable').DataTable({
+                "paging": true,
+                "dom": '<"toolbar">fBrtip',
+                "order": [[ 5, "asc" ]],
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                   language: {
+                       "sProcessing": "處理中...",
+                       "sLengthMenu": "顯示 _MENU_ 項結果",
+                       "sZeroRecords": "沒有匹配結果",
+                       "sInfo": "顯示第 _START_ 到 _END_ 條記錄，共 _TOTAL_ 條",
+                       "sInfoEmpty": "顯示第 0 到 0 條記錄，共 0 條",
+                       "sInfoFiltered": "(由 _MAX_ 條記錄過濾)",
+                       "sInfoPostFix": "",
+                       "sSearch": "搜索：",
+                       "sUrl": "",
+                       "oPaginate": {
+                           "sFirst": "首頁",
+                           "sPrevious": "上一頁",
+                           "sNext": "下一頁",
+                           "sLast": "末頁"
+                       },
+                       buttons: {
+                           copy: "複製到剪貼簿"
+                       }
+                   },
+                buttons: [
+                    {   extend: "copy",
+                        text: '<i class="fa fa-copy"></i>&nbsp;&nbsp;複製',
+                        className: 'btn-warning'
+                    },
+                    {
+                        extend: "print",
+                        text: '<i class="fa fa-print"></i>&nbsp;&nbsp;列印',
+                        customize: function(win)
+                        {
+                            var last = null;
+                            var current = null;
+                            var bod = [];
+
+                            var css = '@page { size: landscape; }',
+                                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                                style = win.document.createElement('style');
+
+                            style.type = 'text/css';
+                            style.media = 'print';
+
+                            if (style.styleSheet)
+                            {
+                              style.styleSheet.cssText = css;
+                            }
+                            else
+                            {
+                              style.appendChild(win.document.createTextNode(css));
+                            }
+                            head.appendChild(style);
+                        },
+                        className: 'btn-primary'
+                    },
+                ],
+            });
+            $("div.toolbar").html('<b><font size=3>使用條款</font></b>&nbsp;&nbsp;<a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="add" formtype="content_info" formname="Content Information" content_detail_id="{{ displaydata.content_detail_id }}" content_id="{{ displaydata.content_id }}" content_detail_name="{{ displaydata.content_detail_name }}" content_detail_name_e="{{ displaydata.content_detail_name_e }}" sequence="{{ displaydata.sequence }}" status="{{ displaydata.status }}"><i class="icon-plus text-white"></i></a>');
+        }
+
+        $("#upload_button").click(function(){
+            $("#action").val($("#upload_button").attr("action"));
+        });
+
+        $("#add_button").click(function(){
+            $("#action").val("add");
+        });
+
+        $("#edit_button").click(function(){
+            $("#action").val("edit");
+        });
+
+        $("#remove_button").click(function(){
+            $("#action").val("delete");
+        });
+
+        document.getElementById("upload-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var action = $("#action").val();
+            var content_detail_id = $("#content_detail_id").val();
+            var content_id = $("#content_id").val();
+            var content_detail_name = $("#TxtContentDetailName").val();
+            var content_detail_name_s = $("#TxtContentDetailNameS").val();
+            var content_detail_name_e = $("#TxtContentDetailNameE").val();
+            var sequence = $("#TxtSequence").val();
+            if ($("#radioActive").is(':checked')) status = 1;
+            if ($("#radioInActive").is(':checked')) status = 0;
+            if ((action == "add") || (action == "edit")) {
+                if (content_detail_name == '') {
+                    alert('請輸入物業狀況');
+                    return false;
+                }
+                if (sequence == '') {
+                    alert('請輸入次序');
+                    return false;
+                }
+
+                if (action == "add") {
+                    if (!(window.confirm("新增內容記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                } else {
+                    if (!(window.confirm("更新內容記錄，你確定嗎？"))) {
+                        return false;
+                    }
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("content_detail_id", content_detail_id);
+                formData.append("content_id", content_id);
+                formData.append("content_detail_name", content_detail_name);
+                formData.append("content_detail_name_s", content_detail_name_s);
+                formData.append("content_detail_name_e", content_detail_name_e);
+                formData.append("sequence", sequence);
+                formData.append("status", status);
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'terms_main_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功更新"
+                            },{
+                                type: 'success',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+            if (action == "delete") {
+                if (!(window.confirm("這些項目將永久刪除且無法恢復，你確定嗎？"))) {
+                    return false;
+                }
+                var formData = new FormData();
+                formData.append("action", action);
+                formData.append("content_detail_id", content_detail_id);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'terms_main_response' %}", true);
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        // Work with the jsonResponse object here
+                        //console.log(jsonResponse);
+                        $.notify({
+                            message: "記錄已成功刪除"
+                            },{
+                                type: 'danger',
+                                allow_dismiss: true,
+                                positon: 'top right',
+                                offset: 20,
+                                spacing: 10,
+                                z_index: 1031,
+                        });
+                        $("#EditModal").modal("hide");
+                        load_table();
+                    } else {
+                      var errorResponse = JSON.parse(xhr.responseText);
+                      var errorMessage = errorResponse.message; // Assuming the error message is provided in the response as "message"
+                      //alert("Error: " + errorMessage);
+                      // Handle the error condition as needed
+                    }
+                };
+                xhr.send(formData);
+            }
+        });
+
+        load_table()
+
+    })
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}

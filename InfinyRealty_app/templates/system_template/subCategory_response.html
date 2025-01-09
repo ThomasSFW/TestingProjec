@@ -1,0 +1,139 @@
+{% block page_title %}
+
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    {% load custom_template_tags %}
+
+	{% if action == "subcategory_list" %}
+        <span class="table-responsive">
+            <table class="display" id="contentTable" data-page-length="60">
+                <thead>
+                    <tr class="skin-blue">
+                    <th width="20">ID</th>
+                    <th>系統功能名稱</th>
+                    <th width="100">功能分類</th>
+                    <th width="100">網址</th>
+                    <th style="text-align:center;" width="80">開啟方式</th>
+                    <th style="text-align:center;" width="60">次序</th>
+                    <th style="text-align:center;" width="60">圖示類</th>
+                    <th style="text-align:center;" width="50">主要？</th>
+                    <th style="text-align:center;" width="50">準備？</th>
+                    <th style="text-align:center;" width="40">狀態</th>
+                    <th style="text-align:center;" width="20">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for displaydata in subcategories|dictsort:"sequence"|dictsort:"catid.sequence"|dictsort:"catid.tabid.sequence"|dictsortreversed:"isenabled" %}
+                    <tr>
+                        <td style = "text-align: center;">{{ displaydata.subcatid }}</td>
+                        <td data-filter="{{ displaydata.subcatname }}">{{ displaydata.subcatname }}</td>
+                        <td data-filter="{{ displaydata.catid.catname }}">{{ displaydata.catid.catname }}</td>
+                        <td nowrap="nowrap">{{ displaydata.urlnew|slice:"20" }}</td>
+                        <td style = "text-align: center;">{{ displaydata.urltype }}</td>
+                        <td style = "text-align: center;">{{ displaydata.sequence }}</td>
+                        <td style = "text-align: center;">
+                            {% if displaydata.iconclass == None %}
+                                NIL
+                            {% elif displaydata.iconclass != '' %}
+                                <i class="{{ displaydata.iconclass }}"></i>
+                            {% else %}
+                                NIL
+                            {% endif %}
+                        </td>
+                        <td style = "text-align: center;">
+                            {% if displaydata.iscore == 1 %}
+                            <span class="badge rounded-pill badge-success">是</span>
+                            {% else %}
+                            <span class="badge rounded-pill badge-danger">否</span>
+                            {% endif %}
+                        </td>
+                        <td style = "text-align: center;">
+                            {% if displaydata.isready == 1 %}
+                            <span class="badge rounded-pill badge-success">是</span>
+                            {% else %}
+                            <span class="badge rounded-pill badge-danger">否</span>
+                            {% endif %}
+                        </td>
+                        <td style = "text-align: center;">
+                            {% if displaydata.isenabled == 1 %}
+                            <span class="badge rounded-pill badge-success">正常</span>
+                            {% else %}
+                            <span class="badge rounded-pill badge-danger">失效</span>
+                            {% endif %}
+                        </td>
+                        <td align="center">
+                            {% if 251 not in request.session.accessright %}
+                            <a href="#" class="open_modal_edit" data-bs-target="#EditModal" action="edit" formtype="subcategory" formname="Tab Information" catid="{{ displaydata.catid.catid }}" subcatid="{{ displaydata.subcatid }}" catname="{{ displaydata.catid.catname }}" subcategoryname="{{ displaydata.subcatname }}" url="{{ displaydata.url }}" urlnew="{{ displaydata.urlnew }}" urltype="{{ displaydata.urltype }}" sequence="{{ displaydata.sequence }}" iconclass="{{ displaydata.iconclass }}" iscore="{{ displaydata.iscore }}" isready="{{ displaydata.isready }}" isenabled="{{ displaydata.isenabled }}"><i class="fa fa-lock"></i></a>
+                            {% else %}
+                            <a href="#" class="open_modal_edit" data-bs-toggle="modal" data-original-title="test" data-bs-target="#EditModal" action="edit" formtype="subcategory" formname="Tab Information" catid="{{ displaydata.catid.catid }}" subcatid="{{ displaydata.subcatid }}" catname="{{ displaydata.catid.catname }}" subcategoryname="{{ displaydata.subcatname }}" url="{{ displaydata.url }}" urlnew="{{ displaydata.urlnew }}" urltype="{{ displaydata.urltype }}" sequence="{{ displaydata.sequence }}" iconclass="{{ displaydata.iconclass }}" iscore="{{ displaydata.iscore }}" isready="{{ displaydata.isready }}" isenabled="{{ displaydata.isenabled }}"><i class="fa fa-edit"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    {% if action == "subcategory_list" %}
+        <script>
+        $(document).ready(function(){
+            $(".open_modal_edit").click(function(){
+                // Adding the Value from Table to Modal form
+                $(".modal-header").css('color', '#FFFFFF');
+                $("#subcatid").val($(this).attr("subcatid"));
+                $("#SelectCatName").val($(this).attr("catid"));
+                $("#action").val($(this).attr("action"));
+                $("#TxtSubCategoryName").val($(this).attr("subcategoryname"));
+                $("#TxtURL").val($(this).attr("url"));
+                $("#TxtURLNew").val($(this).attr("urlnew"));
+                $("#SelectURLType").val($(this).attr("urltype"));
+                $("#TxtSequence").val($(this).attr("sequence"));
+                $("#TxtIconClass").val($(this).attr("iconclass"));
+                if (($(this).attr("iscore") == "1") || ($(this).attr("iscore") == ""))
+                    $("#radioActive2").prop("checked", true);
+                else
+                    $("#radioInActive2").prop("checked", true);
+                if (($(this).attr("isready") == "1") || ($(this).attr("isready") == ""))
+                    $("#radioActive3").prop("checked", true);
+                else
+                    $("#radioInActive3").prop("checked", true);
+                if (($(this).attr("isenabled") == "1") || ($(this).attr("isenabled") == ""))
+                    $("#radioActive").prop("checked", true);
+                else
+                    $("#radioInActive").prop("checked", true);
+                var id = $(this).attr("recordid");
+                var action = $(this).attr("action");
+                if (action == 'add') {
+                    $("#FunctionTitle").html("<i class='icon-plus'></i>&nbsp;&nbsp;<b>新增系統功能</b>");
+                    $(".modal-header").css('background-color', '#DD4B39');
+                    $("#add_button").show();
+                    $("#edit_button").hide();
+                    $("#remove_button").hide();
+                    $("#SelectCatName").val(1);
+                    $("#SelectURLType").val(0);
+                } else {
+                    $("#FunctionTitle").html("<i class='icon-pencil-alt'></i>&nbsp;&nbsp;<b>編輯系統功能</b>");
+                    $(".modal-header").css('background-color', '#F39C12');
+                    $("#add_button").hide();
+                    $("#edit_button").show();
+                    $("#remove_button").show();
+                }
+            });
+        })
+        </script>
+    {% endif %}
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+
+{% endblock morejs %}
+

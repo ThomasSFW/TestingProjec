@@ -1,0 +1,313 @@
+﻿{% extends 'web_template/common_template.html' %}
+
+{% block breadcrumb %}
+    <!--=====================================-->
+    <!--=   Breadcrumb     Start            =-->
+    <!--=====================================-->
+        <div class="hide-on-mobile-menu">
+        <br><br><br><br>
+        </div>
+        <div class="breadcrumb-wrap">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/main">{{"主頁"|showlang:request.session.lang}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{"網上委託"|showlang:request.session.lang}}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+{% load static %}
+
+    <!--=====================================-->
+    <!--=   Account     Start               =-->
+    <!--=====================================-->
+    <div class="article-head"><br>
+        <h5 class="text-center" style="font-weight:600">{{"網上委託"|showlang:request.session.lang}}</h5>
+    </div>
+    <main class="site-main content-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-12">
+                    <div class="col-md-12 rtcl-login-form-wrap">
+                        <form id="rtcl-login-form" class="form-horizontal" method="post" novalidate="novalidate">
+                            <div id="message"></div>
+                            <div class="form-group">
+                                <label for="contact_name" class="control-label">
+                                    {{"請問您的姓名是"|showlang:request.session.lang}}：
+                                    <strong class="rtcl-required">*</strong>
+                                </label>
+                                <input type="text" name="contact_name" autocomplete="member_name" value="" id="contact_name" placeholder="{{"請輸入您的姓名"|showlang:request.session.lang}}" class="form-control" required=""/>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="email" class="control-label">
+                                        {{"您的電郵地址是"|showlang:request.session.lang}}：
+                                    </label>
+                                    <input type="text" name="email" autocomplete="email" value="" id="email" placeholder="{{"請輸入您的電郵地址"|showlang:request.session.lang}}" class="form-control" required=""/>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="phone_area_code" class="control-label">{{"區號"|showlang:request.session.lang}}</label><br>
+                                    <select id="phone_area_code" class="form-control">
+                                        <option value="+852" selected>+852 ({{"香港"|showlang:request.session.lang}})</option>
+                                        <option value="+853">+853 ({{"澳門"|showlang:request.session.lang}})</option>
+                                        <option value="+86">+86 ({{"中國"|showlang:request.session.lang}})</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="phone_number" class="control-label">{{"您的電話號碼是"|showlang:request.session.lang}}：<strong class="rtcl-required">*</strong></label>
+                                    <input type="number" class="form-control" id="phone_number" placeholder="{{"請輸入您的電話號碼"|showlang:request.session.lang}}" value="" size="8" maxlength="8">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="contact_period" class="control-label">{{"方便聯絡您的時段"|showlang:request.session.lang}}：</label><br>
+                                    <select id="contact_period" class="form-control" style="width:100%;">
+                                        <option value="上午9時至12時" selected>{{"上午9時至12時"|showlang:request.session.lang}}</option>
+                                        <option value="下午1時至4時">{{"下午1時至4時"|showlang:request.session.lang}}</option>
+                                        <option value="下午5時至6時">{{"下午5時至6時"|showlang:request.session.lang}}</option>
+                                        <option value="下午7時至9時">{{"下午7時至9時"|showlang:request.session.lang}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="contact_period_other" class="control-label">{{"或其他時段"|showlang:request.session.lang}}：</label><br>
+                                    <input type="text" class="form-control" id="contact_period_other" placeholder="{{"其他時段"|showlang:request.session.lang}}" value="" size="8" maxlength="100">
+                                </div>
+                            </div>
+                            <div class="card" style="margin-top:10px">
+                              <div class="card-body">
+                                <div class="form-group">
+                                    <label for="property_address_1" class="control-label">
+                                        {{"您的物業地址"|showlang:request.session.lang}}#1： <strong class="rtcl-required">*</strong>
+                                    </label>
+                                    <textarea class="form-control" id="property_address_1" rows="3" height="180px" value="AA house"></textarea>
+                                </div>
+                                <div class="form-group form-row">
+                                    <div class="col-md-3">
+                                        <select id="offer_type_1" class="form-control">
+                                            <option value="放租及放售" selected>{{"放租及放售"|showlang:request.session.lang}}</option>
+                                            <option value="放租">{{"放租"|showlang:request.session.lang}}</option>
+                                            <option value="放售">{{"放售"|showlang:request.session.lang}}</option>
+                                            <option value="搵租及搵售">{{"搵租及搵售"|showlang:request.session.lang}}</option>
+                                            <option value="搵租">{{"搵租"|showlang:request.session.lang}}</option>
+                                            <option value="搵售">{{"搵售"|showlang:request.session.lang}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select id="usage_1" class="form-control">
+                                            <option value="寫字樓" selected>{{"寫字樓"|showlang:request.session.lang}}</option>
+                                            <option value="工業">{{"工業"|showlang:request.session.lang}}</option>
+                                            <option value="商舖">{{"商舖"|showlang:request.session.lang}}</option>
+                                            <option value="其他" selected>{{"其他"|showlang:request.session.lang}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="netarea_1" class="control-label">
+                                        <input type="text" class="form-control" id="netarea_1" placeholder="{{"面積"|showlang:request.session.lang}} ({{"平方呎"|showlang:request.session.lang}})" value="" size="20" maxlength="100">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="rent_1" class="control-label">
+                                        <input type="text" class="form-control" id="rent_1" placeholder="{{"呎租"|showlang:request.session.lang}}" value="" size="20" maxlength="100">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="selling_1" class="control-label">
+                                        <input type="text" class="form-control" id="selling_1" placeholder="{{"呎價"|showlang:request.session.lang}}" value="" size="20" maxlength="100">
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="card" style="margin-top:10px">
+                              <div class="card-body">
+                                <div class="form-group">
+                                    <label for="property_address_2" class="control-label">
+                                        {{"您的物業地址"|showlang:request.session.lang}}#2：
+                                    </label>
+                                    <textarea class="form-control" id="property_address_2" rows="3" height="180px"></textarea>
+                                </div>
+                                <div class="form-group form-row">
+                                    <div class="col-md-3">
+                                        <select id="offer_type_2" class="form-control">
+                                            <option value="放租及放售" selected>{{"放租及放售"|showlang:request.session.lang}}</option>
+                                            <option value="放租">{{"放租"|showlang:request.session.lang}}</option>
+                                            <option value="放售">{{"放售"|showlang:request.session.lang}}</option>
+                                            <option value="搵租及搵售">{{"搵租及搵售"|showlang:request.session.lang}}</option>
+                                            <option value="搵租">{{"搵租"|showlang:request.session.lang}}</option>
+                                            <option value="搵售">{{"搵售"|showlang:request.session.lang}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select id="usage_2" class="form-control">
+                                            <option value="寫字樓" selected>{{"寫字樓"|showlang:request.session.lang}}</option>
+                                            <option value="工業">{{"工業"|showlang:request.session.lang}}</option>
+                                            <option value="商舖">{{"商舖"|showlang:request.session.lang}}</option>
+                                            <option value="其他" selected>{{"其他"|showlang:request.session.lang}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="netarea_2" class="control-label">
+                                        <input type="text" class="form-control" id="netarea_2" placeholder="{{"面積"|showlang:request.session.lang}} ({{"平方呎"|showlang:request.session.lang}})" value="" size="20" maxlength="100">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="rent_2" class="control-label">
+                                        <input type="text" class="form-control" id="rent_2" placeholder="{{"呎租"|showlang:request.session.lang}}" value="" size="20" maxlength="100">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="selling_2" class="control-label">
+                                        <input type="text" class="form-control" id="selling_2" placeholder="{{"呎價"|showlang:request.session.lang}}" value="" size="20" maxlength="100">
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group" height="180px">
+                                <label for="remarks" class="control-label">
+                                    {{"備註"|showlang:request.session.lang}}：
+                                </label>
+                                <textarea class="form-control" id="remarks" placeholder="{{"我想知道"|showlang:request.session.lang}}" rows="5" height="180px"></textarea>
+                            </div>
+                            <div class="form-group d-flex align-items-center">
+                                <div class="form-check">
+                                    {{"請細閱以下條款："|showlang:request.session.lang}}<br>
+                                    {{"本公司擬使用閣下的個人姓名、電話號碼、傳真、地址或電郵地址處理閣下的申請、回覆閣下查詢並作地產代理服務的促銷及向閣下提供承灃物業的資訊。"|showlang:request.session.lang}}
+                                </div>
+                            </div>
+                            <div class="form-group d-flex align-items-center">
+                                <div class="form-check">
+                                    <input type="checkbox" name="agree" id="rtcl-agree" value="agree"/><label class="form-check-label" for="rtcl-agree"> {{"本人已查閱貴公司的"|showlang:request.session.lang}}<span class="byv03c-34 hIvipw">{{"私隱政策和收集個人資料聲明"|showlang:request.session.lang}}</span>{{"，並同意貴公司使用本人於此所填寫的個人資料作直接促銷。"|showlang:request.session.lang}}</label>
+                                </div>
+                            </div>
+                            <div class="form-group align-items-center">
+                                <button type="button" id="rtcl-entrust" name="rtcl-entrust" class="btn btn-primary" action="entrust">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{"提交"|showlang:request.session.lang}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).on("click", "#rtcl-entrust", function(){
+        var action = $(this).attr("action");
+        var contact_name = $("#contact_name").val();
+        var email = $("#email").val();
+        var phone_area_code = $("#phone_area_code").val();
+        var phone_number = $("#phone_number").val();
+        var contact_period = $("#contact_period").val();
+        var contact_period_other = $("#contact_period_other").val();
+        var property_address_1 = $("#property_address_1").val();
+        var offer_type_1 = $("#offer_type_1").val();
+        var usage_1 = $("#usage_1").val();
+        var netarea_1 = $("#netarea_1").val();
+        var rent_1 = $("#rent_1").val();
+        var selling_1 = $("#selling_1").val();
+        var property_address_2 = $("#property_address_2").val();
+        var offer_type_2 = $("#offer_type_2").val();
+        var usage_2 = $("#usage_2").val();
+        var netarea_2 = $("#netarea_2").val();
+        var rent_2 = $("#rent_2").val();
+        var selling_2 = $("#selling_2").val();
+        var remarks = $("#remarks").val();
+
+
+        var agree = $("#rtcl-agree").val();
+        if ((action == "entrust")) {
+            if (contact_name == '') {
+                alert('{{"請輸入您的姓名"|showlang:request.session.lang}}');
+                $("#contact_name").focus();
+                return false;
+            }   
+            if (email == '') {
+                alert('{{"請輸入您的電郵地址"|showlang:request.session.lang}}');    
+                $("#email").focus();
+                return false;
+            }
+            if (phone_number == '') {
+                alert('{{"請輸入電話號碼"|showlang:request.session.lang}}');
+                $("#phone_number").focus();
+                return false;
+            }
+            if (property_address_1 == '') {
+                alert('{{"請輸入您的物業地址"|showlang:request.session.lang}}');
+                $("#property_address_1").focus();
+                return false;
+            }
+            if (!($('#rtcl-agree').prop('checked'))) {
+                alert('{{"請確認以上的私隱政策和收集個人資料聲明，並同意貴公司使用本人於此所填寫的個人資料作直接促銷。"|showlang:request.session.lang}}');
+                return false;
+            }
+
+            if (action == "entrust") {
+                if (!(window.confirm("{{"遞交以上資料，你確定嗎？"|showlang:request.session.lang}}"))) {
+                    return false;
+                }
+            }
+
+            var message = "Action: " + action +
+                "\nContact Name: " + contact_name +
+                "\nEmail: " + email +
+                "\nArea Code: " + phone_area_code +
+                "\nPhone Number: " + phone_number +
+                "\nContact Period: " + contact_period +
+                "\nContact Period Other: " + contact_period_other +
+                "\nProperty Address 1: " + property_address_1 +
+                "\nOffer Type 1: " + offer_type_1 +
+                "\nUsage 1: " + usage_1 +
+                "\nNet Area 1: " + netarea_1 +
+                "\nRent 1: " + rent_1 +
+                "\nSelling 1: " + selling_1 +
+                "\nProperty Address 2: " + property_address_2 +
+                "\nOffer Type 2: " + offer_type_2 +
+                "\nUsage 2: " + usage_2 +
+                "\nNet Area 2: " + netarea_2 +
+                "\nRent 2: " + rent_2 +
+                "\nSelling 2: " + selling_2 +
+                "\nRemarks: " + remarks;
+
+            //alert(message);
+
+            $.ajax({
+                url:'{% url 'entrust_save' %}',
+                type:'POST',
+                data:{action:action, contact_name:contact_name, email:email, phone_area_code:phone_area_code, phone_number:phone_number, contact_period:contact_period, contact_period_other:contact_period_other, property_address_1:property_address_1, offer_type_1:offer_type_1, usage_1:usage_1, netarea_1:netarea_1, rent_1:rent_1, selling_1:selling_1, property_address_2:property_address_2, offer_type_2:offer_type_2, usage_2:usage_2, netarea_2:netarea_2, rent_2:rent_2, selling_2:selling_2, remarks:remarks},
+            })
+
+            .done(function(response){
+                if (response == "Success") {
+                    $.notify({
+                        message: "你的網上委託已成功遞交"
+                        },{
+                            type: 'success',
+                            allow_dismiss: true,
+                            positon: 'top center',
+                            offset: 20,
+                            spacing: 10,
+                            z_index: 1031,
+                    });
+                    document.location.href = "/main"
+                }
+            })
+
+            .fail(function(xhr, status, error){
+                // alert the error if any error occured
+                $("#message").html(xhr.responseText)
+                //alert(xhr.responseText);
+            })
+        }
+
+    });
+</script>
+{% endblock custom_js %}
+
+{% comment %} Custom JS to Identify the Reply and Post Reply {% endcomment %}
+
+{% block morejs %}
+
+{% endblock morejs %}
